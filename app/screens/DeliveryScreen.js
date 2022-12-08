@@ -1,16 +1,79 @@
-import React, { useEffect } from "react";
-import { StyleSheet, Text, View, ScrollView } from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  RefreshControl,
+} from "react-native";
 
 import ActivityIndicator from "../components/ActivityIndicator";
 import DeliveryCard from "../components/DeliveryCard";
 import deliveryApi from "../api/delivery";
 import useApi from "../hooks/useApi";
 
+const wait = (timeout) => {
+  return new Promise((resolve) => setTimeout(resolve, timeout));
+};
+
 function DeliveryScreen(props) {
+  const [refreshing, setRefreshing] = useState(false);
+
   const getDeliveriesApi = useApi(deliveryApi.getTodayDeliveries);
   const deliveries = getDeliveriesApi.data;
 
-  const deliverieslist = deliveries.map((data) => (
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    wait(500).then(async () => {
+      let deliveries = await getDeliveriesApi.request();
+      // setPastAppts(pastApptsList.data);
+      setRefreshing(false);
+    });
+  }, []);
+
+  var count40 = 0;
+  var count62 = 0;
+  var count40Bagged = 0;
+  var count62Bagged = 0;
+  var countBags = 0;
+  for (let i = 0; i < deliveries.length; i++) {
+    if (
+      deliveries[i].cooler_size == "40 Quart" &&
+      deliveries[i].ice_type == "Loose ice"
+    ) {
+      count40 += 1;
+    } else if (
+      deliveries[i].cooler_size == "62 Quart" &&
+      deliveries[i].ice_type == "Loose ice"
+    ) {
+      count62 += 1;
+    }
+    if (
+      deliveries[i].ice_type == "Bagged ice" &&
+      deliveries[i].cooler_size == "62 Quart"
+    ) {
+      count62Bagged += 1;
+      countBags += 2;
+    } else if (
+      deliveries[i].ice_type == "Bagged ice" &&
+      deliveries[i].cooler_size == "40 Quart"
+    ) {
+      count40Bagged += 1;
+      countBags += 1;
+    }
+  }
+
+  function mapOrder(a, order, key) {
+    const map = order.reduce((r, v, i) => ((r[v] = i), r), {});
+    return a.sort((a, b) => map[a[key]] - map[b[key]]);
+  }
+  var item_order = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
+  var ordered_array = deliveries.sort(function (a, b) {
+    return parseFloat(a.delivery_address) - parseFloat(b.delivery_address);
+  });
+  ordered_array = mapOrder(ordered_array, item_order, "neighborhood");
+
+  const deliverieslist = ordered_array.map((data) => (
     <DeliveryCard
       key={data.id}
       cooler={data.cooler_size}
@@ -19,6 +82,7 @@ function DeliveryScreen(props) {
       name={data.customer_name}
       phone={data.customer_phone}
       email={data.customer_email}
+      neighborhood={data.neighborhood}
       start={data.start_date.slice(0, 10)}
       end={data.end_date.slice(0, 10)}
       ending={
@@ -26,6 +90,7 @@ function DeliveryScreen(props) {
           ? true
           : false
       }
+      special={data.special_instructions}
     />
   ));
 
@@ -35,12 +100,29 @@ function DeliveryScreen(props) {
 
   return (
     <>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
         <ActivityIndicator visible={getDeliveriesApi.loading} />
         <View style={styles.countContainer}>
-          <Text style={styles.countText}>62 Quart Count: </Text>
-          <Text style={styles.countText}>40 Quart Count: </Text>
-          <Text style={styles.countText}>Number of bags: </Text>
+          <View style={{ flexDirection: "row" }}>
+            <View>
+              <Text style={styles.countText}>
+                62 Quart Bagged: {count62Bagged}
+              </Text>
+              <Text style={styles.countText}>
+                40 Quart Bagged: {count40Bagged}
+              </Text>
+              <Text style={styles.countText}>Number of bags: {countBags}</Text>
+            </View>
+            <View style={styles.looseContainer}>
+              <Text style={styles.countText}>62 Quart Loose: {count62}</Text>
+              <Text style={styles.countText}>40 Quart Loose: {count40}</Text>
+            </View>
+          </View>
         </View>
         <View style={styles.body}>
           {getDeliveriesApi.error && (
@@ -53,6 +135,7 @@ function DeliveryScreen(props) {
         {deliveries.length == 0 ? (
           <Text style={styles.noEvents}>No deliveries</Text>
         ) : (
+          // (console.log(deliverieslist[:deliverieslist.length()].props.neighborhood),
           deliverieslist
         )}
       </ScrollView>
@@ -68,6 +151,10 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     fontSize: 17.5,
     marginVertical: 2.5,
+  },
+  looseContainer: {
+    right: 0,
+    marginLeft: "auto",
   },
 });
 

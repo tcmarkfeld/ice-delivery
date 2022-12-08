@@ -1,13 +1,13 @@
 {
   "expo": {
-    "name": "ice-delivery",
+    "name": "Corolla Ice Delivery",
     "slug": "ice-delivery",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./app/assets/ice-delivery1024.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./app/assets/ice-delivery(1).png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },

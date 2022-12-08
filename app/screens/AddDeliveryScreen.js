@@ -3,13 +3,13 @@ import { StyleSheet, KeyboardAvoidingView, ScrollView } from "react-native";
 
 import * as Yup from "yup";
 
-import Screen from "../components/Screen";
 import Dropdown from "../components/Dropdown";
 import ErrorMessage from "../components/forms/ErrorMessage";
 import Form from "../components/forms/Form";
 import FormField from "../components/forms/FormField";
 import SubmitButton from "../components/forms/SubmitButton";
 import delivery from "../api/delivery";
+import NeighborhoodDropdown from "../components/NeighborhoodDropdown";
 
 // These are regex expressions for form validation
 const phoneRegExp =
@@ -41,6 +41,7 @@ const validationSchema = Yup.object().shape({
     // .matches(dateRegExp, "Must be in MM.DD.YYYY format (no spaces)")
     .required()
     .label("End Date"),
+  special_instructions: Yup.string().label("Special Instructions"),
 });
 
 function AddDeliveryScreen(props) {
@@ -58,12 +59,12 @@ function AddDeliveryScreen(props) {
       userInfo.email,
       userInfo.start_date,
       userInfo.end_date,
-      neighborhood
+      neighborhood,
+      userInfo.special_instructions
     );
   };
 
   const data1 = [
-    //flat data for types of test they can book appt for
     { label: "40 Quart", value: 1 },
     { label: "62 Quart", value: 2 },
   ];
@@ -75,24 +76,31 @@ function AddDeliveryScreen(props) {
     { label: "Ocean Hill", value: 1 },
     { label: "Corolla Light", value: 2 },
     { label: "Whalehead", value: 3 },
-    { label: "Cruz Bay", value: 4 },
-    { label: "Monteray Shores", value: 5 },
-    { label: "Crown Point", value: 6 },
-    { label: "Currituck Club", value: 7 },
+    { label: "Cruz Bay (Soundfront at Corolla Bay)", value: 16 },
+    { label: "Monteray Shores", value: 15 },
+    { label: "Buck Island", value: 14 },
+    { label: "Crown Point", value: 13 },
+    { label: "KLMPQ", value: 12 },
+    { label: "HIJO", value: 11 },
+    { label: "Section F", value: 10 },
+    { label: "Currituck Club", value: 4 },
+    { label: "Section D", value: 9 },
+    { label: "Section C", value: 8 },
+    { label: "Section B", value: 7 },
+    { label: "Section A", value: 6 },
+    { label: "Pine Island", value: 5 },
   ];
 
   const handleCallBackCooler = (childData) => {
-    //parent function, dropdown passes selected time back to this function through a prop
+    //parent function, dropdown passes selected item back to this function through a prop
     setCooler(childData);
   };
 
   const handleCallBackIce = (childData) => {
-    //parent function, dropdown passes selected time back to this function through a prop
     setIce(childData);
   };
 
   const handleCallBackNeighborhood = (childData) => {
-    //parent function, dropdown passes selected time back to this function through a prop
     setNeighborhood(childData);
   };
 
@@ -112,6 +120,7 @@ function AddDeliveryScreen(props) {
               email: "",
               start_date: "",
               end_date: "",
+              special_instructions: "",
             }}
             onSubmit={handleSubmit}
             validationSchema={validationSchema}
@@ -130,11 +139,11 @@ function AddDeliveryScreen(props) {
               placeholder={"Select ice type..."}
               onParentCallback={handleCallBackIce}
             ></Dropdown>
-            <Dropdown
+            <NeighborhoodDropdown
               data={data3}
               placeholder={"Select neighborhood..."}
               onParentCallback={handleCallBackNeighborhood}
-            ></Dropdown>
+            ></NeighborhoodDropdown>
             <FormField
               autoCapitalize="none"
               autoCorrect={false}
@@ -171,7 +180,7 @@ function AddDeliveryScreen(props) {
               autoCorrect={false}
               icon="calendar"
               name="start_date"
-              placeholder="Start Date (MM.DD.YYYY)"
+              placeholder="Start Date (MM-DD-YYYY)"
               // keyboardType="numeric"
               returnKeyType="done"
             />
@@ -180,8 +189,16 @@ function AddDeliveryScreen(props) {
               autoCorrect={false}
               icon="calendar"
               name="end_date"
-              placeholder="End Date (MM.DD.YYYY)"
+              placeholder="End Date (MM-DD-YYYY)"
               // keyboardType="numeric"
+              returnKeyType="done"
+            />
+            <FormField
+              autoCapitalize="none"
+              autoCorrect={false}
+              icon="star"
+              name="special_instructions"
+              placeholder="Special Instructions...(not required)"
               returnKeyType="done"
             />
             <SubmitButton style={styles.button} title="ADD DELIVERY" />

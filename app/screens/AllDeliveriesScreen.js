@@ -21,6 +21,7 @@ function AllDeliveriesScreen(props) {
       email={data.customer_email}
       start={data.start_date.slice(0, 10)}
       end={data.end_date.slice(0, 10)}
+      special={data.special_instructions}
     />
   ));
 
