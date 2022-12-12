@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
     marginLeft: "auto",
   },
   addressText: {
-    color: "blue",
+    // color: "blue",
     fontSize: 15,
     textDecorationLine: "underline",
     marginVertical: 2,

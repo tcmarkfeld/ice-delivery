@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { StyleSheet, Text, View, ScrollView } from "react-native";
+import { StyleSheet, Text, View, ScrollView, Button } from "react-native";
 
 import ActivityIndicator from "../components/ActivityIndicator";
 import DeliveryCard from "../components/DeliveryCard";
@@ -41,7 +41,7 @@ function AllDeliveriesScreen(props) {
             </>
           )}
         </View>
-        {deliveries.length == 0 ? (
+        {deliverieslist.length == 0 ? (
           <Text style={styles.noEvents}>No deliveries</Text>
         ) : (
           deliverieslist

@@ -1,4 +1,5 @@
 import { create } from "apisauce";
+import cache from "../utility/cache";
 import settings from "../config/settings";
 
 const apiClient = create({
@@ -18,6 +19,7 @@ apiClient.get = async (url, params, axiosConfig) => {
     return response;
   }
 
+  const data = await cache.get(url);
   return data ? { ok: true, data } : response;
 };
 

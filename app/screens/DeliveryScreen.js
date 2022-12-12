@@ -5,12 +5,14 @@ import {
   View,
   ScrollView,
   RefreshControl,
+  Button,
 } from "react-native";
 
 import ActivityIndicator from "../components/ActivityIndicator";
 import DeliveryCard from "../components/DeliveryCard";
 import deliveryApi from "../api/delivery";
 import useApi from "../hooks/useApi";
+import colors from "../config/colors";
 
 const wait = (timeout) => {
   return new Promise((resolve) => setTimeout(resolve, timeout));
@@ -63,15 +65,20 @@ function DeliveryScreen(props) {
     }
   }
 
-  function mapOrder(a, order, key) {
-    const map = order.reduce((r, v, i) => ((r[v] = i), r), {});
-    return a.sort((a, b) => map[a[key]] - map[b[key]]);
+  try {
+    function mapOrder(a, order, key) {
+      const map = order.reduce((r, v, i) => ((r[v] = i), r), {});
+      return a.sort((a, b) => map[a[key]] - map[b[key]]);
+    }
+    var item_order = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
+    var ordered_array = deliveries.sort(function (a, b) {
+      return parseFloat(a.delivery_address) - parseFloat(b.delivery_address);
+    });
+    ordered_array = mapOrder(ordered_array, item_order, "neighborhood");
+  } catch {
+    var ordered_array = [];
+    console.log("no deliveries");
   }
-  var item_order = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
-  var ordered_array = deliveries.sort(function (a, b) {
-    return parseFloat(a.delivery_address) - parseFloat(b.delivery_address);
-  });
-  ordered_array = mapOrder(ordered_array, item_order, "neighborhood");
 
   const deliverieslist = ordered_array.map((data) => (
     <DeliveryCard
@@ -93,6 +100,8 @@ function DeliveryScreen(props) {
       special={data.special_instructions}
     />
   ));
+
+  console.log(deliverieslist.length);
 
   useEffect(() => {
     getDeliveriesApi.request();
@@ -127,17 +136,25 @@ function DeliveryScreen(props) {
         <View style={styles.body}>
           {getDeliveriesApi.error && (
             <>
-              <Text>Couldn't retrieve the deliveries.</Text>
-              <Button title="Retry" onPress={getDeliveriesApi.request} />
+              <View style={styles.noDelivContainer}>
+                <Text style={styles.noDeliveries}>
+                  Couldn't retrieve the deliveries.
+                </Text>
+                <Button title="Retry" onPress={getDeliveriesApi.request} />
+              </View>
             </>
           )}
         </View>
-        {deliveries.length == 0 ? (
-          <Text style={styles.noEvents}>No deliveries</Text>
-        ) : (
-          // (console.log(deliverieslist[:deliverieslist.length()].props.neighborhood),
-          deliverieslist
-        )}
+        {
+          (deliverieslist.length = 0 ? (
+            <View style={styles.noDelivContainer}>
+              <Text style={styles.noDeliveries}>No deliveries</Text>
+            </View>
+          ) : (
+            // (console.log(deliverieslist[:deliverieslist.length()].props.neighborhood),
+            deliverieslist
+          ))
+        }
       </ScrollView>
     </>
   );
@@ -155,6 +172,16 @@ const styles = StyleSheet.create({
   looseContainer: {
     right: 0,
     marginLeft: "auto",
+  },
+  noDelivContainer: {
+    backgroundColor: colors.grey,
+    borderRadius: 10,
+    padding: 10,
+    marginLeft: 10,
+    marginRight: 10,
+  },
+  noDeliveries: {
+    textAlign: "center",
   },
 });
 
