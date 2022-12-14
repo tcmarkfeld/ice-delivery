@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { StyleSheet, Text, View, ScrollView, Button } from "react-native";
+import { DataTable } from "react-native-paper";
 
 import ActivityIndicator from "../components/ActivityIndicator";
 import DeliveryCard from "../components/DeliveryCard";
@@ -10,19 +11,35 @@ function AllDeliveriesScreen(props) {
   const getDeliveriesApi = useApi(deliveryApi.getAll);
   const deliveries = getDeliveriesApi.data;
 
-  const deliverieslist = deliveries.map((data) => (
-    <DeliveryCard
-      key={data.id}
-      cooler={data.cooler_size}
-      ice={data.ice_type}
-      address={data.delivery_address}
-      name={data.customer_name}
-      phone={data.customer_phone}
-      email={data.customer_email}
-      start={data.start_date.slice(0, 10)}
-      end={data.end_date.slice(0, 10)}
-      special={data.special_instructions}
-    />
+  var ordered_array = deliveries.sort(function (a, b) {
+    return parseFloat(a.start_date) - parseFloat(b.start_date);
+    // Not working right now
+  });
+
+  const table = ordered_array.map((data) => (
+    <DataTable.Row>
+      <DataTable.Cell style={styles.cellName}>
+        {data.start_date.slice(0, 10)}
+      </DataTable.Cell>
+      <DataTable.Cell style={styles.cellName}>
+        {data.end_date.slice(0, 10)}
+      </DataTable.Cell>
+      <DataTable.Cell style={styles.cellName}>
+        {data.customer_name}
+      </DataTable.Cell>
+      <DataTable.Cell style={styles.cellName}>
+        {data.customer_phone}
+      </DataTable.Cell>
+      <DataTable.Cell style={styles.cellName}>
+        {data.customer_email}
+      </DataTable.Cell>
+      <DataTable.Cell style={styles.cellName}>
+        {data.delivery_address}
+      </DataTable.Cell>
+      <DataTable.Cell style={styles.cellName}>
+        {data.cooler_size} {data.ice_type.toLowerCase()}
+      </DataTable.Cell>
+    </DataTable.Row>
   ));
 
   useEffect(() => {
@@ -31,7 +48,7 @@ function AllDeliveriesScreen(props) {
 
   return (
     <>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView showsVerticalScrollIndicator={false} horizontal>
         <ActivityIndicator visible={getDeliveriesApi.loading} />
         <View style={styles.body}>
           {getDeliveriesApi.error && (
@@ -41,16 +58,37 @@ function AllDeliveriesScreen(props) {
             </>
           )}
         </View>
-        {deliverieslist.length == 0 ? (
+        {deliveries.length == 0 ? (
           <Text style={styles.noEvents}>No deliveries</Text>
         ) : (
-          deliverieslist
+          <DataTable style={styles.container}>
+            <DataTable.Header style={styles.tableHeader}>
+              <DataTable.Title>Start Date</DataTable.Title>
+              <DataTable.Title>End Date</DataTable.Title>
+              <DataTable.Title>Name</DataTable.Title>
+              <DataTable.Title>Phone</DataTable.Title>
+              <DataTable.Title>Email</DataTable.Title>
+              <DataTable.Title>Address</DataTable.Title>
+              <DataTable.Title>Cooler</DataTable.Title>
+            </DataTable.Header>
+            {table}
+          </DataTable>
         )}
       </ScrollView>
     </>
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    padding: 15,
+  },
+  tableHeader: {
+    backgroundColor: "#DCDCDC",
+  },
+  cellName: {
+    width: 150,
+  },
+});
 
 export default AllDeliveriesScreen;

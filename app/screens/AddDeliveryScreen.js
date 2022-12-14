@@ -1,5 +1,10 @@
 import React, { useState } from "react";
-import { StyleSheet, KeyboardAvoidingView, ScrollView } from "react-native";
+import {
+  StyleSheet,
+  KeyboardAvoidingView,
+  ScrollView,
+  StatusBar,
+} from "react-native";
 
 import * as Yup from "yup";
 

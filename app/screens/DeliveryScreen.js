@@ -6,6 +6,7 @@ import {
   ScrollView,
   RefreshControl,
   Button,
+  StatusBar,
 } from "react-native";
 
 import ActivityIndicator from "../components/ActivityIndicator";
@@ -101,8 +102,6 @@ function DeliveryScreen(props) {
     />
   ));
 
-  console.log(deliverieslist.length);
-
   useEffect(() => {
     getDeliveriesApi.request();
   }, []);
@@ -115,6 +114,7 @@ function DeliveryScreen(props) {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       >
+        <StatusBar barStyle="dark-content" translucent={true} />
         <ActivityIndicator visible={getDeliveriesApi.loading} />
         <View style={styles.countContainer}>
           <View style={{ flexDirection: "row" }}>
@@ -145,16 +145,13 @@ function DeliveryScreen(props) {
             </>
           )}
         </View>
-        {
-          (deliverieslist.length = 0 ? (
-            <View style={styles.noDelivContainer}>
-              <Text style={styles.noDeliveries}>No deliveries</Text>
-            </View>
-          ) : (
-            // (console.log(deliverieslist[:deliverieslist.length()].props.neighborhood),
-            deliverieslist
-          ))
-        }
+        {deliverieslist.length == 0 ? (
+          <View style={styles.noDelivContainer}>
+            <Text style={styles.noDeliveries}>No deliveries</Text>
+          </View>
+        ) : (
+          deliverieslist
+        )}
       </ScrollView>
     </>
   );

@@ -89,7 +89,7 @@ function DeliveryCard({
   const { check, rightIcon, handleCheck } = useToggleCheck();
 
   const openMap = async () => {
-    const destination = encodeURIComponent(`${address}`);
+    const destination = encodeURIComponent(`${address} Corolla, NC 27927`);
     const provider = Platform.OS === "ios" ? "apple" : "google";
     const link = `http://maps.${provider}.com/?daddr=${destination}`;
 
@@ -142,10 +142,10 @@ function DeliveryCard({
           Linking.openURL(`tel:${phone}`);
         }}
       >
-        <Text style={styles.phoneText}>
-          <MaterialCommunityIcons name="phone" color={colors.black} size={15} />{" "}
-          {phone}
-        </Text>
+        <View style={styles.phoneContainer}>
+          <MaterialCommunityIcons name="phone" color={colors.black} size={15} />
+          <Text style={styles.phoneText}> {phone}</Text>
+        </View>
       </TouchableOpacity>
       <View style={styles.checkContainer}>
         <Text style={styles.mainText}>
@@ -207,15 +207,17 @@ const styles = StyleSheet.create({
     marginLeft: "auto",
   },
   addressText: {
-    // color: "blue",
     fontSize: 15,
     textDecorationLine: "underline",
     marginVertical: 2,
   },
   phoneText: {
-    color: "blue",
+    textDecorationLine: "underline",
     fontSize: 15,
     marginVertical: 2,
+  },
+  phoneContainer: {
+    flexDirection: "row",
   },
   importantText: {
     fontSize: 15,

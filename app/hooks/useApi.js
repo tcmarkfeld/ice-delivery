@@ -1,11 +1,13 @@
 import { useState } from "react";
 
-export default useApi = (apiFunc) => { //parameter is the function that you want called when request function is called
+export default useApi = (apiFunc) => {
+  //parameter is the function that you want called when request function is called
   const [data, setData] = useState([]);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const request = async (...args) => { //request function parameters are the arguments that you eventually want to pass to the function
+  const request = async (...args) => {
+    //request function parameters are the arguments that you eventually want to pass to the function
     setLoading(true);
     const response = await apiFunc(...args); //here is where parameters pass to the function
     setLoading(false);

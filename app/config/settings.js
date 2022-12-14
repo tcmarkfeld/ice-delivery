@@ -2,13 +2,13 @@ import Constants from "expo-constants";
 
 const settings = {
   dev: {
-    apiUrl: "https://corolla-ice-delivery.herokuapp.com",
+    apiUrl: "https://ice-delivery.fly.dev",
   },
   staging: {
-    apiUrl: "https://corolla-ice-delivery.herokuapp.com",
+    apiUrl: "https://ice-delivery.fly.dev",
   },
   prod: {
-    apiUrl: "https://corolla-ice-delivery.herokuapp.com",
+    apiUrl: "https://ice-delivery.fly.dev",
   },
 };
 
