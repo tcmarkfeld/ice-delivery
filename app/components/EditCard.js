@@ -12,7 +12,7 @@ import { useToggleCheck } from "../hooks/handleCheck";
 
 import colors from "../config/colors";
 
-function DeliveryCard({
+function EditCard({
   cooler,
   ice,
   address,
@@ -23,7 +23,9 @@ function DeliveryCard({
   email,
   ending,
   special,
+  id,
 }) {
+  console.log("here");
   const startDate = start.split("-");
   var startYear = startDate[0];
   var startMonth = startDate[1];
@@ -101,18 +103,6 @@ function DeliveryCard({
       console.log(error);
     }
   };
-
-  var textName = name.split(" ");
-  const body = `Hey ${textName[0]}, this is Tim with Corolla Ice Delivery. Just wanted to thank you for your business this past week and hope you enjoyed! If you would be willing to leave us a Google review we would really appreciate it! 
-  https://g.page/r/CUBe_7herDpHEAE/review`;
-
-  const sendText = () => {
-    Linking.openURL(`sms:${phone}${getSMSDivider()}body=${body}`);
-  };
-  function getSMSDivider() {
-    return Platform.OS === "ios" ? "&" : "?";
-  }
-
   return (
     <View
       style={
@@ -125,11 +115,9 @@ function DeliveryCard({
     >
       <View style={styles.addressDateContainer}>
         <View>
-          <Text style={styles.importantText}>
-            {cooler} {ice.toLowerCase()}
-          </Text>
+          <Text style={styles.importantText}>{"tedt"}</Text>
           <TouchableOpacity onPress={openMap}>
-            <Text style={styles.addressText}>{address}</Text>
+            <Text style={styles.addressText}>{"WOOOOOO"}</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.dateContainer}>
@@ -153,7 +141,6 @@ function DeliveryCard({
         onPress={() => {
           Linking.openURL(`tel:${phone}`);
         }}
-        style={styles.touchableContainer}
       >
         <View style={styles.phoneContainer}>
           <MaterialCommunityIcons name="phone" color={colors.black} size={15} />
@@ -175,18 +162,6 @@ function DeliveryCard({
           </TouchableOpacity>
         </View>
       </View>
-      {ending == true ? (
-        <TouchableOpacity onPress={sendText} style={styles.touchableContainer}>
-          <View style={styles.phoneContainer}>
-            <MaterialCommunityIcons
-              name="message-text-outline"
-              color={colors.black}
-              size={15}
-            />
-            <Text style={styles.phoneText}> Send review text</Text>
-          </View>
-        </TouchableOpacity>
-      ) : null}
       {special.length == 0
         ? null
         : (special = "none" ? null : (
@@ -264,9 +239,6 @@ const styles = StyleSheet.create({
     fontSize: 15,
     marginVertical: 2,
   },
-  touchableContainer: {
-    width: 200,
-  },
 });
 
-export default DeliveryCard;
+export default EditCard;

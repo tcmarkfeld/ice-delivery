@@ -12,6 +12,7 @@ import {
 import ActivityIndicator from "../components/ActivityIndicator";
 import DeliveryCard from "../components/DeliveryCard";
 import deliveryApi from "../api/delivery";
+import EditCard from "../components/EditCard";
 import useApi from "../hooks/useApi";
 import colors from "../config/colors";
 
@@ -34,6 +35,7 @@ function DeliveryScreen(props) {
     });
   }, []);
 
+  var today = new Date().toISOString().slice(0, 10);
   var count40 = 0;
   var count62 = 0;
   var count40Bagged = 0;
@@ -42,24 +44,28 @@ function DeliveryScreen(props) {
   for (let i = 0; i < deliveries.length; i++) {
     if (
       deliveries[i].cooler_size == "40 Quart" &&
-      deliveries[i].ice_type == "Loose ice"
+      deliveries[i].ice_type == "Loose ice" &&
+      today != deliveries[i].end_date.slice(0, 10)
     ) {
       count40 += 1;
     } else if (
       deliveries[i].cooler_size == "62 Quart" &&
-      deliveries[i].ice_type == "Loose ice"
+      deliveries[i].ice_type == "Loose ice" &&
+      today != deliveries[i].end_date.slice(0, 10)
     ) {
       count62 += 1;
     }
     if (
       deliveries[i].ice_type == "Bagged ice" &&
-      deliveries[i].cooler_size == "62 Quart"
+      deliveries[i].cooler_size == "62 Quart" &&
+      today != deliveries[i].end_date.slice(0, 10)
     ) {
       count62Bagged += 1;
       countBags += 2;
     } else if (
       deliveries[i].ice_type == "Bagged ice" &&
-      deliveries[i].cooler_size == "40 Quart"
+      deliveries[i].cooler_size == "40 Quart" &&
+      today != deliveries[i].end_date.slice(0, 10)
     ) {
       count40Bagged += 1;
       countBags += 1;
@@ -81,7 +87,7 @@ function DeliveryScreen(props) {
     console.log("no deliveries");
   }
 
-  const deliverieslist = ordered_array.map((data) => (
+  var deliverieslist = ordered_array.map((data) => (
     <DeliveryCard
       key={data.id}
       cooler={data.cooler_size}
@@ -101,6 +107,30 @@ function DeliveryScreen(props) {
       special={data.special_instructions}
     />
   ));
+
+  function showEditCards() {
+    deliverieslist = ordered_array.map((data) => (
+      <EditCard
+        key={data.id}
+        cooler={data.cooler_size}
+        ice={data.ice_type}
+        address={data.delivery_address}
+        name={data.customer_name}
+        phone={data.customer_phone}
+        email={data.customer_email}
+        neighborhood={data.neighborhood}
+        start={data.start_date.slice(0, 10)}
+        end={data.end_date.slice(0, 10)}
+        ending={
+          data.end_date.slice(0, 10) == new Date().toISOString().slice(0, 10)
+            ? true
+            : false
+        }
+        special={data.special_instructions}
+        id={data.id}
+      />
+    ));
+  }
 
   useEffect(() => {
     getDeliveriesApi.request();
@@ -134,6 +164,11 @@ function DeliveryScreen(props) {
           </View>
         </View>
         <View style={styles.body}>
+          <Button
+            title="Edit"
+            style={styles.editButton}
+            onPress={showEditCards}
+          />
           {getDeliveriesApi.error && (
             <>
               <View style={styles.noDelivContainer}>

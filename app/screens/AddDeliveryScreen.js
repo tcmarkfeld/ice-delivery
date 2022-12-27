@@ -130,10 +130,6 @@ function AddDeliveryScreen(props) {
             onSubmit={handleSubmit}
             validationSchema={validationSchema}
           >
-            <ErrorMessage
-              error="Invalid email and/or password."
-              // visible={loginFailed}
-            />
             <Dropdown
               data={data1}
               placeholder={"Select cooler size..."}
