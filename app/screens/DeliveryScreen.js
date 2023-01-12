@@ -43,28 +43,28 @@ function DeliveryScreen(props) {
   var countBags = 0;
   for (let i = 0; i < deliveries.length; i++) {
     if (
-      deliveries[i].cooler_size == "40 Quart" &&
-      deliveries[i].ice_type == "Loose ice" &&
+      deliveries[i].cooler_size.toLowerCase() == "40 quart" &&
+      deliveries[i].ice_type.toLowerCase() == "loose ice" &&
       today != deliveries[i].end_date.slice(0, 10)
     ) {
       count40 += 1;
     } else if (
-      deliveries[i].cooler_size == "62 Quart" &&
-      deliveries[i].ice_type == "Loose ice" &&
+      deliveries[i].cooler_size.toLowerCase() == "62 quart" &&
+      deliveries[i].ice_type.toLowerCase() == "loose ice" &&
       today != deliveries[i].end_date.slice(0, 10)
     ) {
       count62 += 1;
     }
     if (
-      deliveries[i].ice_type == "Bagged ice" &&
-      deliveries[i].cooler_size == "62 Quart" &&
+      deliveries[i].ice_type.toLowerCase() == "bagged ice" &&
+      deliveries[i].cooler_size.toLowerCase() == "62 quart" &&
       today != deliveries[i].end_date.slice(0, 10)
     ) {
       count62Bagged += 1;
       countBags += 2;
     } else if (
-      deliveries[i].ice_type == "Bagged ice" &&
-      deliveries[i].cooler_size == "40 Quart" &&
+      deliveries[i].ice_type.toLowerCase() == "bagged ice" &&
+      deliveries[i].cooler_size.toLowerCase() == "40 quart" &&
       today != deliveries[i].end_date.slice(0, 10)
     ) {
       count40Bagged += 1;

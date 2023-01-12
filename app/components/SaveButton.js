@@ -3,7 +3,7 @@ import { StyleSheet, Text, TouchableOpacity } from "react-native";
 
 import colors from "../config/colors";
 
-function AppButton({
+function SaveButton({
   title,
   onPress,
   color = "primary",
@@ -13,7 +13,7 @@ function AppButton({
   //used on LoginScreen and RegisterScreen and HomeScreen(additional edi on screen)
   return (
     <TouchableOpacity
-      style={[styles.button, buttonStyle, { backgroundColor: colors[color] }]}
+      style={[styles.button, { backgroundColor: colors[color] }]}
       onPress={onPress}
     >
       <Text style={[styles.text, textStyle]}>{title}</Text>
@@ -23,12 +23,13 @@ function AppButton({
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: colors.primary,
+    backgroundColor: colors.grey,
     borderRadius: 25,
     justifyContent: "center",
     alignItems: "center",
     padding: 15,
-    width: "100%",
+    height: 25,
+    // width: "100%",
     marginVertical: 10,
   },
   text: {
@@ -39,4 +40,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AppButton;
+export default SaveButton;

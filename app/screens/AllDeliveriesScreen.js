@@ -3,12 +3,14 @@ import { StyleSheet, Text, View, ScrollView, Button } from "react-native";
 import { DataTable } from "react-native-paper";
 
 import ActivityIndicator from "../components/ActivityIndicator";
-import FormField from "../components/forms/FormField";
+import FormField from "../components/forms/ClearFormField";
 import deliveryApi from "../api/delivery";
 import useApi from "../hooks/useApi";
 import Form from "../components/forms/Form";
+import SubmitButton from "../components/forms/SaveButton";
 
 import * as Yup from "yup";
+import colors from "../config/colors";
 
 function AllDeliveriesScreen(props) {
   const getDeliveriesApi = useApi(deliveryApi.getAll);
@@ -49,14 +51,10 @@ function AllDeliveriesScreen(props) {
   }
 
   const validationSchema = Yup.object().shape({
+    id: Yup.string().required().label("ID"),
     delivery_address: Yup.string().required().label("Delivery Address"),
     name: Yup.string().required().label("Customer Name"),
-    phone_number: Yup.string()
-      // .min(10, "Phone number must be 10 digits")
-      // .max(10, "Phone number must be 10 digits")
-      // .matches(phoneRegExp, "Phone number is not valid")
-      .required()
-      .label("Phone Number"),
+    phone_number: Yup.string().required().label("Phone Number"),
     email: Yup.string().required().email().label("Email"),
     start_date: Yup.string()
       // .matches(dateRegExp, "Must be in MM.DD.YYYY format (no spaces)")
@@ -69,27 +67,29 @@ function AllDeliveriesScreen(props) {
     special_instructions: Yup.string().label("Special Instructions"),
   });
 
-  const handleSubmit = (userInfo) => {
-    console.log("here");
+  const handleSubmit = async (userInfo) => {
+    console.log("tere");
+    console.log(userInfo);
   };
 
   const table = ordered_array.map((data) => (
-    <Form
-      initialValues={{
-        delivery_address: `${data.delivery_address}`,
-        name: `${data.customer_name}`,
-        phone_number: `${data.customer_phone}`,
-        email: `${data.customer_email}`,
-        start_date: `${data.start_date.slice(0, 10)}`,
-        end_date: `${data.end_date.slice(0, 10)}`,
-        special_instructions: `${data.special_instructions}`,
-        cooler: `${data.cooler_size} ${data.ice_type.toLowerCase()}`,
-      }}
-      onSubmit={handleSubmit}
-      validationSchema={validationSchema}
-    >
+    <>
       <DataTable.Row>
-        <DataTable.Cell style={styles.cellReg}>
+        <Form
+          initialValues={{
+            delivery_address: `${data.delivery_address}`,
+            name: `${data.customer_name}`,
+            phone_number: `${data.customer_phone}`,
+            email: `${data.customer_email}`,
+            start_date: `${data.start_date.slice(0, 10)}`,
+            end_date: `${data.end_date.slice(0, 10)}`,
+            special_instructions: `${data.special_instructions}`,
+            cooler: `${data.cooler_size} ${data.ice_type.toLowerCase()}`,
+          }}
+          onSubmit={handleSubmit}
+          validationSchema={validationSchema}
+        >
+          {/* <DataTable.Cell style={styles.cellReg}> */}
           <FormField
             autoCapitalize="none"
             autoCorrect={false}
@@ -97,8 +97,8 @@ function AllDeliveriesScreen(props) {
             placeholder="Start Date (MM-DD-YYYY)"
             returnKeyType="done"
           />
-        </DataTable.Cell>
-        <DataTable.Cell style={styles.cellReg}>
+          {/* </DataTable.Cell> */}
+          {/* <DataTable.Cell style={styles.cellReg}> */}
           <FormField
             autoCapitalize="none"
             autoCorrect={false}
@@ -106,16 +106,16 @@ function AllDeliveriesScreen(props) {
             placeholder="End Date (MM-DD-YYYY)"
             returnKeyType="done"
           />
-        </DataTable.Cell>
-        <DataTable.Cell style={styles.cellReg}>
+          {/* </DataTable.Cell> */}
+          {/* <DataTable.Cell style={styles.cellReg}> */}
           <FormField
             autoCapitalize="none"
             autoCorrect={false}
             name="name"
             placeholder="Customer Name"
           />
-        </DataTable.Cell>
-        <DataTable.Cell style={styles.cellReg}>
+          {/* </DataTable.Cell> */}
+          {/* <DataTable.Cell style={styles.cellReg}> */}
           <FormField
             autoCorrect={false}
             name="phone_number"
@@ -123,8 +123,8 @@ function AllDeliveriesScreen(props) {
             keyboardType="numbers-and-punctuation"
             returnKeyType="done"
           />
-        </DataTable.Cell>
-        <DataTable.Cell style={styles.cellBig}>
+          {/* </DataTable.Cell> */}
+          {/* <DataTable.Cell style={styles.cellBig}> */}
           <FormField
             autoCapitalize="none"
             autoCorrect={false}
@@ -133,25 +133,29 @@ function AllDeliveriesScreen(props) {
             placeholder="Customer Email"
             textContentType="emailAddress"
           />
-        </DataTable.Cell>
-        <DataTable.Cell style={styles.cellBig}>
+          {/* </DataTable.Cell> */}
+          {/* <DataTable.Cell style={styles.cellBig}> */}
           <FormField
             autoCapitalize="none"
             autoCorrect={false}
             name="delivery_address"
             placeholder="Delivery Address"
           />
-        </DataTable.Cell>
-        <DataTable.Cell style={styles.cellReg}>
+          {/* </DataTable.Cell> */}
+          {/* <DataTable.Cell style={styles.cellReg}> */}
           <FormField
             autoCapitalize="none"
             autoCorrect={false}
             name="cooler"
             placeholder="Cooler"
           />
-        </DataTable.Cell>
+          {/* </DataTable.Cell> */}
+          {/* <DataTable.Cell style={styles.cellReg}> */}
+          <SubmitButton title="SAVE" />
+          {/* </DataTable.Cell> */}
+        </Form>
       </DataTable.Row>
-    </Form>
+    </>
   ));
 
   useEffect(() => {
@@ -210,6 +214,9 @@ const styles = StyleSheet.create({
   },
   cellReg: {
     width: 150,
+    // marginVertical: 2,
+    // justifyContent: "center",
+    // alignContent: "center",
   },
 });
 
