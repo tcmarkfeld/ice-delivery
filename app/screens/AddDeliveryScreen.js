@@ -4,6 +4,7 @@ import {
   KeyboardAvoidingView,
   ScrollView,
   StatusBar,
+  RefreshControl,
 } from "react-native";
 
 import * as Yup from "yup";
@@ -15,6 +16,7 @@ import FormField from "../components/forms/FormField";
 import SubmitButton from "../components/forms/SubmitButton";
 import delivery from "../api/delivery";
 import NeighborhoodDropdown from "../components/NeighborhoodDropdown";
+import AppButton from "../components/Button";
 
 // These are regex expressions for form validation
 const phoneRegExp =
@@ -49,7 +51,12 @@ const validationSchema = Yup.object().shape({
   special_instructions: Yup.string().label("Special Instructions"),
 });
 
+const wait = (timeout) => {
+  return new Promise((resolve) => setTimeout(resolve, timeout));
+};
+
 function AddDeliveryScreen(props) {
+  const [refreshing, setRefreshing] = useState(false);
   const [neighborhood, setNeighborhood] = useState("");
   const [ice, setIce] = useState("");
   const [cooler, setCooler] = useState("");
@@ -67,6 +74,21 @@ function AddDeliveryScreen(props) {
       neighborhood,
       userInfo.special_instructions
     );
+    setCooler("");
+    setIce("");
+    setNeighborhood("");
+    (userInfo.delivery_address = ""),
+      (userInfo.name = ""),
+      (userInfo.phone_number = ""),
+      (userInfo.email = ""),
+      (userInfo.start_date = ""),
+      (userInfo.end_date = ""),
+      (userInfo.special_instructions = "");
+    // setRefreshing(true);
+    // wait(500).then(async () => {
+    //   // setPastAppts(pastApptsList.data);
+    //   setRefreshing(false);
+    // });
   };
 
   const data1 = [
@@ -109,6 +131,10 @@ function AddDeliveryScreen(props) {
     setNeighborhood(childData);
   };
 
+  const clearFields = () => {
+    console.log("test");
+  };
+
   return (
     <>
       {/* <Screen style={styles.container}> */}
@@ -116,7 +142,11 @@ function AddDeliveryScreen(props) {
         <ScrollView
           showsVerticalScrollIndicator={false}
           style={styles.container}
+          // refreshControl={
+          //   <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          // }
         >
+          <AppButton onPress={clearFields} title={"Clear Fields"}></AppButton>
           <Form
             initialValues={{
               delivery_address: "",
@@ -181,7 +211,7 @@ function AddDeliveryScreen(props) {
               autoCorrect={false}
               icon="calendar"
               name="start_date"
-              placeholder="Start Date (MM-DD-YYYY)"
+              placeholder="Start Date (YYYY-MM-DD)"
               // keyboardType="numeric"
               returnKeyType="done"
             />
@@ -190,7 +220,7 @@ function AddDeliveryScreen(props) {
               autoCorrect={false}
               icon="calendar"
               name="end_date"
-              placeholder="End Date (MM-DD-YYYY)"
+              placeholder="End Date (YYYY--MM-DD)"
               // keyboardType="numeric"
               returnKeyType="done"
             />

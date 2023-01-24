@@ -12,6 +12,23 @@ import SubmitButton from "../components/forms/SaveButton";
 import * as Yup from "yup";
 import colors from "../config/colors";
 
+const validationSchema = Yup.object().shape({
+  id: Yup.string().required().label("ID"),
+  delivery_address: Yup.string().required().label("Delivery Address"),
+  name: Yup.string().required().label("Customer Name"),
+  phone_number: Yup.string().required().label("Phone Number"),
+  email: Yup.string().required().email().label("Email"),
+  start_date: Yup.string()
+    // .matches(dateRegExp, "Must be in MM.DD.YYYY format (no spaces)")
+    .required()
+    .label("Start Date"),
+  end_date: Yup.string()
+    // .matches(dateRegExp, "Must be in MM.DD.YYYY format (no spaces)")
+    .required()
+    .label("End Date"),
+  special_instructions: Yup.string().label("Special Instructions"),
+});
+
 function AllDeliveriesScreen(props) {
   const getDeliveriesApi = useApi(deliveryApi.getAll);
   const deliveries = getDeliveriesApi.data;
@@ -50,112 +67,93 @@ function AllDeliveriesScreen(props) {
     // Not really accurate (look at last date)
   }
 
-  const validationSchema = Yup.object().shape({
-    id: Yup.string().required().label("ID"),
-    delivery_address: Yup.string().required().label("Delivery Address"),
-    name: Yup.string().required().label("Customer Name"),
-    phone_number: Yup.string().required().label("Phone Number"),
-    email: Yup.string().required().email().label("Email"),
-    start_date: Yup.string()
-      // .matches(dateRegExp, "Must be in MM.DD.YYYY format (no spaces)")
-      .required()
-      .label("Start Date"),
-    end_date: Yup.string()
-      // .matches(dateRegExp, "Must be in MM.DD.YYYY format (no spaces)")
-      .required()
-      .label("End Date"),
-    special_instructions: Yup.string().label("Special Instructions"),
-  });
-
   const handleSubmit = async (userInfo) => {
-    console.log("tere");
+    console.log("here");
     console.log(userInfo);
   };
 
   const table = ordered_array.map((data) => (
-    <>
-      <DataTable.Row>
-        <Form
-          initialValues={{
-            delivery_address: `${data.delivery_address}`,
-            name: `${data.customer_name}`,
-            phone_number: `${data.customer_phone}`,
-            email: `${data.customer_email}`,
-            start_date: `${data.start_date.slice(0, 10)}`,
-            end_date: `${data.end_date.slice(0, 10)}`,
-            special_instructions: `${data.special_instructions}`,
-            cooler: `${data.cooler_size} ${data.ice_type.toLowerCase()}`,
-          }}
-          onSubmit={handleSubmit}
-          validationSchema={validationSchema}
-        >
-          {/* <DataTable.Cell style={styles.cellReg}> */}
-          <FormField
-            autoCapitalize="none"
-            autoCorrect={false}
-            name="start_date"
-            placeholder="Start Date (MM-DD-YYYY)"
-            returnKeyType="done"
-          />
-          {/* </DataTable.Cell> */}
-          {/* <DataTable.Cell style={styles.cellReg}> */}
-          <FormField
-            autoCapitalize="none"
-            autoCorrect={false}
-            name="end_date"
-            placeholder="End Date (MM-DD-YYYY)"
-            returnKeyType="done"
-          />
-          {/* </DataTable.Cell> */}
-          {/* <DataTable.Cell style={styles.cellReg}> */}
-          <FormField
-            autoCapitalize="none"
-            autoCorrect={false}
-            name="name"
-            placeholder="Customer Name"
-          />
-          {/* </DataTable.Cell> */}
-          {/* <DataTable.Cell style={styles.cellReg}> */}
-          <FormField
-            autoCorrect={false}
-            name="phone_number"
-            placeholder="Phone Number"
-            keyboardType="numbers-and-punctuation"
-            returnKeyType="done"
-          />
-          {/* </DataTable.Cell> */}
-          {/* <DataTable.Cell style={styles.cellBig}> */}
-          <FormField
-            autoCapitalize="none"
-            autoCorrect={false}
-            keyboardType="email-address"
-            name="email"
-            placeholder="Customer Email"
-            textContentType="emailAddress"
-          />
-          {/* </DataTable.Cell> */}
-          {/* <DataTable.Cell style={styles.cellBig}> */}
-          <FormField
-            autoCapitalize="none"
-            autoCorrect={false}
-            name="delivery_address"
-            placeholder="Delivery Address"
-          />
-          {/* </DataTable.Cell> */}
-          {/* <DataTable.Cell style={styles.cellReg}> */}
-          <FormField
-            autoCapitalize="none"
-            autoCorrect={false}
-            name="cooler"
-            placeholder="Cooler"
-          />
-          {/* </DataTable.Cell> */}
-          {/* <DataTable.Cell style={styles.cellReg}> */}
-          <SubmitButton title="SAVE" />
-          {/* </DataTable.Cell> */}
-        </Form>
-      </DataTable.Row>
-    </>
+    <DataTable.Row>
+      <Form
+        initialValues={{
+          delivery_address: `${data.delivery_address}`,
+          name: `${data.customer_name}`,
+          phone_number: `${data.customer_phone}`,
+          email: `${data.customer_email}`,
+          start_date: `${data.start_date.slice(0, 10)}`,
+          end_date: `${data.end_date.slice(0, 10)}`,
+          special_instructions: `${data.special_instructions}`,
+          cooler: `${data.cooler_size} ${data.ice_type.toLowerCase()}`,
+        }}
+        onSubmit={handleSubmit}
+        validationSchema={validationSchema}
+      >
+        {/* <DataTable.Cell style={styles.cellReg}> */}
+        <FormField
+          autoCapitalize="none"
+          autoCorrect={false}
+          name="start_date"
+          placeholder="Start Date (MM-DD-YYYY)"
+          returnKeyType="done"
+        />
+        {/* </DataTable.Cell> */}
+        {/* <DataTable.Cell style={styles.cellReg}> */}
+        <FormField
+          autoCapitalize="none"
+          autoCorrect={false}
+          name="end_date"
+          placeholder="End Date (MM-DD-YYYY)"
+          returnKeyType="done"
+        />
+        {/* </DataTable.Cell> */}
+        {/* <DataTable.Cell style={styles.cellReg}> */}
+        <FormField
+          autoCapitalize="none"
+          autoCorrect={false}
+          name="name"
+          placeholder="Customer Name"
+        />
+        {/* </DataTable.Cell> */}
+        {/* <DataTable.Cell style={styles.cellReg}> */}
+        <FormField
+          autoCorrect={false}
+          name="phone_number"
+          placeholder="Phone Number"
+          keyboardType="numbers-and-punctuation"
+          returnKeyType="done"
+        />
+        {/* </DataTable.Cell> */}
+        {/* <DataTable.Cell style={styles.cellBig}> */}
+        <FormField
+          autoCapitalize="none"
+          autoCorrect={false}
+          keyboardType="email-address"
+          name="email"
+          placeholder="Customer Email"
+          textContentType="emailAddress"
+        />
+        {/* </DataTable.Cell> */}
+        {/* <DataTable.Cell style={styles.cellBig}> */}
+        <FormField
+          autoCapitalize="none"
+          autoCorrect={false}
+          name="delivery_address"
+          placeholder="Delivery Address"
+        />
+        {/* </DataTable.Cell> */}
+        {/* <DataTable.Cell style={styles.cellReg}> */}
+        <FormField
+          autoCapitalize="none"
+          autoCorrect={false}
+          name="cooler"
+          placeholder="Cooler"
+        />
+        {/* </DataTable.Cell> */}
+        {/* <DataTable.Cell style={styles.cellReg}> */}
+        <SubmitButton title="SAVE" />
+        {/* </DataTable.Cell> */}
+      </Form>
+    </DataTable.Row>
   ));
 
   useEffect(() => {

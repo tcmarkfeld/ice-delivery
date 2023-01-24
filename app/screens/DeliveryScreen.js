@@ -108,30 +108,6 @@ function DeliveryScreen(props) {
     />
   ));
 
-  function showEditCards() {
-    deliverieslist = ordered_array.map((data) => (
-      <EditCard
-        key={data.id}
-        cooler={data.cooler_size}
-        ice={data.ice_type}
-        address={data.delivery_address}
-        name={data.customer_name}
-        phone={data.customer_phone}
-        email={data.customer_email}
-        neighborhood={data.neighborhood}
-        start={data.start_date.slice(0, 10)}
-        end={data.end_date.slice(0, 10)}
-        ending={
-          data.end_date.slice(0, 10) == new Date().toISOString().slice(0, 10)
-            ? true
-            : false
-        }
-        special={data.special_instructions}
-        id={data.id}
-      />
-    ));
-  }
-
   useEffect(() => {
     getDeliveriesApi.request();
   }, []);
@@ -164,11 +140,6 @@ function DeliveryScreen(props) {
           </View>
         </View>
         <View style={styles.body}>
-          <Button
-            title="Edit"
-            style={styles.editButton}
-            onPress={showEditCards}
-          />
           {getDeliveriesApi.error && (
             <>
               <View style={styles.noDelivContainer}>
