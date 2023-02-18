@@ -12,7 +12,6 @@ import {
 import ActivityIndicator from "../components/ActivityIndicator";
 import DeliveryCard from "../components/DeliveryCard";
 import deliveryApi from "../api/delivery";
-import EditCard from "../components/EditCard";
 import useApi from "../hooks/useApi";
 import colors from "../config/colors";
 
@@ -30,7 +29,6 @@ function DeliveryScreen(props) {
     setRefreshing(true);
     wait(500).then(async () => {
       let deliveries = await getDeliveriesApi.request();
-      // setPastAppts(pastApptsList.data);
       setRefreshing(false);
     });
   }, []);
@@ -91,7 +89,7 @@ function DeliveryScreen(props) {
     <DeliveryCard
       key={data.id}
       cooler={data.cooler_size}
-      ice={data.ice_type}
+      ice={data.ice_type.toLowerCase()}
       address={data.delivery_address}
       name={data.customer_name}
       phone={data.customer_phone}
@@ -100,7 +98,8 @@ function DeliveryScreen(props) {
       start={data.start_date.slice(0, 10)}
       end={data.end_date.slice(0, 10)}
       ending={
-        data.end_date.slice(0, 10) == new Date().toISOString().slice(0, 10)
+        data.end_date.slice(0, 10) ==
+        new Date().toLocaleString("en-US", { timeZone: "America/New_York" })
           ? true
           : false
       }

@@ -126,7 +126,7 @@ function DeliveryCard({
       <View style={styles.addressDateContainer}>
         <View>
           <Text style={styles.importantText}>
-            {cooler} {ice.toLowerCase()}
+            {cooler} {ice}
           </Text>
           <TouchableOpacity onPress={openMap}>
             <Text style={styles.addressText}>{address}</Text>
@@ -157,7 +157,7 @@ function DeliveryCard({
       >
         <View style={styles.phoneContainer}>
           <MaterialCommunityIcons name="phone" color={colors.black} size={15} />
-          <Text style={styles.phoneText}> {phone}</Text>
+          <Text style={styles.phoneText}>{phone}</Text>
         </View>
       </TouchableOpacity>
       <View style={styles.checkContainer}>
@@ -240,6 +240,7 @@ const styles = StyleSheet.create({
     textDecorationLine: "underline",
     fontSize: 15,
     marginVertical: 2,
+    paddingLeft: 2.5,
   },
   phoneContainer: {
     flexDirection: "row",

@@ -1,5 +1,12 @@
-import React, { useEffect } from "react";
-import { StyleSheet, Text, View, ScrollView, Button } from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  Button,
+  RefreshControl,
+} from "react-native";
 import { DataTable } from "react-native-paper";
 
 import ActivityIndicator from "../components/ActivityIndicator";
@@ -7,13 +14,11 @@ import FormField from "../components/forms/ClearFormField";
 import deliveryApi from "../api/delivery";
 import useApi from "../hooks/useApi";
 import Form from "../components/forms/Form";
-import SubmitButton from "../components/forms/SaveButton";
+import SubmitButton from "../components/forms/SubmitButton";
 
 import * as Yup from "yup";
-import colors from "../config/colors";
 
 const validationSchema = Yup.object().shape({
-  id: Yup.string().required().label("ID"),
   delivery_address: Yup.string().required().label("Delivery Address"),
   name: Yup.string().required().label("Customer Name"),
   phone_number: Yup.string().required().label("Phone Number"),
@@ -29,13 +34,27 @@ const validationSchema = Yup.object().shape({
   special_instructions: Yup.string().label("Special Instructions"),
 });
 
+const wait = (timeout) => {
+  return new Promise((resolve) => setTimeout(resolve, timeout));
+};
+
 function AllDeliveriesScreen(props) {
+  const [refreshing, setRefreshing] = useState(false);
+
   const getDeliveriesApi = useApi(deliveryApi.getAll);
   const deliveries = getDeliveriesApi.data;
 
   var ordered_array = deliveries.sort(function (a, b) {
     return new Date(a.start_date) - new Date(b.start_date);
   });
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    wait(500).then(async () => {
+      let deliveries = await getDeliveriesApi.request();
+      setRefreshing(false);
+    });
+  }, []);
 
   const monthNames = [
     "January",
@@ -68,14 +87,27 @@ function AllDeliveriesScreen(props) {
   }
 
   const handleSubmit = async (userInfo) => {
-    console.log("here");
-    console.log(userInfo);
+    const result = deliveryApi.put(
+      userInfo.id,
+      userInfo.delivery_address,
+      userInfo.name,
+      userInfo.phone_number,
+      userInfo.email,
+      userInfo.start_date,
+      userInfo.end_date,
+      userInfo.special_instructions,
+      userInfo.cooler,
+      userInfo.ice_type,
+      userInfo.neighborhood
+    );
   };
 
   const table = ordered_array.map((data) => (
     <DataTable.Row>
       <Form
+        key={data.id}
         initialValues={{
+          id: `${data.id}`,
           delivery_address: `${data.delivery_address}`,
           name: `${data.customer_name}`,
           phone_number: `${data.customer_phone}`,
@@ -83,7 +115,9 @@ function AllDeliveriesScreen(props) {
           start_date: `${data.start_date.slice(0, 10)}`,
           end_date: `${data.end_date.slice(0, 10)}`,
           special_instructions: `${data.special_instructions}`,
-          cooler: `${data.cooler_size} ${data.ice_type.toLowerCase()}`,
+          cooler: `${data.cooler_size}`,
+          ice_type: `${data.ice_type}`,
+          neighborhood: `${data.neighborhood}`,
         }}
         onSubmit={handleSubmit}
         validationSchema={validationSchema}
@@ -148,10 +182,16 @@ function AllDeliveriesScreen(props) {
           name="cooler"
           placeholder="Cooler"
         />
+        <FormField
+          autoCapitalize="none"
+          autoCorrect={false}
+          name="ice_type"
+          placeholder="Ice type"
+        />
         {/* </DataTable.Cell> */}
-        {/* <DataTable.Cell style={styles.cellReg}> */}
-        <SubmitButton title="SAVE" />
-        {/* </DataTable.Cell> */}
+        <DataTable.Cell style={styles.cellReg}>
+          <SubmitButton style={styles.button} title="SAVE" />
+        </DataTable.Cell>
       </Form>
     </DataTable.Row>
   ));
@@ -163,21 +203,26 @@ function AllDeliveriesScreen(props) {
   return (
     <>
       <ActivityIndicator visible={getDeliveriesApi.loading} />
-      <View style={styles.body}>
-        {getDeliveriesApi.error && (
-          <>
-            <Text>Couldn't retrieve the deliveries.</Text>
-            <Button title="Retry" onPress={getDeliveriesApi.request} />
-          </>
-        )}
-      </View>
-      {deliveries.length == 0 ? (
-        <Text style={styles.noEvents}>No deliveries</Text>
-      ) : (
-        <ScrollView showsVerticalScrollIndicator={false} horizontal>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+        horizontal
+      >
+        <View style={styles.body}>
+          {getDeliveriesApi.error && (
+            <>
+              <Text>Couldn't retrieve the deliveries.</Text>
+              <Button title="Retry" onPress={getDeliveriesApi.request} />
+            </>
+          )}
+        </View>
+        {deliveries.length == 0 ? (
+          <Text style={styles.noEvents}>No deliveries</Text>
+        ) : (
           <DataTable style={styles.container}>
             <DataTable.Header style={styles.tableHeader}>
-              {/* <DataTable.Title>Week</DataTable.Title> */}
               <DataTable.Title style={styles.startDateHeader}>
                 Start Date
               </DataTable.Title>
@@ -187,11 +232,13 @@ function AllDeliveriesScreen(props) {
               <DataTable.Title>Email</DataTable.Title>
               <DataTable.Title>Address</DataTable.Title>
               <DataTable.Title>Cooler</DataTable.Title>
+              <DataTable.Title>Ice type</DataTable.Title>
+              <DataTable.Title>Save</DataTable.Title>
             </DataTable.Header>
             {table}
           </DataTable>
-        </ScrollView>
-      )}
+        )}
+      </ScrollView>
     </>
   );
 }

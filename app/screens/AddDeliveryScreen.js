@@ -1,11 +1,5 @@
 import React, { useState } from "react";
-import {
-  StyleSheet,
-  KeyboardAvoidingView,
-  ScrollView,
-  StatusBar,
-  RefreshControl,
-} from "react-native";
+import { StyleSheet, KeyboardAvoidingView, ScrollView } from "react-native";
 
 import * as Yup from "yup";
 
@@ -51,12 +45,7 @@ const validationSchema = Yup.object().shape({
   special_instructions: Yup.string().label("Special Instructions"),
 });
 
-const wait = (timeout) => {
-  return new Promise((resolve) => setTimeout(resolve, timeout));
-};
-
 function AddDeliveryScreen(props) {
-  const [refreshing, setRefreshing] = useState(false);
   const [neighborhood, setNeighborhood] = useState("");
   const [ice, setIce] = useState("");
   const [cooler, setCooler] = useState("");
@@ -84,11 +73,6 @@ function AddDeliveryScreen(props) {
       (userInfo.start_date = ""),
       (userInfo.end_date = ""),
       (userInfo.special_instructions = "");
-    // setRefreshing(true);
-    // wait(500).then(async () => {
-    //   // setPastAppts(pastApptsList.data);
-    //   setRefreshing(false);
-    // });
   };
 
   const data1 = [
@@ -132,6 +116,9 @@ function AddDeliveryScreen(props) {
   };
 
   const clearFields = () => {
+    setCooler("refresh");
+    setIce("null");
+    setNeighborhood(undefined);
     console.log("test");
   };
 
@@ -142,11 +129,7 @@ function AddDeliveryScreen(props) {
         <ScrollView
           showsVerticalScrollIndicator={false}
           style={styles.container}
-          // refreshControl={
-          //   <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          // }
         >
-          <AppButton onPress={clearFields} title={"Clear Fields"}></AppButton>
           <Form
             initialValues={{
               delivery_address: "",
@@ -220,7 +203,7 @@ function AddDeliveryScreen(props) {
               autoCorrect={false}
               icon="calendar"
               name="end_date"
-              placeholder="End Date (YYYY--MM-DD)"
+              placeholder="End Date (YYYY-MM-DD)"
               // keyboardType="numeric"
               returnKeyType="done"
             />
@@ -229,7 +212,7 @@ function AddDeliveryScreen(props) {
               autoCorrect={false}
               icon="star"
               name="special_instructions"
-              placeholder="Special Instructions...(not required)"
+              placeholder="Special Instructions (optional)"
               returnKeyType="done"
             />
             <SubmitButton style={styles.button} title="ADD DELIVERY" />

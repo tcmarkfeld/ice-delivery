@@ -13,10 +13,6 @@ const DropdownComponent = (props) => {
       //shouldn't pass this condition check if no value is passed on props OR value has already been set once
       setValue(props.value);
     }
-    // else if (value != null && props.value == 'refresh') {
-    //   //console.log('test');
-    //   setValue(null);
-    // }
   };
 
   return (
@@ -29,12 +25,10 @@ const DropdownComponent = (props) => {
         //inputSearchStyle={styles.inputSearchStyle}
         iconStyle={styles.iconStyle}
         data={props.data}
-        //search
         maxHeight={300}
         labelField="label"
         valueField="value"
         placeholder={!isFocus ? props.placeholder : "..."}
-        //searchPlaceholder="Search..."
         value={value}
         onFocus={() => setIsFocus(true)}
         onBlur={() => setIsFocus(false)}
