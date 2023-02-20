@@ -33,40 +33,47 @@ function DeliveryScreen(props) {
     });
   }, []);
 
-  var today = new Date().toISOString().slice(0, 10);
+  var today = new Date().toLocaleString("en-US", {
+    timeZone: "America/New_York",
+  });
   var count40 = 0;
   var count62 = 0;
   var count40Bagged = 0;
   var count62Bagged = 0;
   var countBags = 0;
+
+  var yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+
   for (let i = 0; i < deliveries.length; i++) {
-    if (
-      deliveries[i].cooler_size.toLowerCase() == "40 quart" &&
-      deliveries[i].ice_type.toLowerCase() == "loose ice" &&
-      today != deliveries[i].end_date.slice(0, 10)
-    ) {
-      count40 += 1;
-    } else if (
-      deliveries[i].cooler_size.toLowerCase() == "62 quart" &&
-      deliveries[i].ice_type.toLowerCase() == "loose ice" &&
-      today != deliveries[i].end_date.slice(0, 10)
-    ) {
-      count62 += 1;
-    }
-    if (
-      deliveries[i].ice_type.toLowerCase() == "bagged ice" &&
-      deliveries[i].cooler_size.toLowerCase() == "62 quart" &&
-      today != deliveries[i].end_date.slice(0, 10)
-    ) {
-      count62Bagged += 1;
-      countBags += 2;
-    } else if (
-      deliveries[i].ice_type.toLowerCase() == "bagged ice" &&
-      deliveries[i].cooler_size.toLowerCase() == "40 quart" &&
-      today != deliveries[i].end_date.slice(0, 10)
-    ) {
-      count40Bagged += 1;
-      countBags += 1;
+    if (deliveries[i].end_date.slice(0, 10) != yesterday.slice(0, 10)) {
+      if (
+        deliveries[i].cooler_size.toLowerCase() == "40 quart" &&
+        deliveries[i].ice_type.toLowerCase() == "loose ice" &&
+        today != deliveries[i].end_date.slice(0, 10)
+      ) {
+        count40 += 1;
+      } else if (
+        deliveries[i].cooler_size.toLowerCase() == "62 quart" &&
+        deliveries[i].ice_type.toLowerCase() == "loose ice" &&
+        today != deliveries[i].end_date.slice(0, 10)
+      ) {
+        count62 += 1;
+      }
+      if (
+        deliveries[i].ice_type.toLowerCase() == "bagged ice" &&
+        deliveries[i].cooler_size.toLowerCase() == "62 quart" &&
+        today != deliveries[i].end_date.slice(0, 10)
+      ) {
+        count62Bagged += 1;
+        countBags += 2;
+      } else if (
+        deliveries[i].ice_type.toLowerCase() == "bagged ice" &&
+        deliveries[i].cooler_size.toLowerCase() == "40 quart" &&
+        today != deliveries[i].end_date.slice(0, 10)
+      ) {
+        count40Bagged += 1;
+        countBags += 1;
+      }
     }
   }
 
@@ -98,10 +105,7 @@ function DeliveryScreen(props) {
       start={data.start_date.slice(0, 10)}
       end={data.end_date.slice(0, 10)}
       ending={
-        data.end_date.slice(0, 10) ==
-        new Date().toLocaleString("en-US", { timeZone: "America/New_York" })
-          ? true
-          : false
+        data.end_date.slice(0, 10) == yesterday.slice(0, 10) ? true : false
       }
       special={data.special_instructions}
     />

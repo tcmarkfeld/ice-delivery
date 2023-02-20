@@ -205,9 +205,9 @@ function AllDeliveriesScreen(props) {
       <ActivityIndicator visible={getDeliveriesApi.loading} />
       <ScrollView
         showsVerticalScrollIndicator={false}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
+        // refreshControl={
+        //   <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        // }
         horizontal
       >
         <View style={styles.body}>
