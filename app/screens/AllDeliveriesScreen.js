@@ -1,5 +1,12 @@
 import React, { useEffect } from "react";
-import { StyleSheet, Text, View, ScrollView, Button } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  Button,
+  ImageBackground,
+} from "react-native";
 import { DataTable } from "react-native-paper";
 
 import ActivityIndicator from "../components/ActivityIndicator";
@@ -9,6 +16,7 @@ import deliveryApi from "../api/delivery";
 import useApi from "../hooks/useApi";
 import Form from "../components/forms/Form";
 import SubmitButton from "../components/forms/SaveButton";
+import moment from "moment";
 
 import * as Yup from "yup";
 
@@ -47,9 +55,8 @@ function AllDeliveriesScreen(props) {
   };
 
   const table = ordered_array.map((data) => (
-    <DataTable.Row>
+    <DataTable.Row key={data.id}>
       <Form
-        key={data.id}
         initialValues={{
           id: `${data.id}`,
           delivery_address: `${data.delivery_address}`,
@@ -57,7 +64,9 @@ function AllDeliveriesScreen(props) {
           phone_number: `${data.customer_phone}`,
           email: `${data.customer_email}`,
           start_date: `${data.start_date.slice(0, 10)}`,
-          end_date: `${data.end_date.slice(0, 10)}`,
+          end_date: `${
+            /*moment(*/ data.end_date.slice(0, 10) /*).format("MM/DD/YYYY")*/
+          }`,
           special_instructions: `${data.special_instructions}`,
           cooler: `${data.cooler_size}`,
           ice_type: `${data.ice_type}`,
@@ -131,37 +140,43 @@ function AllDeliveriesScreen(props) {
   return (
     <>
       <ActivityIndicator visible={getDeliveriesApi.loading} />
-      <ScrollView showsVerticalScrollIndicator={false} horizontal>
-        <View style={styles.body}>
-          {getDeliveriesApi.error && (
-            <>
-              <Text>Couldn't retrieve the deliveries.</Text>
-              <Button title="Retry" onPress={getDeliveriesApi.request} />
-            </>
+      <ImageBackground
+        source={require("../assets/textured-background.webp")}
+        resizeMode="cover"
+        style={styles.image}
+      >
+        <ScrollView showsVerticalScrollIndicator={false} horizontal>
+          <View style={styles.body}>
+            {getDeliveriesApi.error && (
+              <>
+                <Text>Couldn't retrieve the deliveries.</Text>
+                <Button title="Retry" onPress={getDeliveriesApi.request} />
+              </>
+            )}
+          </View>
+          {deliveries.length == 0 ? (
+            <Text style={styles.noEvents}>No deliveries</Text>
+          ) : (
+            <DataTable style={styles.container}>
+              <DataTable.Header style={styles.tableHeader}>
+                <DataTable.Title style={styles.startDateHeader}>
+                  Start Date
+                </DataTable.Title>
+                <DataTable.Title style={styles.tableHead}>
+                  End Date
+                </DataTable.Title>
+                <DataTable.Title>Name</DataTable.Title>
+                <DataTable.Title>Phone</DataTable.Title>
+                <DataTable.Title>Email</DataTable.Title>
+                <DataTable.Title>Address</DataTable.Title>
+                <DataTable.Title>Cooler</DataTable.Title>
+                <DataTable.Title>Ice type</DataTable.Title>
+              </DataTable.Header>
+              {table}
+            </DataTable>
           )}
-        </View>
-        {deliveries.length == 0 ? (
-          <Text style={styles.noEvents}>No deliveries</Text>
-        ) : (
-          <DataTable style={styles.container}>
-            <DataTable.Header style={styles.tableHeader}>
-              <DataTable.Title style={styles.startDateHeader}>
-                Start Date
-              </DataTable.Title>
-              <DataTable.Title style={styles.tableHead}>
-                End Date
-              </DataTable.Title>
-              <DataTable.Title>Name</DataTable.Title>
-              <DataTable.Title>Phone</DataTable.Title>
-              <DataTable.Title>Email</DataTable.Title>
-              <DataTable.Title>Address</DataTable.Title>
-              <DataTable.Title>Cooler</DataTable.Title>
-              <DataTable.Title>Ice type</DataTable.Title>
-            </DataTable.Header>
-            {table}
-          </DataTable>
-        )}
-      </ScrollView>
+        </ScrollView>
+      </ImageBackground>
     </>
   );
 }
@@ -174,6 +189,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.grey,
     // justifyContent: "space-evenly",
     marginLeft: 10,
+  },
+  image: {
+    flex: 1,
   },
 });
 

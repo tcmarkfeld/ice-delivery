@@ -19,9 +19,9 @@ function ClearTextInput({ width = "100%", ...otherProps }) {
 
 const styles = StyleSheet.create({
   container: {
-    // backgroundColor: colors.white,
+    backgroundColor: colors.white,
     // borderRadius: 25,
-    borderColor: colors.medium,
+    borderColor: colors.light,
     borderWidth: 0.25,
     flexDirection: "row",
     padding: 5,

@@ -1,25 +1,22 @@
 import React, { useState } from "react";
-import { StyleSheet, KeyboardAvoidingView, ScrollView } from "react-native";
+import {
+  StyleSheet,
+  KeyboardAvoidingView,
+  ScrollView,
+  ImageBackground,
+} from "react-native";
 
 import * as Yup from "yup";
 
 import Dropdown from "../components/Dropdown";
-import ErrorMessage from "../components/forms/ErrorMessage";
 import Form from "../components/forms/Form";
 import FormField from "../components/forms/FormField";
 import SubmitButton from "../components/forms/SubmitButton";
 import delivery from "../api/delivery";
 import NeighborhoodDropdown from "../components/NeighborhoodDropdown";
-import AppButton from "../components/Button";
 
 // These are regex expressions for form validation
-const phoneRegExp =
-  /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
-
 const nameRegExp = /^(?!.{126,})([\w+]{3,}\s+[\w+]{3,} ?)$/;
-
-const dateRegExp =
-  /(0[1-9]|1[012])[- \-.](0[1-9]|[12][0-9]|3[01])[- \-.](19|20)\d\d/;
 
 const validationSchema = Yup.object().shape({
   delivery_address: Yup.string().required().label("Delivery Address"),
@@ -124,102 +121,106 @@ function AddDeliveryScreen(props) {
 
   return (
     <>
-      {/* <Screen style={styles.container}> */}
-      <KeyboardAvoidingView behavior="padding">
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          style={styles.container}
-        >
-          <Form
-            initialValues={{
-              delivery_address: "",
-              name: "",
-              phone_number: "",
-              email: "",
-              start_date: "",
-              end_date: "",
-              special_instructions: "",
-            }}
-            onSubmit={handleSubmit}
-            validationSchema={validationSchema}
+      <ImageBackground
+        source={require("../assets/textured-background.webp")}
+        resizeMode="cover"
+        style={styles.image}
+      >
+        <KeyboardAvoidingView behavior="padding">
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            style={styles.container}
           >
-            <Dropdown
-              data={data1}
-              placeholder={"Select cooler size..."}
-              onParentCallback={handleCallBackCooler}
-            ></Dropdown>
-            <Dropdown
-              data={data2}
-              placeholder={"Select ice type..."}
-              onParentCallback={handleCallBackIce}
-            ></Dropdown>
-            <NeighborhoodDropdown
-              data={data3}
-              placeholder={"Select neighborhood..."}
-              onParentCallback={handleCallBackNeighborhood}
-            ></NeighborhoodDropdown>
-            <FormField
-              autoCapitalize="none"
-              autoCorrect={false}
-              icon="pin"
-              name="delivery_address"
-              placeholder="Delivery Address"
-            />
-            <FormField
-              autoCapitalize="none"
-              autoCorrect={false}
-              icon="human-male"
-              name="name"
-              placeholder="Customer Name"
-            />
-            <FormField
-              autoCorrect={false}
-              icon="phone"
-              name="phone_number"
-              placeholder="Phone Number"
-              keyboardType="numbers-and-punctuation"
-              returnKeyType="done"
-            />
-            <FormField
-              autoCapitalize="none"
-              autoCorrect={false}
-              icon="email"
-              keyboardType="email-address"
-              name="email"
-              placeholder="Customer Email"
-              textContentType="emailAddress"
-            />
-            <FormField
-              autoCapitalize="none"
-              autoCorrect={false}
-              icon="calendar"
-              name="start_date"
-              placeholder="Start Date (YYYY-MM-DD)"
-              // keyboardType="numeric"
-              returnKeyType="done"
-            />
-            <FormField
-              autoCapitalize="none"
-              autoCorrect={false}
-              icon="calendar"
-              name="end_date"
-              placeholder="End Date (YYYY-MM-DD)"
-              // keyboardType="numeric"
-              returnKeyType="done"
-            />
-            <FormField
-              autoCapitalize="none"
-              autoCorrect={false}
-              icon="star"
-              name="special_instructions"
-              placeholder="Special Instructions (optional)"
-              returnKeyType="done"
-            />
-            <SubmitButton style={styles.button} title="ADD DELIVERY" />
-          </Form>
-        </ScrollView>
-      </KeyboardAvoidingView>
-      {/* </Screen> */}
+            <Form
+              initialValues={{
+                delivery_address: "",
+                name: "",
+                phone_number: "",
+                email: "",
+                start_date: "",
+                end_date: "",
+                special_instructions: "",
+              }}
+              onSubmit={handleSubmit}
+              validationSchema={validationSchema}
+            >
+              <Dropdown
+                data={data1}
+                placeholder={"Select cooler size..."}
+                onParentCallback={handleCallBackCooler}
+              ></Dropdown>
+              <Dropdown
+                data={data2}
+                placeholder={"Select ice type..."}
+                onParentCallback={handleCallBackIce}
+              ></Dropdown>
+              <NeighborhoodDropdown
+                data={data3}
+                placeholder={"Select neighborhood..."}
+                onParentCallback={handleCallBackNeighborhood}
+              ></NeighborhoodDropdown>
+              <FormField
+                autoCapitalize="none"
+                autoCorrect={false}
+                icon="pin"
+                name="delivery_address"
+                placeholder="Delivery Address"
+              />
+              <FormField
+                autoCapitalize="none"
+                autoCorrect={false}
+                icon="human-male"
+                name="name"
+                placeholder="Customer Name"
+              />
+              <FormField
+                autoCorrect={false}
+                icon="phone"
+                name="phone_number"
+                placeholder="Phone Number"
+                keyboardType="numbers-and-punctuation"
+                returnKeyType="done"
+              />
+              <FormField
+                autoCapitalize="none"
+                autoCorrect={false}
+                icon="email"
+                keyboardType="email-address"
+                name="email"
+                placeholder="Customer Email"
+                textContentType="emailAddress"
+              />
+              <FormField
+                autoCapitalize="none"
+                autoCorrect={false}
+                icon="calendar"
+                name="start_date"
+                placeholder="Start Date (YYYY-MM-DD)"
+                // keyboardType="numeric"
+                returnKeyType="done"
+              />
+              <FormField
+                autoCapitalize="none"
+                autoCorrect={false}
+                icon="calendar"
+                name="end_date"
+                placeholder="End Date (YYYY-MM-DD)"
+                // keyboardType="numeric"
+                returnKeyType="done"
+              />
+              <FormField
+                autoCapitalize="none"
+                autoCorrect={false}
+                icon="star"
+                name="special_instructions"
+                placeholder="Special Instructions (optional)"
+                returnKeyType="done"
+              />
+              <SubmitButton style={styles.button} title="ADD DELIVERY" />
+            </Form>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </ImageBackground>
     </>
   );
 }
@@ -228,7 +229,9 @@ const styles = StyleSheet.create({
   container: {
     padding: 10,
     bottom: 10,
-    // top: 10,
+  },
+  image: {
+    flex: 1,
   },
 });
 

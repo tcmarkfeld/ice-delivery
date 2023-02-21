@@ -1,7 +1,10 @@
 import client from "./client";
 import settings from "../config/settings";
+import storage from "../auth/storage";
 
 const baseURL = settings.apiUrl;
+
+const token = storage.getToken();
 
 const getTodayDeliveries = () => client.get("/api/delivery/gettoday");
 const getEndingToday = () => client.get("/api/delivery/getending");
@@ -29,6 +32,7 @@ const post = (
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
+      "auth-token": token._z,
     },
     body: JSON.stringify({
       delivery_address: address,
@@ -65,12 +69,12 @@ const put = (
   neighborhood
 ) => {
   const saveDeliveryURL = baseURL + `/api/delivery/edit/${id}`;
-
   fetch(saveDeliveryURL, {
     method: "PUT",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
+      "auth-token": token._z,
     },
     body: JSON.stringify({
       id: id,

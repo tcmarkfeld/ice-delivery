@@ -7,6 +7,7 @@ import {
   RefreshControl,
   Button,
   StatusBar,
+  ImageBackground,
 } from "react-native";
 
 import ActivityIndicator from "../components/ActivityIndicator";
@@ -42,12 +43,11 @@ function DeliveryScreen(props) {
   var count62Bagged = 0;
   var countBags = 0;
 
-  var yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000).toLocaleString(
-    "en-US",
-    {
+  var yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000)
+    .toISOString()
+    .toLocaleString("en-US", {
       timeZone: "America/New_York",
-    }
-  );
+    });
 
   for (let i = 0; i < deliveries.length; i++) {
     if (deliveries[i].end_date.slice(0, 10) != yesterday.slice(0, 10)) {
@@ -122,51 +122,59 @@ function DeliveryScreen(props) {
 
   return (
     <>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
+      <ImageBackground
+        source={require("../assets/textured-background.webp")}
+        resizeMode="cover"
+        style={styles.image}
       >
-        <StatusBar barStyle="dark-content" translucent={true} />
-        <ActivityIndicator visible={getDeliveriesApi.loading} />
-        <View style={styles.countContainer}>
-          <View style={{ flexDirection: "row" }}>
-            <View>
-              <Text style={styles.countText}>
-                62 Quart Bagged: {count62Bagged}
-              </Text>
-              <Text style={styles.countText}>
-                40 Quart Bagged: {count40Bagged}
-              </Text>
-              <Text style={styles.countText}>Number of bags: {countBags}</Text>
-            </View>
-            <View style={styles.looseContainer}>
-              <Text style={styles.countText}>62 Quart Loose: {count62}</Text>
-              <Text style={styles.countText}>40 Quart Loose: {count40}</Text>
-            </View>
-          </View>
-        </View>
-        <View style={styles.body}>
-          {getDeliveriesApi.error && (
-            <>
-              <View style={styles.noDelivContainer}>
-                <Text style={styles.noDeliveries}>
-                  Couldn't retrieve the deliveries.
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        >
+          <StatusBar barStyle="dark-content" translucent={true} />
+          <ActivityIndicator visible={getDeliveriesApi.loading} />
+          <View style={styles.countContainer}>
+            <View style={{ flexDirection: "row" }}>
+              <View>
+                <Text style={styles.countText}>
+                  62 Quart Bagged: {count62Bagged}
                 </Text>
-                <Button title="Retry" onPress={getDeliveriesApi.request} />
+                <Text style={styles.countText}>
+                  40 Quart Bagged: {count40Bagged}
+                </Text>
+                <Text style={styles.countText}>
+                  Number of bags: {countBags}
+                </Text>
               </View>
-            </>
-          )}
-        </View>
-        {deliverieslist.length == 0 ? (
-          <View style={styles.noDelivContainer}>
-            <Text style={styles.noDeliveries}>No deliveries</Text>
+              <View style={styles.looseContainer}>
+                <Text style={styles.countText}>62 Quart Loose: {count62}</Text>
+                <Text style={styles.countText}>40 Quart Loose: {count40}</Text>
+              </View>
+            </View>
           </View>
-        ) : (
-          deliverieslist
-        )}
-      </ScrollView>
+          <View style={styles.body}>
+            {getDeliveriesApi.error && (
+              <>
+                <View style={styles.noDelivContainer}>
+                  <Text style={styles.noDeliveries}>
+                    Couldn't retrieve the deliveries.
+                  </Text>
+                  <Button title="Retry" onPress={getDeliveriesApi.request} />
+                </View>
+              </>
+            )}
+          </View>
+          {deliverieslist.length == 0 ? (
+            <View style={styles.noDelivContainer}>
+              <Text style={styles.noDeliveries}>No deliveries</Text>
+            </View>
+          ) : (
+            deliverieslist
+          )}
+        </ScrollView>
+      </ImageBackground>
     </>
   );
 }
@@ -193,6 +201,9 @@ const styles = StyleSheet.create({
   },
   noDeliveries: {
     textAlign: "center",
+  },
+  image: {
+    flex: 1,
   },
 });
 
