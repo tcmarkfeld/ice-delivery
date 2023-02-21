@@ -42,7 +42,12 @@ function DeliveryScreen(props) {
   var count62Bagged = 0;
   var countBags = 0;
 
-  var yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+  var yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000).toLocaleString(
+    "en-US",
+    {
+      timeZone: "America/New_York",
+    }
+  );
 
   for (let i = 0; i < deliveries.length; i++) {
     if (deliveries[i].end_date.slice(0, 10) != yesterday.slice(0, 10)) {
@@ -95,7 +100,7 @@ function DeliveryScreen(props) {
   var deliverieslist = ordered_array.map((data) => (
     <DeliveryCard
       key={data.id}
-      cooler={data.cooler_size}
+      cooler={data.cooler_size.toLowerCase()}
       ice={data.ice_type.toLowerCase()}
       address={data.delivery_address}
       name={data.customer_name}

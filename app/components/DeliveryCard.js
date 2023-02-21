@@ -25,7 +25,6 @@ function DeliveryCard({
   special,
 }) {
   const startDate = start.split("-");
-  var startYear = startDate[0];
   var startMonth = startDate[1];
   var startDay = startDate[2];
 
@@ -56,7 +55,6 @@ function DeliveryCard({
   }
 
   const endDate = end.split("-");
-  var endYear = endDate[0];
   var endMonth = endDate[1];
   var endDay = endDate[2];
 
@@ -205,7 +203,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     marginRight: 10,
     marginVertical: 10,
-    borderRadius: 10,
+    borderRadius: 5,
   },
   ending: {
     backgroundColor: "#F7BEC0",
@@ -213,7 +211,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     marginRight: 10,
     marginVertical: 10,
-    borderRadius: 10,
+    borderRadius: 5,
   },
   current: {
     backgroundColor: colors.grey,
@@ -221,7 +219,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     marginRight: 10,
     marginVertical: 10,
-    borderRadius: 10,
+    borderRadius: 5,
   },
   addressDateContainer: {
     flexDirection: "row",
@@ -234,7 +232,7 @@ const styles = StyleSheet.create({
   addressText: {
     fontSize: 15,
     textDecorationLine: "underline",
-    marginVertical: 2,
+    marginVertical: 2.5,
   },
   phoneText: {
     textDecorationLine: "underline",
@@ -248,10 +246,10 @@ const styles = StyleSheet.create({
   importantText: {
     fontSize: 15,
     fontWeight: "500",
-    marginVertical: 2,
+    marginVertical: 2.5,
   },
   mainText: {
-    marginVertical: 2,
+    marginVertical: 2.5,
     fontSize: 15,
   },
   checkContainer: {
@@ -263,7 +261,7 @@ const styles = StyleSheet.create({
   },
   specialInstructions: {
     fontSize: 15,
-    marginVertical: 2,
+    marginVertical: 2.5,
   },
   touchableContainer: {
     width: 200,

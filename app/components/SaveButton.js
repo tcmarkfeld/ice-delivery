@@ -10,7 +10,6 @@ function SaveButton({
   buttonStyle,
   textStyle,
 }) {
-  //used on LoginScreen and RegisterScreen and HomeScreen(additional edi on screen)
   return (
     <TouchableOpacity
       style={[styles.button, { backgroundColor: colors[color] }]}
@@ -24,17 +23,17 @@ function SaveButton({
 const styles = StyleSheet.create({
   button: {
     backgroundColor: colors.grey,
-    borderRadius: 25,
+    borderRadius: 2,
     justifyContent: "center",
     alignItems: "center",
-    padding: 15,
-    height: 25,
-    // width: "100%",
+    height: 40,
+    width: "4%",
     marginVertical: 10,
+    marginLeft: 5,
   },
   text: {
     color: colors.white,
-    fontSize: 18,
+    fontSize: 16,
     textTransform: "uppercase",
     fontWeight: "bold",
   },
