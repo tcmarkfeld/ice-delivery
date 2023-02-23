@@ -112,13 +112,6 @@ function AddDeliveryScreen(props) {
     setNeighborhood(childData);
   };
 
-  const clearFields = () => {
-    setCooler("refresh");
-    setIce("null");
-    setNeighborhood(undefined);
-    console.log("test");
-  };
-
   return (
     <>
       <ImageBackground
