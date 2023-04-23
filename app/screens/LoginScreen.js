@@ -4,6 +4,7 @@ import {
   Image,
   KeyboardAvoidingView,
   ScrollView,
+  ImageBackground,
 } from "react-native";
 import * as Yup from "yup";
 

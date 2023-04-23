@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import {
   StyleSheet,
   Text,
@@ -24,7 +24,10 @@ function DeliveryScreen(props) {
   const [refreshing, setRefreshing] = useState(false);
 
   const getDeliveriesApi = useApi(deliveryApi.getTodayDeliveries);
-  const deliveries = getDeliveriesApi.data;
+  const deliveries = useMemo(
+    () => getDeliveriesApi.data,
+    [getDeliveriesApi.data]
+  );
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
@@ -144,6 +147,7 @@ function DeliveryScreen(props) {
                 <Text style={styles.countText}>
                   40 Quart Bagged: {count40Bagged}
                 </Text>
+                <View style={styles.separator} />
                 <Text style={styles.countText}>
                   Number of bags: {countBags}
                 </Text>
@@ -201,6 +205,10 @@ const styles = StyleSheet.create({
   },
   noDeliveries: {
     textAlign: "center",
+  },
+  separator: {
+    borderBottomColor: colors.black,
+    borderBottomWidth: StyleSheet.hairlineWidth,
   },
   image: {
     flex: 1,

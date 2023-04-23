@@ -4,9 +4,13 @@ import {
   KeyboardAvoidingView,
   ScrollView,
   ImageBackground,
+  Button,
+  Text,
+  View,
 } from "react-native";
 
 import * as Yup from "yup";
+import DateTimePicker from "@react-native-community/datetimepicker";
 
 import Dropdown from "../components/Dropdown";
 import Form from "../components/forms/Form";
@@ -31,14 +35,6 @@ const validationSchema = Yup.object().shape({
     .required()
     .label("Phone Number"),
   email: Yup.string().required().email().label("Email"),
-  start_date: Yup.string()
-    // .matches(dateRegExp, "Must be in MM.DD.YYYY format (no spaces)")
-    .required()
-    .label("Start Date"),
-  end_date: Yup.string()
-    // .matches(dateRegExp, "Must be in MM.DD.YYYY format (no spaces)")
-    .required()
-    .label("End Date"),
   special_instructions: Yup.string().label("Special Instructions"),
 });
 
@@ -46,8 +42,13 @@ function AddDeliveryScreen(props) {
   const [neighborhood, setNeighborhood] = useState("");
   const [ice, setIce] = useState("");
   const [cooler, setCooler] = useState("");
+  const [selectedDateStart, setSelectedDateStart] = useState(new Date());
+  const [showDatePickerStart, setShowDatePickerStart] = useState(false);
+  const [selectedDateEnd, setSelectedDateEnd] = useState(new Date());
+  const [showDatePickerEnd, setShowDatePickerEnd] = useState(false);
 
   const handleSubmit = (userInfo) => {
+    console.log("here");
     const result = delivery.post(
       cooler,
       ice,
@@ -55,8 +56,8 @@ function AddDeliveryScreen(props) {
       userInfo.name,
       userInfo.phone_number,
       userInfo.email,
-      userInfo.start_date,
-      userInfo.end_date,
+      selectedDateStart,
+      selectedDateEnd,
       neighborhood,
       userInfo.special_instructions
     );
@@ -112,6 +113,28 @@ function AddDeliveryScreen(props) {
     setNeighborhood(childData);
   };
 
+  const handleStartDateChange = (event, newDate) => {
+    setShowDatePickerStart(false);
+    if (newDate !== undefined) {
+      setSelectedDateStart(newDate);
+    }
+  };
+
+  const handleStartButtonClick = () => {
+    setShowDatePickerStart(true);
+  };
+
+  const handleEndDateChange = (event, newDate) => {
+    setShowDatePickerEnd(false);
+    if (newDate !== undefined) {
+      setSelectedDateEnd(newDate);
+    }
+  };
+
+  const handleEndButtonClick = () => {
+    setShowDatePickerEnd(true);
+  };
+
   return (
     <>
       <ImageBackground
@@ -130,8 +153,6 @@ function AddDeliveryScreen(props) {
                 name: "",
                 phone_number: "",
                 email: "",
-                start_date: "",
-                end_date: "",
                 special_instructions: "",
               }}
               onSubmit={handleSubmit}
@@ -183,24 +204,32 @@ function AddDeliveryScreen(props) {
                 placeholder="Customer Email"
                 textContentType="emailAddress"
               />
-              <FormField
-                autoCapitalize="none"
-                autoCorrect={false}
-                icon="calendar"
-                name="start_date"
-                placeholder="Start Date (YYYY-MM-DD)"
-                // keyboardType="numeric"
-                returnKeyType="done"
-              />
-              <FormField
-                autoCapitalize="none"
-                autoCorrect={false}
-                icon="calendar"
-                name="end_date"
-                placeholder="End Date (YYYY-MM-DD)"
-                // keyboardType="numeric"
-                returnKeyType="done"
-              />
+              <View style={styles.dateContainer}>
+                <Button title="Start Date" onPress={handleStartButtonClick} />
+                {showDatePickerStart && (
+                  <DateTimePicker
+                    value={selectedDateStart}
+                    mode="date"
+                    display="default"
+                    onChange={handleStartDateChange}
+                  />
+                )}
+                <Text style={styles.selectedDate}>
+                  Selected Start Date: {selectedDateStart.toLocaleDateString()}
+                </Text>
+                <Button title="End Date" onPress={handleEndButtonClick} />
+                {showDatePickerEnd && (
+                  <DateTimePicker
+                    value={selectedDateEnd}
+                    mode="date"
+                    display="default"
+                    onChange={handleEndDateChange}
+                  />
+                )}
+                <Text style={styles.selectedDate}>
+                  Selected End Date: {selectedDateEnd.toLocaleDateString()}
+                </Text>
+              </View>
               <FormField
                 autoCapitalize="none"
                 autoCorrect={false}
@@ -225,6 +254,19 @@ const styles = StyleSheet.create({
   },
   image: {
     flex: 1,
+  },
+  dateContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#fff",
+  },
+  title: {
+    fontSize: 20,
+    marginBottom: 10,
+  },
+  selectedDate: {
+    marginTop: 20,
   },
 });
 
