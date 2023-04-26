@@ -3,4 +3,5 @@ export default Object.freeze({
   ADD_DELIVERY: "Add Delivery",
   ALL_DELIVERY: "All Deliveries",
   LOGIN: "Login",
+  ORDER: "Order",
 });

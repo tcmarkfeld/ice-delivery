@@ -3,10 +3,9 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   ScrollView,
-  ImageBackground,
-  Button,
   Text,
   View,
+  TouchableOpacity,
 } from "react-native";
 
 import * as Yup from "yup";
@@ -18,6 +17,8 @@ import FormField from "../components/forms/FormField";
 import SubmitButton from "../components/forms/SubmitButton";
 import delivery from "../api/delivery";
 import NeighborhoodDropdown from "../components/NeighborhoodDropdown";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import colors from "../config/colors";
 
 // These are regex expressions for form validation
 const nameRegExp = /^(?!.{126,})([\w+]{3,}\s+[\w+]{3,} ?)$/;
@@ -137,112 +138,125 @@ function AddDeliveryScreen(props) {
 
   return (
     <>
-      <ImageBackground
-        source={require("../assets/textured-background.webp")}
-        resizeMode="cover"
-        style={styles.image}
-      >
-        <KeyboardAvoidingView behavior="padding">
-          <ScrollView
-            showsVerticalScrollIndicator={false}
-            style={styles.container}
+      <KeyboardAvoidingView behavior="padding">
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          style={styles.container}
+        >
+          <Form
+            initialValues={{
+              delivery_address: "",
+              name: "",
+              phone_number: "",
+              email: "",
+              special_instructions: "",
+            }}
+            onSubmit={handleSubmit}
+            validationSchema={validationSchema}
           >
-            <Form
-              initialValues={{
-                delivery_address: "",
-                name: "",
-                phone_number: "",
-                email: "",
-                special_instructions: "",
-              }}
-              onSubmit={handleSubmit}
-              validationSchema={validationSchema}
-            >
-              <Dropdown
-                data={data1}
-                placeholder={"Select cooler size..."}
-                onParentCallback={handleCallBackCooler}
-              ></Dropdown>
-              <Dropdown
-                data={data2}
-                placeholder={"Select ice type..."}
-                onParentCallback={handleCallBackIce}
-              ></Dropdown>
-              <NeighborhoodDropdown
-                data={data3}
-                placeholder={"Select neighborhood..."}
-                onParentCallback={handleCallBackNeighborhood}
-              ></NeighborhoodDropdown>
-              <FormField
-                autoCapitalize="none"
-                autoCorrect={false}
-                icon="pin"
-                name="delivery_address"
-                placeholder="Delivery Address"
-              />
-              <FormField
-                autoCapitalize="none"
-                autoCorrect={false}
-                icon="human-male"
-                name="name"
-                placeholder="Customer Name"
-              />
-              <FormField
-                autoCorrect={false}
-                icon="phone"
-                name="phone_number"
-                placeholder="Phone Number"
-                keyboardType="numbers-and-punctuation"
-                returnKeyType="done"
-              />
-              <FormField
-                autoCapitalize="none"
-                autoCorrect={false}
-                icon="email"
-                keyboardType="email-address"
-                name="email"
-                placeholder="Customer Email"
-                textContentType="emailAddress"
-              />
-              <View style={styles.dateContainer}>
-                <Button title="Start Date" onPress={handleStartButtonClick} />
-                {showDatePickerStart && (
-                  <DateTimePicker
-                    value={selectedDateStart}
-                    mode="date"
-                    display="default"
-                    onChange={handleStartDateChange}
-                  />
-                )}
-                <Text style={styles.selectedDate}>
-                  Selected Start Date: {selectedDateStart.toLocaleDateString()}
-                </Text>
-                <Button title="End Date" onPress={handleEndButtonClick} />
-                {showDatePickerEnd && (
-                  <DateTimePicker
-                    value={selectedDateEnd}
-                    mode="date"
-                    display="default"
-                    onChange={handleEndDateChange}
-                  />
-                )}
-                <Text style={styles.selectedDate}>
-                  Selected End Date: {selectedDateEnd.toLocaleDateString()}
+            <Dropdown
+              data={data1}
+              placeholder={"Select cooler size..."}
+              onParentCallback={handleCallBackCooler}
+            ></Dropdown>
+            <Dropdown
+              data={data2}
+              placeholder={"Select ice type..."}
+              onParentCallback={handleCallBackIce}
+            ></Dropdown>
+            <NeighborhoodDropdown
+              data={data3}
+              placeholder={"Select neighborhood..."}
+              onParentCallback={handleCallBackNeighborhood}
+            ></NeighborhoodDropdown>
+            <FormField
+              autoCapitalize="none"
+              autoCorrect={false}
+              icon="pin"
+              name="delivery_address"
+              placeholder="Delivery Address"
+            />
+            <FormField
+              autoCapitalize="none"
+              autoCorrect={false}
+              icon="human-male"
+              name="name"
+              placeholder="Customer Name"
+            />
+            <FormField
+              autoCorrect={false}
+              icon="phone"
+              name="phone_number"
+              placeholder="Phone Number"
+              keyboardType="numbers-and-punctuation"
+              returnKeyType="done"
+            />
+            <FormField
+              autoCapitalize="none"
+              autoCorrect={false}
+              icon="email"
+              keyboardType="email-address"
+              name="email"
+              placeholder="Customer Email"
+              textContentType="emailAddress"
+            />
+
+            <TouchableOpacity onPress={handleStartButtonClick}>
+              <View style={styles.dateFields}>
+                <MaterialCommunityIcons
+                  name="calendar-start"
+                  color={colors.medium}
+                  style={{ marginRight: 10 }}
+                  size={25}
+                />
+                <Text style={{ color: colors.medium }}>
+                  Start Date: {selectedDateStart.toLocaleDateString()}
                 </Text>
               </View>
-              <FormField
-                autoCapitalize="none"
-                autoCorrect={false}
-                icon="star"
-                name="special_instructions"
-                placeholder="Special Instructions (optional)"
-                returnKeyType="done"
+            </TouchableOpacity>
+            {showDatePickerStart && (
+              <DateTimePicker
+                value={selectedDateStart}
+                mode="date"
+                display="default"
+                onChange={handleStartDateChange}
               />
-              <SubmitButton style={styles.button} title="ADD DELIVERY" />
-            </Form>
-          </ScrollView>
-        </KeyboardAvoidingView>
-      </ImageBackground>
+            )}
+
+            <TouchableOpacity onPress={handleEndButtonClick}>
+              <View style={styles.dateFields}>
+                <MaterialCommunityIcons
+                  name="calendar-end"
+                  color={colors.medium}
+                  style={{ marginRight: 10 }}
+                  size={25}
+                />
+                <Text style={{ color: colors.medium }}>
+                  End Date: {selectedDateEnd.toLocaleDateString()}
+                </Text>
+              </View>
+            </TouchableOpacity>
+            {showDatePickerEnd && (
+              <DateTimePicker
+                value={selectedDateEnd}
+                mode="date"
+                display="default"
+                onChange={handleEndDateChange}
+              />
+            )}
+
+            <FormField
+              autoCapitalize="none"
+              autoCorrect={false}
+              icon="star"
+              name="special_instructions"
+              placeholder="Special Instructions (optional)"
+              returnKeyType="done"
+            />
+            <SubmitButton style={styles.button} title="ADD DELIVERY" />
+          </Form>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </>
   );
 }
@@ -252,14 +266,14 @@ const styles = StyleSheet.create({
     padding: 10,
     bottom: 10,
   },
-  image: {
-    flex: 1,
-  },
-  dateContainer: {
-    flex: 1,
+  dateFields: {
+    backgroundColor: colors.lightgrey,
+    borderRadius: 25,
+    flexDirection: "row",
+    padding: 15,
+    marginVertical: 10,
+    width: "100%",
     alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#fff",
   },
   title: {
     fontSize: 20,

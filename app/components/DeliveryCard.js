@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Linking,
   Platform,
+  Button,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useToggleCheck } from "../hooks/handleCheck";
@@ -85,6 +86,7 @@ function DeliveryCard({
   }
 
   const { check, rightIcon, handleCheck } = useToggleCheck();
+  const [hidden, setHidden] = useState(true);
 
   const openMap = async () => {
     const destination = encodeURIComponent(`${address} Corolla, NC 27927`);
@@ -112,87 +114,120 @@ function DeliveryCard({
   }
 
   return (
-    <View
-      style={
-        check == true
-          ? styles.completedDelivery
-          : ending == true
-          ? styles.ending
-          : styles.current
-      }
-    >
-      <View style={styles.addressDateContainer}>
-        <View>
-          <Text style={styles.importantText}>
-            {cooler} {ice}
-          </Text>
-          <TouchableOpacity onPress={openMap}>
-            <Text style={styles.addressText}>{address}</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.dateContainer}>
-          <Text style={styles.mainText}>
-            Starts: {startMonth} {startDay}
-          </Text>
-          <Text style={styles.mainText}>
-            Ends: {endMonth} {endDay}
-          </Text>
-        </View>
-      </View>
-      <Text style={styles.mainText}>
-        <MaterialCommunityIcons
-          name="human-male"
-          color={colors.black}
-          size={15}
-        />{" "}
-        {name}
-      </Text>
-      <TouchableOpacity
-        onPress={() => {
-          Linking.openURL(`tel:${phone}`);
-        }}
-        style={styles.touchableContainer}
+    <>
+      <View
+        style={
+          check == true
+            ? styles.completedDelivery
+            : ending == true
+            ? styles.ending
+            : styles.current
+        }
       >
-        <View style={styles.phoneContainer}>
-          <MaterialCommunityIcons name="phone" color={colors.black} size={15} />
-          <Text style={styles.phoneText}>{phone}</Text>
-        </View>
-      </TouchableOpacity>
-      <View style={styles.checkContainer}>
-        <Text style={styles.mainText}>
-          <MaterialCommunityIcons name="email" color={colors.black} size={15} />{" "}
-          {email}
-        </Text>
-        <View style={styles.checkBox}>
-          <TouchableOpacity onPress={handleCheck}>
-            <MaterialCommunityIcons
-              name={rightIcon}
-              color={colors.black}
-              size={25}
-            />
-          </TouchableOpacity>
-        </View>
-      </View>
-      {ending == true ? (
-        <TouchableOpacity onPress={sendText} style={styles.touchableContainer}>
-          <View style={styles.phoneContainer}>
-            <MaterialCommunityIcons
-              name="message-text-outline"
-              color={colors.black}
-              size={15}
-            />
-            <Text style={styles.phoneText}> Send review text</Text>
-          </View>
-        </TouchableOpacity>
-      ) : null}
-      {special.length == 0
-        ? null
-        : (special = "none" ? null : (
-            <Text style={styles.specialInstructions}>
-              Instructions: {special}
+        <View style={styles.addressDateContainer}>
+          <View>
+            <Text style={styles.importantText}>
+              {cooler} {ice}
             </Text>
-          ))}
-    </View>
+            <TouchableOpacity onPress={openMap}>
+              <Text style={styles.addressText}>{address}</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.dateContainer}>
+            <Text style={styles.mainText}>
+              Starts: {startMonth} {startDay}
+            </Text>
+            <Text style={styles.mainText}>
+              Ends: {endMonth} {endDay}
+            </Text>
+          </View>
+        </View>
+        <View style={styles.phoneContainer}>
+          <View style={styles.checkBox}>
+            <TouchableOpacity onPress={handleCheck}>
+              <MaterialCommunityIcons
+                name={rightIcon}
+                color={colors.black}
+                size={25}
+              />
+            </TouchableOpacity>
+          </View>
+          {/* Name Email and Phone Wrapper for hiding */}
+          <View style={styles.hiddenChevron}>
+            <TouchableOpacity
+              onPress={() => (hidden ? setHidden(false) : setHidden(true))}
+            >
+              <MaterialCommunityIcons
+                name={hidden ? "chevron-down" : "chevron-up"}
+                color={colors.black}
+                size={25}
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
+        {hidden ? (
+          <></>
+        ) : (
+          <View>
+            <Text style={styles.mainText}>
+              <MaterialCommunityIcons
+                name="human-male"
+                color={colors.black}
+                size={15}
+              />{" "}
+              {name}
+            </Text>
+            <TouchableOpacity
+              onPress={() => {
+                Linking.openURL(`tel:${phone}`);
+              }}
+              style={styles.touchableContainer}
+            >
+              <View style={styles.phoneContainer}>
+                <MaterialCommunityIcons
+                  name="phone"
+                  color={colors.black}
+                  size={15}
+                />
+                <Text style={styles.phoneText}>{phone}</Text>
+              </View>
+            </TouchableOpacity>
+            <View style={styles.checkContainer}>
+              <Text style={styles.mainText}>
+                <MaterialCommunityIcons
+                  name="email"
+                  color={colors.black}
+                  size={15}
+                />{" "}
+                {email}
+              </Text>
+            </View>
+            {special.length == 0
+              ? null
+              : (special = "none" ? null : (
+                  <Text style={styles.specialInstructions}>
+                    Instructions: {special}
+                  </Text>
+                ))}
+          </View>
+        )}
+        {ending == true ? (
+          <TouchableOpacity
+            onPress={sendText}
+            style={styles.touchableContainer}
+          >
+            <View style={styles.phoneContainer}>
+              <MaterialCommunityIcons
+                name="message-star-outline"
+                color={colors.black}
+                size={20}
+              />
+              <Text style={styles.phoneText}> Send review text</Text>
+            </View>
+          </TouchableOpacity>
+        ) : null}
+      </View>
+    </>
   );
 }
 
@@ -200,26 +235,32 @@ const styles = StyleSheet.create({
   completedDelivery: {
     backgroundColor: "#B1D8B7",
     padding: 10,
-    marginLeft: 10,
-    marginRight: 10,
-    marginVertical: 10,
-    borderRadius: 5,
+    // marginLeft: 10,
+    // marginRight: 10,
+    // marginVertical: 10,
+    borderTopColor: colors.medium,
+    borderTopWidth: 1,
+    // borderRadius: 5,
   },
   ending: {
     backgroundColor: "#F7BEC0",
     padding: 10,
-    marginLeft: 10,
-    marginRight: 10,
-    marginVertical: 10,
-    borderRadius: 5,
+    // marginLeft: 10,
+    // marginRight: 10,
+    // marginVertical: 10,
+    borderTopColor: colors.medium,
+    borderTopWidth: 1,
+    // borderRadius: 5,
   },
   current: {
-    backgroundColor: colors.grey,
+    backgroundColor: colors.lightgrey,
     padding: 10,
-    marginLeft: 10,
-    marginRight: 10,
-    marginVertical: 10,
-    borderRadius: 5,
+    // marginLeft: 10,
+    // marginRight: 10,
+    // marginVertical: 10,
+    borderTopColor: colors.medium,
+    borderTopWidth: 1,
+    // borderRadius: 5,
   },
   addressDateContainer: {
     flexDirection: "row",
@@ -255,15 +296,19 @@ const styles = StyleSheet.create({
   checkContainer: {
     flexDirection: "row",
   },
-  checkBox: {
+  hiddenChevron: {
     right: 0,
     marginLeft: "auto",
+  },
+  checkBox: {
+    marginRight: 5,
   },
   specialInstructions: {
     fontSize: 15,
     marginVertical: 2.5,
   },
   touchableContainer: {
+    marginLeft: 2.5,
     width: 200,
   },
 });

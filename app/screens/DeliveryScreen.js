@@ -7,7 +7,6 @@ import {
   RefreshControl,
   Button,
   StatusBar,
-  ImageBackground,
 } from "react-native";
 
 import ActivityIndicator from "../components/ActivityIndicator";
@@ -125,65 +124,63 @@ function DeliveryScreen(props) {
 
   return (
     <>
-      <ImageBackground
-        source={require("../assets/textured-background.webp")}
-        resizeMode="cover"
-        style={styles.image}
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
       >
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
-        >
-          <StatusBar barStyle="dark-content" translucent={true} />
-          <ActivityIndicator visible={getDeliveriesApi.loading} />
-          <View style={styles.countContainer}>
-            <View style={{ flexDirection: "row" }}>
-              <View>
-                <Text style={styles.countText}>
-                  62 Quart Bagged: {count62Bagged}
-                </Text>
-                <Text style={styles.countText}>
-                  40 Quart Bagged: {count40Bagged}
-                </Text>
-                <View style={styles.separator} />
-                <Text style={styles.countText}>
-                  Number of bags: {countBags}
-                </Text>
-              </View>
-              <View style={styles.looseContainer}>
-                <Text style={styles.countText}>62 Quart Loose: {count62}</Text>
-                <Text style={styles.countText}>40 Quart Loose: {count40}</Text>
-              </View>
+        <StatusBar barStyle="dark-content" translucent={true} />
+        <ActivityIndicator visible={getDeliveriesApi.loading} />
+        <View style={styles.countContainer}>
+          <View style={{ flexDirection: "row" }}>
+            <View style={styles.coolerNumContainer}>
+              <Text style={styles.countText}>
+                62 Quart Bagged: {count62Bagged}
+              </Text>
+              <Text style={styles.countText}>
+                40 Quart Bagged: {count40Bagged}
+              </Text>
+              <View style={styles.separator} />
+              <Text style={styles.countText}>Number of bags: {countBags}</Text>
+            </View>
+            <View style={styles.looseContainer}>
+              <Text style={styles.countText}>62 Quart Loose: {count62}</Text>
+              <Text style={styles.countText}>40 Quart Loose: {count40}</Text>
             </View>
           </View>
-          <View style={styles.body}>
-            {getDeliveriesApi.error && (
-              <>
-                <View style={styles.noDelivContainer}>
-                  <Text style={styles.noDeliveries}>
-                    Couldn't retrieve the deliveries.
-                  </Text>
-                  <Button title="Retry" onPress={getDeliveriesApi.request} />
-                </View>
-              </>
-            )}
-          </View>
-          {deliverieslist.length == 0 ? (
-            <View style={styles.noDelivContainer}>
-              <Text style={styles.noDeliveries}>No deliveries</Text>
-            </View>
-          ) : (
-            deliverieslist
+        </View>
+        <View style={styles.body}>
+          {getDeliveriesApi.error && (
+            <>
+              <View style={styles.noDelivContainer}>
+                <Text style={styles.noDeliveries}>
+                  Couldn't retrieve the deliveries.
+                </Text>
+                <Button title="Retry" onPress={getDeliveriesApi.request} />
+              </View>
+            </>
           )}
-        </ScrollView>
-      </ImageBackground>
+        </View>
+        {deliverieslist.length == 0 ? (
+          <View style={styles.noDelivContainer}>
+            <Text style={styles.noDeliveries}>No deliveries</Text>
+          </View>
+        ) : (
+          deliverieslist
+        )}
+        <View style={styles.extraLine}></View>
+      </ScrollView>
     </>
   );
 }
 
 const styles = StyleSheet.create({
+  coolerNumContainer: {
+    backgroundColor: colors.lightgrey,
+    padding: 10,
+    borderRadius: 5,
+  },
   countContainer: {
     margin: 10,
   },
@@ -195,6 +192,12 @@ const styles = StyleSheet.create({
   looseContainer: {
     right: 0,
     marginLeft: "auto",
+    backgroundColor: colors.lightgrey,
+    padding: 10,
+    borderRadius: 5,
+    height: 75,
+    justifyContent: "center",
+    alignItems: "center",
   },
   noDelivContainer: {
     backgroundColor: colors.grey,
@@ -210,8 +213,9 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.black,
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
-  image: {
-    flex: 1,
+  extraLine: {
+    borderTopColor: colors.medium,
+    borderTopWidth: 1,
   },
 });
 

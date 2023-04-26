@@ -5,8 +5,8 @@ import {
   View,
   ScrollView,
   Button,
-  ImageBackground,
   TouchableOpacity,
+  TextInput,
 } from "react-native";
 
 import { DataTable } from "react-native-paper";
@@ -19,9 +19,16 @@ import deliveryApi from "../api/delivery";
 import useApi from "../hooks/useApi";
 import Form from "../components/forms/Form";
 import SubmitButton from "../components/forms/SaveButton";
+import NeighborhoodDropdown from "../components/NeighborhoodDropdown";
 
 import * as Yup from "yup";
 import Dropdown from "../components/Dropdown";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import AppTextInput from "../components/TextInput";
+
+const wait = (timeout) => {
+  return new Promise((resolve) => setTimeout(resolve, timeout));
+};
 
 const validationSchema = Yup.object().shape({
   delivery_address: Yup.string().required().label("Delivery Address"),
@@ -31,7 +38,7 @@ const validationSchema = Yup.object().shape({
   special_instructions: Yup.string().label("Special Instructions"),
 });
 
-function AllDeliveriesScreen(props) {
+function AllDeliveriesScreen({ navigation }) {
   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
   const [selectedStartDate, setSelectedStartDate] = useState(new Date());
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
@@ -40,6 +47,7 @@ function AllDeliveriesScreen(props) {
   const [ice, setIce] = useState({});
   const [cooler, setCooler] = useState({});
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const getDeliveriesApi = useApi(deliveryApi.getAll);
   const deliveries = useMemo(
@@ -52,6 +60,16 @@ function AllDeliveriesScreen(props) {
       (a, b) => new Date(a.start_date) - new Date(b.start_date)
     );
   }, [deliveries]);
+
+  const filtered_array = ordered_array.filter((item) => {
+    return (
+      item.delivery_address.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.customer_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.customer_email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.customer_phone.includes(searchTerm.toLowerCase()) ||
+      item.special_instructions.includes(searchTerm.toLowerCase())
+    );
+  });
 
   const handleSubmit = useCallback(
     async (userInfo) => {
@@ -137,14 +155,6 @@ function AllDeliveriesScreen(props) {
   useEffect(() => {
     getDeliveriesApi.request();
 
-    const defaultIce = {};
-    const defaultCooler = {};
-    ordered_array.forEach((delivery) => {
-      defaultIce[delivery.id] = delivery.ice_type;
-      defaultCooler[delivery.id] = delivery.cooler_size;
-    });
-    setIce(defaultIce);
-    setCooler(defaultCooler);
     async function getState() {
       await new Promise.all([
         ordered_array.forEach((value) => {
@@ -172,160 +182,234 @@ function AllDeliveriesScreen(props) {
               )
             ),
           }));
+          setNeighborhood((prevState) => ({
+            ...prevState,
+            [value.id]: value.neighborhood,
+          }));
         }),
       ]);
-      setLoading(false);
     }
 
-    getState();
+    async function fetchData() {
+      try {
+        // await getDeliveriesApi.request();
+        await getState();
+        setLoading(false);
+      } catch (error) {
+        console.error(error);
+        // setLoading(false);
+      }
+    }
+    fetchData();
+
+    // getState();
   }, []);
 
   if (loading) {
     return <ActivityIndicator visible={loading} />;
   }
 
-  const table = ordered_array.map(
-    (data) => (
-      // loading ? (
-      //   <ActivityIndicator visible={loading} />
-      // ) : (
-      <DataTable.Row key={data.id}>
-        <Form
-          initialValues={{
-            id: `${data.id}`,
-            delivery_address: `${data.delivery_address}`,
-            name: `${data.customer_name}`,
-            phone_number: `${data.customer_phone}`,
-            email: `${data.customer_email}`,
-            special_instructions: `${data.special_instructions}`,
-            cooler: `${data.cooler_size}`,
-            ice_type: `${data.ice_type}`,
-            neighborhood: `${data.neighborhood}`,
-          }}
-          onSubmit={handleSubmit}
-          validationSchema={validationSchema}
-        >
-          <View style={styles.dateContainer}>
-            <TouchableOpacity
-              onPress={() => setShowStartDatePicker(true)}
-              style={styles.dateInput}
-            >
-              <Text>hello</Text>
-            </TouchableOpacity>
-            {showStartDatePicker && (
-              <DateTimePicker
-                value={selectedStartDate}
-                mode="date"
-                display="default"
-                onChange={handleStartDateChange}
-              />
-            )}
-            <View style={styles.separator} />
-            <TouchableOpacity
-              onPress={() => setShowEndDatePicker(true)}
-              style={styles.dateInput}
-            >
-              <Text>hello</Text>
-            </TouchableOpacity>
-            {showEndDatePicker && (
-              <DateTimePicker
-                value={selectedEndDate}
-                mode="date"
-                display="default"
-                onChange={handleEndDateChange}
-              />
-            )}
+  const table = filtered_array.map((data) => (
+    <DataTable.Row key={data.id} style={styles.tableRow}>
+      {/* <Form
+        initialValues={{
+          id: `${data.id}`,
+          delivery_address: `${data.delivery_address}`,
+          name: `${data.customer_name}`,
+          phone_number: `${data.customer_phone}`,
+          email: `${data.customer_email}`,
+          special_instructions: `${data.special_instructions}`,
+        }}
+        onSubmit={handleSubmit}
+        validationSchema={validationSchema}
+      >
+        <View style={styles.dateContainer}>
+          <TouchableOpacity
+            onPress={() => setShowStartDatePicker(true)}
+            style={styles.dateInput}
+          >
+            <Text>hello</Text>
+          </TouchableOpacity>
+          {showStartDatePicker && (
+            <DateTimePicker
+              value={selectedStartDate}
+              mode="date"
+              display="default"
+              onChange={handleStartDateChange}
+            />
+          )}
+          <View style={styles.separator} />
+          <TouchableOpacity
+            onPress={() => setShowEndDatePicker(true)}
+            style={styles.dateInput}
+          >
+            <Text>hello</Text>
+          </TouchableOpacity>
+          {showEndDatePicker && (
+            <DateTimePicker
+              value={selectedEndDate}
+              mode="date"
+              display="default"
+              onChange={handleEndDateChange}
+            />
+          )}
+        </View>
+        <FormField
+          style={styles.formField}
+          autoCapitalize="none"
+          autoCorrect={false}
+          name="name"
+          placeholder="Customer Name"
+        />
+        <FormField
+          style={styles.formField}
+          autoCorrect={false}
+          name="phone_number"
+          placeholder="Phone Number"
+          keyboardType="numbers-and-punctuation"
+          returnKeyType="done"
+        />
+        <FormField
+          style={styles.formField}
+          autoCapitalize="none"
+          autoCorrect={false}
+          keyboardType="email-address"
+          name="email"
+          placeholder="Customer Email"
+          textContentType="emailAddress"
+        />
+        <FormField
+          style={styles.formField}
+          autoCapitalize="none"
+          autoCorrect={false}
+          name="delivery_address"
+          placeholder="Delivery Address"
+        />
+        <Dropdown
+          style={styles.dropdown}
+          data={data1}
+          placeholder={cooler[data.id]}
+          onParentCallback={handleCallBackCooler}
+        ></Dropdown>
+        <Dropdown
+          data={data2}
+          style={styles.dropdown}
+          placeholder={ice[data.id]}
+          onParentCallback={handleCallBackIce}
+        ></Dropdown>
+        <NeighborhoodDropdown
+          data={data3}
+          style={styles.dropdown}
+          placeholder={neighborhood[data.id]}
+          onParentCallback={handleCallBackNeighborhood}
+        ></NeighborhoodDropdown>
+        <SubmitButton style={styles.submitButton} title="SAVE" />
+      </Form> */}
+
+      <View style={styles.orderContainer}>
+        <View style={{ width: "95%" }}>
+          <Text style={{ color: colors.medium, padding: 5 }}>
+            {data.start_date.slice(0, 10)}{" "}
+            <MaterialCommunityIcons name="arrow-right" size={15} />{" "}
+            {data.end_date.slice(0, 10)}
+          </Text>
+          <View style={styles.greyContainer}>
+            <Text style={{ color: colors.medium }}>Customer</Text>
+            <View style={{ right: 0, marginLeft: "auto" }}>
+              <Text
+                style={{
+                  fontWeight: "bold",
+                  color: colors.onyx,
+                }}
+              >
+                {data.customer_name}
+              </Text>
+            </View>
           </View>
-          <FormField
-            style={styles.formField}
-            autoCapitalize="none"
-            autoCorrect={false}
-            name="name"
-            placeholder="Customer Name"
-          />
-          <FormField
-            style={styles.formField}
-            autoCorrect={false}
-            name="phone_number"
-            placeholder="Phone Number"
-            keyboardType="numbers-and-punctuation"
-            returnKeyType="done"
-          />
-          <FormField
-            style={styles.formField}
-            autoCapitalize="none"
-            autoCorrect={false}
-            keyboardType="email-address"
-            name="email"
-            placeholder="Customer Email"
-            textContentType="emailAddress"
-          />
-          <FormField
-            style={styles.formField}
-            autoCapitalize="none"
-            autoCorrect={false}
-            name="delivery_address"
-            placeholder="Delivery Address"
-          />
-          <Dropdown
-            style={styles.dropdown}
-            data={data1}
-            placeholder={cooler[data.id]}
-            onParentCallback={handleCallBackCooler}
-          ></Dropdown>
-          <Dropdown
-            data={data2}
-            style={styles.dropdown}
-            placeholder={ice[data.id]}
-            onParentCallback={handleCallBackIce}
-          ></Dropdown>
-          <SubmitButton style={styles.button} title="SAVE" />
-        </Form>
-      </DataTable.Row>
-    )
-    // )
-  );
+          <View style={styles.whiteContainer}>
+            <Text style={{ color: colors.medium }}>Cooler</Text>
+            <View style={{ right: 0, marginLeft: "auto" }}>
+              <Text
+                style={{
+                  fontWeight: "bold",
+                  color: colors.onyx,
+                }}
+              >
+                {data.cooler_size.toLowerCase()} {data.ice_type.toLowerCase()}
+              </Text>
+            </View>
+          </View>
+          <View style={styles.greyContainer}>
+            <Text style={{ color: colors.medium }}>Address</Text>
+            <View style={{ right: 0, marginLeft: "auto" }}>
+              <Text
+                style={{
+                  fontWeight: "bold",
+                  color: colors.onyx,
+                }}
+              >
+                {data.delivery_address}
+              </Text>
+            </View>
+          </View>
+        </View>
+        <TouchableOpacity
+          style={{ justifyContent: "center", height: "100%" }}
+          onPress={() => navigation.navigate("Order", { id: data.id })}
+        >
+          <View style={styles.chevronTable}>
+            <MaterialCommunityIcons name="chevron-right" size={25} />
+          </View>
+        </TouchableOpacity>
+      </View>
+    </DataTable.Row>
+  ));
 
   return (
     <>
       <ActivityIndicator visible={loading} />
-      <ImageBackground
-        source={require("../assets/textured-background.webp")}
-        resizeMode="cover"
-        style={styles.image}
-      >
-        <ScrollView showsVerticalScrollIndicator={false} horizontal>
-          <View style={styles.body}>
-            {getDeliveriesApi.error && (
-              <>
-                <Text>Couldn't retrieve the deliveries.</Text>
-                <Button title="Retry" onPress={getDeliveriesApi.request} />
-              </>
-            )}
-          </View>
-          {deliveries.length == 0 ? (
-            <Text style={styles.noEvents}>No deliveries</Text>
-          ) : (
-            <DataTable style={styles.container}>
-              <DataTable.Header style={styles.tableHeader}>
-                <DataTable.Title style={styles.startDateHeader}>
-                  Start Date
-                </DataTable.Title>
-                <DataTable.Title style={styles.tableHead}>
-                  End Date
-                </DataTable.Title>
-                <DataTable.Title>Name</DataTable.Title>
-                <DataTable.Title>Phone</DataTable.Title>
-                <DataTable.Title>Email</DataTable.Title>
-                <DataTable.Title>Address</DataTable.Title>
-                <DataTable.Title>Cooler</DataTable.Title>
-                <DataTable.Title>Ice type</DataTable.Title>
-              </DataTable.Header>
-              {table}
-            </DataTable>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View style={styles.searchContainer}>
+          <MaterialCommunityIcons name="magnify" size={15} />
+          <TextInput
+            style={styles.searchBar}
+            onChangeText={(event) => setSearchTerm(event)}
+            placeholder="Search..."
+          ></TextInput>
+        </View>
+        <View style={styles.body}>
+          {getDeliveriesApi.error && (
+            <>
+              <Text>Couldn't retrieve the deliveries.</Text>
+              <Button title="Retry" onPress={getDeliveriesApi.request} />
+            </>
           )}
-        </ScrollView>
-      </ImageBackground>
+        </View>
+        {deliveries.length == 0 ? (
+          <Text style={styles.noEvents}>No deliveries</Text>
+        ) : (
+          <DataTable style={styles.container}>
+            {/* <DataTable.Header style={styles.tableHeader}> */}
+            {/* <DataTable.Title style={styles.startDateHeader}>
+                Start Date
+              </DataTable.Title>
+              <DataTable.Title style={styles.tableHead}>
+                End Date
+              </DataTable.Title> */}
+            {/* <DataTable.Title style={{ justifyContent: "center" }}>
+                Deliveries
+              </DataTable.Title> */}
+            {/* <DataTable.Title>Phone</DataTable.Title>
+              <DataTable.Title>Email</DataTable.Title>
+              <DataTable.Title>Address</DataTable.Title>
+              <DataTable.Title>Cooler</DataTable.Title>
+              <DataTable.Title>Ice type</DataTable.Title>
+              <DataTable.Title>Neighborhood</DataTable.Title> */}
+            {/* </DataTable.Header> */}
+            {table}
+          </DataTable>
+        )}
+      </ScrollView>
     </>
   );
 }
@@ -334,12 +418,17 @@ const styles = StyleSheet.create({
   container: {
     padding: 15,
   },
+  chevronTable: {
+    right: 0,
+    marginLeft: "auto",
+    justifyContent: "center",
+  },
   dropdown: {
     minWidth: 135,
     maxWidth: 135,
     backgroundColor: colors.white,
     borderRadius: 0,
-    // height: 40,
+    height: 25,
   },
   dateContainer: {
     backgroundColor: colors.white,
@@ -353,14 +442,51 @@ const styles = StyleSheet.create({
     // justifyContent: "space-evenly",
     // marginLeft: 10,
   },
-  image: {
-    flex: 1,
-  },
   formField: {
     width: 200,
   },
   separator: {
     width: 25,
+  },
+  tableRow: {
+    borderBottomColor: colors.medium,
+    borderBottomWidth: 0.5,
+    // alignItems: "center",
+  },
+  orderContainer: {
+    // justifyContent: "center",
+    flexDirection: "row",
+    width: "100%",
+    marginVertical: 5,
+    // left: 0,
+    // marginRight: "auto",
+  },
+  greyContainer: {
+    backgroundColor: colors.lightgrey,
+    flexDirection: "row",
+    borderRadius: 8,
+    padding: 5,
+    justifyContent: "center",
+  },
+  whiteContainer: {
+    // backgroundColor: colors.lightgrey,
+    flexDirection: "row",
+    borderRadius: 8,
+    padding: 5,
+    justifyContent: "center",
+  },
+  searchContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: colors.grey,
+    marginHorizontal: 20,
+    borderRadius: 8,
+    padding: 5,
+  },
+  searchBar: {
+    width: "100%",
+    padding: 5,
+    marginLeft: 5,
   },
 });
 

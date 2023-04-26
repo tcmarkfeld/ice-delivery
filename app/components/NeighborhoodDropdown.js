@@ -52,7 +52,7 @@ export default DropdownComponent;
 
 const styles = StyleSheet.create({
   dropdown: {
-    backgroundColor: colors.light,
+    backgroundColor: colors.lightgrey,
     borderRadius: 25,
     padding: 10,
     marginVertical: 10,

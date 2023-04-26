@@ -9,6 +9,7 @@ const token = storage.getToken();
 const getTodayDeliveries = () => client.get("/api/delivery/gettoday");
 const getEndingToday = () => client.get("/api/delivery/getending");
 const getAll = () => client.get("/api/delivery/getall");
+const getOne = (id) => client.get(`/api/delivery/${id}`);
 
 const post = (
   cooler,
@@ -98,4 +99,11 @@ const put = (
   });
 };
 
-export default { getTodayDeliveries, getEndingToday, getAll, post, put };
+export default {
+  getTodayDeliveries,
+  getEndingToday,
+  getAll,
+  post,
+  put,
+  getOne,
+};
