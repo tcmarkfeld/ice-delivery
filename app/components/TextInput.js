@@ -1,5 +1,5 @@
 import React from "react";
-import { View, TextInput, StyleSheet } from "react-native";
+import { View, TextInput, StyleSheet, Platform } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import defaultStyles from "../config/styles";
@@ -37,6 +37,7 @@ const styles = StyleSheet.create({
   },
   test: {
     width: "100%",
+    fontFamily: Platform.OS === "android" ? "Roboto" : "Avenir",
   },
   icon: {
     marginRight: 10,

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Platform } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 import colors from "../config/colors";
 
@@ -47,9 +47,11 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     padding: 10,
     marginVertical: 10,
+    fontFamily: Platform.OS === "android" ? "Roboto" : "Avenir",
   },
   placeholderStyle: {
     color: "gray",
+    fontFamily: Platform.OS === "android" ? "Roboto" : "Avenir",
   },
   iconStyle: {
     width: 20,

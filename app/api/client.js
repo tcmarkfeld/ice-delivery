@@ -8,6 +8,7 @@ const apiClient = create({
 });
 
 apiClient.addAsyncRequestTransform(async (request) => {
+  console.log("api call");
   const authToken = await authStorage.getToken();
   if (!authToken) return;
   // Sends the token in a header so when you hit the api, it can verify it

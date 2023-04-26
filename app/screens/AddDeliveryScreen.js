@@ -3,7 +3,6 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   ScrollView,
-  Text,
   View,
   TouchableOpacity,
 } from "react-native";
@@ -19,6 +18,7 @@ import delivery from "../api/delivery";
 import NeighborhoodDropdown from "../components/NeighborhoodDropdown";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import colors from "../config/colors";
+import Text from "../components/Text";
 
 // These are regex expressions for form validation
 const nameRegExp = /^(?!.{126,})([\w+]{3,}\s+[\w+]{3,} ?)$/;
@@ -121,19 +121,11 @@ function AddDeliveryScreen(props) {
     }
   };
 
-  const handleStartButtonClick = () => {
-    setShowDatePickerStart(true);
-  };
-
   const handleEndDateChange = (event, newDate) => {
     setShowDatePickerEnd(false);
     if (newDate !== undefined) {
       setSelectedDateEnd(newDate);
     }
-  };
-
-  const handleEndButtonClick = () => {
-    setShowDatePickerEnd(true);
   };
 
   return (
@@ -170,16 +162,16 @@ function AddDeliveryScreen(props) {
               onParentCallback={handleCallBackNeighborhood}
             ></NeighborhoodDropdown>
             <FormField
-              autoCapitalize="none"
+              autoCapitalize="words"
               autoCorrect={false}
-              icon="pin"
+              icon="map-marker-radius"
               name="delivery_address"
               placeholder="Delivery Address"
             />
             <FormField
-              autoCapitalize="none"
+              autoCapitalize="words"
               autoCorrect={false}
-              icon="human-male"
+              icon="account-circle-outline"
               name="name"
               placeholder="Customer Name"
             />
@@ -201,59 +193,51 @@ function AddDeliveryScreen(props) {
               textContentType="emailAddress"
             />
 
-            <TouchableOpacity onPress={handleStartButtonClick}>
-              <View style={styles.dateFields}>
-                <MaterialCommunityIcons
-                  name="calendar-start"
-                  color={colors.medium}
-                  style={{ marginRight: 10 }}
-                  size={25}
-                />
-                <Text style={{ color: colors.medium }}>
-                  Start Date: {selectedDateStart.toLocaleDateString()}
-                </Text>
-              </View>
-            </TouchableOpacity>
-            {showDatePickerStart && (
-              <DateTimePicker
-                value={selectedDateStart}
-                mode="date"
-                display="default"
-                onChange={handleStartDateChange}
+            <View style={styles.dateFields}>
+              <MaterialCommunityIcons
+                name="calendar-start"
+                color={colors.medium}
+                style={{ marginRight: 10 }}
+                size={20}
               />
-            )}
+              <Text style={{ color: colors.medium }}>
+                Start Date:{" "}
+                <DateTimePicker
+                  value={selectedDateStart}
+                  mode="date"
+                  display="default"
+                  onChange={handleStartDateChange}
+                />
+              </Text>
+            </View>
 
-            <TouchableOpacity onPress={handleEndButtonClick}>
-              <View style={styles.dateFields}>
-                <MaterialCommunityIcons
-                  name="calendar-end"
-                  color={colors.medium}
-                  style={{ marginRight: 10 }}
-                  size={25}
-                />
-                <Text style={{ color: colors.medium }}>
-                  End Date: {selectedDateEnd.toLocaleDateString()}
-                </Text>
-              </View>
-            </TouchableOpacity>
-            {showDatePickerEnd && (
-              <DateTimePicker
-                value={selectedDateEnd}
-                mode="date"
-                display="default"
-                onChange={handleEndDateChange}
+            <View style={styles.dateFields}>
+              <MaterialCommunityIcons
+                name="calendar-end"
+                color={colors.medium}
+                style={{ marginRight: 10 }}
+                size={20}
               />
-            )}
+              <Text style={{ color: colors.medium }}>
+                End Date:{" "}
+                <DateTimePicker
+                  value={selectedDateEnd}
+                  mode="date"
+                  display="default"
+                  onChange={handleEndDateChange}
+                />
+              </Text>
+            </View>
 
             <FormField
-              autoCapitalize="none"
-              autoCorrect={false}
+              autoCapitalize="words"
+              autoCorrect={true}
               icon="star"
               name="special_instructions"
               placeholder="Special Instructions (optional)"
               returnKeyType="done"
             />
-            <SubmitButton style={styles.button} title="ADD DELIVERY" />
+            <SubmitButton title="SAVE" />
           </Form>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -274,10 +258,6 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     width: "100%",
     alignItems: "center",
-  },
-  title: {
-    fontSize: 20,
-    marginBottom: 10,
   },
   selectedDate: {
     marginTop: 20,

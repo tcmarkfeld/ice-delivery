@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import {
   StyleSheet,
-  Text,
   View,
   TouchableOpacity,
   Linking,
   Platform,
-  Button,
+  TouchableHighlight,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useToggleCheck } from "../hooks/handleCheck";
+import Text from "../components/Text";
 
 import colors from "../config/colors";
 
@@ -127,10 +127,21 @@ function DeliveryCard({
         <View style={styles.addressDateContainer}>
           <View>
             <Text style={styles.importantText}>
-              {cooler} {ice}
+              {ending ? (
+                <Text>
+                  PICKUP {cooler} {ice}
+                </Text>
+              ) : (
+                <Text>
+                  {cooler} {ice}
+                </Text>
+              )}
             </Text>
             <TouchableOpacity onPress={openMap}>
-              <Text style={styles.addressText}>{address}</Text>
+              <Text style={styles.addressText}>
+                <MaterialCommunityIcons name="map-marker-radius" size={15} />{" "}
+                {address}
+              </Text>
             </TouchableOpacity>
           </View>
           <View style={styles.dateContainer}>
@@ -142,28 +153,28 @@ function DeliveryCard({
             </Text>
           </View>
         </View>
-        <View style={styles.phoneContainer}>
-          <View style={styles.checkBox}>
-            <TouchableOpacity onPress={handleCheck}>
-              <MaterialCommunityIcons
-                name={rightIcon}
-                color={colors.black}
-                size={25}
-              />
-            </TouchableOpacity>
-          </View>
+        <View style={styles.checkChevronContainer}>
+          <TouchableOpacity onPress={handleCheck}>
+            <MaterialCommunityIcons
+              name={rightIcon}
+              color={colors.black}
+              size={25}
+            />
+          </TouchableOpacity>
           {/* Name Email and Phone Wrapper for hiding */}
-          <View style={styles.hiddenChevron}>
-            <TouchableOpacity
-              onPress={() => (hidden ? setHidden(false) : setHidden(true))}
-            >
-              <MaterialCommunityIcons
-                name={hidden ? "chevron-down" : "chevron-up"}
-                color={colors.black}
-                size={25}
-              />
-            </TouchableOpacity>
-          </View>
+          <TouchableHighlight
+            underlayColor={
+              check ? "#B1D8B7" : ending ? "#fee9ea" : colors.lightgrey
+            }
+            onPress={() => (hidden ? setHidden(false) : setHidden(true))}
+            style={styles.hiddenChevron}
+          >
+            <MaterialCommunityIcons
+              name={hidden ? "chevron-down" : "chevron-up"}
+              color={colors.black}
+              size={25}
+            />
+          </TouchableHighlight>
         </View>
         {hidden ? (
           <></>
@@ -171,9 +182,9 @@ function DeliveryCard({
           <View>
             <Text style={styles.mainText}>
               <MaterialCommunityIcons
-                name="human-male"
+                name="account-circle-outline"
                 color={colors.black}
-                size={15}
+                size={17.5}
               />{" "}
               {name}
             </Text>
@@ -183,25 +194,21 @@ function DeliveryCard({
               }}
               style={styles.touchableContainer}
             >
-              <View style={styles.phoneContainer}>
-                <MaterialCommunityIcons
-                  name="phone"
-                  color={colors.black}
-                  size={15}
-                />
-                <Text style={styles.phoneText}>{phone}</Text>
-              </View>
+              <MaterialCommunityIcons
+                name="phone"
+                color={colors.black}
+                size={15}
+              />
+              <Text style={styles.mainText}>{phone}</Text>
             </TouchableOpacity>
-            <View style={styles.checkContainer}>
-              <Text style={styles.mainText}>
-                <MaterialCommunityIcons
-                  name="email"
-                  color={colors.black}
-                  size={15}
-                />{" "}
-                {email}
-              </Text>
-            </View>
+            <Text style={styles.mainText}>
+              <MaterialCommunityIcons
+                name="email"
+                color={colors.black}
+                size={15}
+              />{" "}
+              {email}
+            </Text>
             {special.length == 0
               ? null
               : (special = "none" ? null : (
@@ -216,14 +223,12 @@ function DeliveryCard({
             onPress={sendText}
             style={styles.touchableContainer}
           >
-            <View style={styles.phoneContainer}>
-              <MaterialCommunityIcons
-                name="message-star-outline"
-                color={colors.black}
-                size={20}
-              />
-              <Text style={styles.phoneText}> Send review text</Text>
-            </View>
+            <MaterialCommunityIcons
+              name="send-circle"
+              color={"#006ee6"}
+              size={20}
+            />
+            <Text style={styles.phoneText}> Send review text</Text>
           </TouchableOpacity>
         ) : null}
       </View>
@@ -235,80 +240,61 @@ const styles = StyleSheet.create({
   completedDelivery: {
     backgroundColor: "#B1D8B7",
     padding: 10,
-    // marginLeft: 10,
-    // marginRight: 10,
-    // marginVertical: 10,
     borderTopColor: colors.medium,
     borderTopWidth: 1,
-    // borderRadius: 5,
   },
   ending: {
-    backgroundColor: "#F7BEC0",
+    backgroundColor: "#fee9ea",
     padding: 10,
-    // marginLeft: 10,
-    // marginRight: 10,
-    // marginVertical: 10,
     borderTopColor: colors.medium,
     borderTopWidth: 1,
-    // borderRadius: 5,
   },
   current: {
     backgroundColor: colors.lightgrey,
     padding: 10,
-    // marginLeft: 10,
-    // marginRight: 10,
-    // marginVertical: 10,
     borderTopColor: colors.medium,
     borderTopWidth: 1,
-    // borderRadius: 5,
   },
   addressDateContainer: {
     flexDirection: "row",
     marginBottom: 5,
+    marginLeft: 5,
   },
   dateContainer: {
     right: 0,
     marginLeft: "auto",
   },
   addressText: {
-    fontSize: 15,
-    textDecorationLine: "underline",
     marginVertical: 2.5,
   },
   phoneText: {
-    textDecorationLine: "underline",
-    fontSize: 15,
     marginVertical: 2,
     paddingLeft: 2.5,
   },
-  phoneContainer: {
+  checkChevronContainer: {
     flexDirection: "row",
+    marginLeft: 5,
+    marginBottom: 2.5,
   },
   importantText: {
-    fontSize: 15,
     fontWeight: "500",
     marginVertical: 2.5,
   },
   mainText: {
     marginVertical: 2.5,
-    fontSize: 15,
-  },
-  checkContainer: {
-    flexDirection: "row",
+    marginLeft: 5,
   },
   hiddenChevron: {
     right: 0,
     marginLeft: "auto",
   },
-  checkBox: {
-    marginRight: 5,
-  },
   specialInstructions: {
-    fontSize: 15,
     marginVertical: 2.5,
   },
   touchableContainer: {
-    marginLeft: 2.5,
+    flexDirection: "row",
+    alignItems: "center",
+    marginLeft: 5,
     width: 200,
   },
 });

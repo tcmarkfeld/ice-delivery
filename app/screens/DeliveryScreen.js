@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from "react";
 import {
   StyleSheet,
-  Text,
+  // Text,
   View,
   ScrollView,
   RefreshControl,
@@ -14,6 +14,7 @@ import DeliveryCard from "../components/DeliveryCard";
 import deliveryApi from "../api/delivery";
 import useApi from "../hooks/useApi";
 import colors from "../config/colors";
+import Text from "../components/Text";
 
 const wait = (timeout) => {
   return new Promise((resolve) => setTimeout(resolve, timeout));
@@ -23,10 +24,7 @@ function DeliveryScreen(props) {
   const [refreshing, setRefreshing] = useState(false);
 
   const getDeliveriesApi = useApi(deliveryApi.getTodayDeliveries);
-  const deliveries = useMemo(
-    () => getDeliveriesApi.data,
-    [getDeliveriesApi.data]
-  );
+  const deliveries = getDeliveriesApi.data;
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);

@@ -62,6 +62,7 @@ const styles = StyleSheet.create({
   },
   placeholderStyle: {
     color: "gray",
+    fontFamily: Platform.OS === "android" ? "Roboto" : "Avenir",
   },
   iconStyle: {
     width: 20,

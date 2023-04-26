@@ -4,17 +4,20 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import AddDeliveryScreen from "../screens/AddDeliveryScreen";
 import DeliveryScreen from "../screens/DeliveryScreen";
-import NewListingButton from "./NewListingButton";
-import routes from "./routes";
-import colors from "../config/colors";
 import OrderStackNavigator from "./OrderStackNavigator";
-import { Button } from "react-native";
+import colors from "../config/colors";
 
 const Tab = createBottomTabNavigator();
 
 const AppNavigator = () => {
   return (
-    <Tab.Navigator>
+    <Tab.Navigator
+      headerStyle={{
+        elevation: 5,
+        shadowColor: colors.grey,
+        shadowOffset: { width: 0, height: 1 },
+      }} // Don't know if I need this
+    >
       <Tab.Screen
         name="Deliveries"
         component={DeliveryScreen}
@@ -36,12 +39,7 @@ const AppNavigator = () => {
         }}
       />
       <Tab.Screen
-        name={(props) => {
-          <>
-            <Button title="Back"></Button>
-            <Text headerStyle={"center"}>Add Delivery</Text>
-          </>;
-        }}
+        name="Add Delivery"
         component={AddDeliveryScreen}
         options={{
           headerTitleAlign: "center",
@@ -55,11 +53,6 @@ const AppNavigator = () => {
             shadowColor: colors.grey,
             shadowOffset: { width: 0, height: 1 },
           },
-          // tabBarButton: () => (
-          //   <NewListingButton
-          //     onPress={() => navigation.navigate(routes.ADD_DELIVERY)}
-          //   />
-          // ),
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="plus-box" color={color} size={size} />
           ),
