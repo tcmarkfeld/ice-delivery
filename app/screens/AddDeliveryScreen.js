@@ -219,12 +219,11 @@ function AddDeliveryScreen(props) {
 
             <View style={{ width: "100%", flexDirection: "row" }}>
               <View width={"47.5%"}>
-                <Text style={styles.dateLabel}>Start Date </Text>
+                <Text style={styles.dateLabel}>Start Date</Text>
                 <View style={styles.dateFields}>
                   <MaterialCommunityIcons
                     name="calendar-start"
                     color={colors.medium}
-                    style={{ marginRight: 10 }}
                     size={20}
                   />
                   {Platform.OS === "android" ? (
@@ -237,6 +236,7 @@ function AddDeliveryScreen(props) {
                       {showDatePickerStart && (
                         <DateTimePicker
                           value={selectedDateStart}
+                          accentColor={colors.primary}
                           mode="date"
                           display="default"
                           onChange={handleStartDateChange}
@@ -246,6 +246,7 @@ function AddDeliveryScreen(props) {
                   ) : (
                     <DateTimePicker
                       value={selectedDateStart}
+                      accentColor={colors.primary}
                       mode="date"
                       display="default"
                       onChange={handleStartDateChange}
@@ -260,7 +261,6 @@ function AddDeliveryScreen(props) {
                   <MaterialCommunityIcons
                     name="calendar-end"
                     color={colors.medium}
-                    style={{ marginRight: 10 }}
                     size={20}
                   />
                   {Platform.OS === "android" ? (
@@ -273,6 +273,7 @@ function AddDeliveryScreen(props) {
                       {showDatePickerEnd && (
                         <DateTimePicker
                           value={selectedDateEnd}
+                          accentColor={colors.primary}
                           mode="date"
                           display="default"
                           onChange={handleEndDateChange}
@@ -282,6 +283,7 @@ function AddDeliveryScreen(props) {
                   ) : (
                     <DateTimePicker
                       value={selectedDateEnd}
+                      accentColor={colors.primary}
                       mode="date"
                       display="default"
                       onChange={handleEndDateChange}

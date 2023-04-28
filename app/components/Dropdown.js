@@ -8,14 +8,11 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import ErrorMessage from "./forms/ErrorMessage";
 
 const DropdownComponent = ({ name, label, icon, data, ...otherProps }) => {
-  const { values, setFieldValue, setFieldTouched, errors, touched } =
-    useFormikContext();
+  const { values, setFieldValue, errors, touched } = useFormikContext();
   const value = values[name];
 
-  console.log(value);
   const handleValueChange = (itemValue) => {
     setFieldValue(name, itemValue);
-    setFieldTouched(name, true);
   };
 
   return (

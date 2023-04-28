@@ -11,20 +11,18 @@ import {
 
 import DateTimePicker from "@react-native-community/datetimepicker";
 import * as Yup from "yup";
-import moment from "moment";
 
 import useApi from "../hooks/useApi";
 import deliveryApi from "../api/delivery";
 import ActivityIndicator from "../components/ActivityIndicator";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import colors from "../config/colors";
 import FormField from "../components/forms/FormField";
 import Dropdown from "../components/Dropdown";
-import NeighborhoodDropdown from "../components/NeighborhoodDropdown";
 import Form from "../components/forms/Form";
 import SubmitButton from "../components/forms/SubmitButton";
 import { ScrollView } from "react-native-gesture-handler";
 import AppButton from "../components/Button";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 const nameRegExp = /^(?!.{126,})([\w+]{3,}\s+[\w+]{3,} ?)$/;
 
@@ -123,7 +121,6 @@ function OrderScreen({ navigation, route }) {
   }
 
   const data = delivery[0];
-  console.log(selectedDateStart);
 
   const handleSubmit = async (userInfo) => {
     const result = await deliveryApi.put(
@@ -174,7 +171,6 @@ function OrderScreen({ navigation, route }) {
   };
 
   const handleCallBackNeighborhood = (childData) => {
-    console.log(childData);
     setNeighborhood(childData);
   };
 
@@ -225,7 +221,7 @@ function OrderScreen({ navigation, route }) {
       keyboardVerticalOffset={Platform.OS === "ios" ? 80 : -220}
     >
       <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
-        <ActivityIndicator loading={getDelivery.loading} />
+        <ActivityIndicator loading={loading} />
         <View style={{ flexDirection: "row" }}>
           {/* Container for Start & End Date */}
           <View style={styles.dateFields}>
@@ -238,36 +234,32 @@ function OrderScreen({ navigation, route }) {
             >
               Start Date
             </Text>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              {Platform.OS === "android" ? (
-                <TouchableOpacity onPress={() => setShowDatePickerStart(true)}>
-                  <Text style={{ color: colors.medium }}>
-                    {selectedDateStart.toLocaleString().slice(0, 10)}
-                  </Text>
-                  {showDatePickerStart && (
-                    <DateTimePicker
-                      value={selectedDateStart}
-                      mode="date"
-                      display="default"
-                      onChange={handleStartDateChange}
-                    />
-                  )}
-                </TouchableOpacity>
-              ) : (
-                <DateTimePicker
-                  value={selectedDateStart}
-                  mode="date"
-                  display="default"
-                  onChange={handleStartDateChange}
-                />
-              )}
-            </View>
+            {Platform.OS === "android" ? (
+              <TouchableOpacity onPress={() => setShowDatePickerStart(true)}>
+                <Text style={{ color: colors.medium }}>
+                  {selectedDateStart.toLocaleString().slice(0, 10)}
+                </Text>
+                {showDatePickerStart && (
+                  <DateTimePicker
+                    value={selectedDateStart}
+                    accentColor={colors.primary}
+                    timeZoneOffsetInMinutes={1}
+                    mode="date"
+                    display="default"
+                    onChange={handleStartDateChange}
+                  />
+                )}
+              </TouchableOpacity>
+            ) : (
+              <DateTimePicker
+                value={selectedDateStart}
+                accentColor={colors.primary}
+                timeZoneOffsetInMinutes={1}
+                mode="date"
+                display="default"
+                onChange={handleStartDateChange}
+              />
+            )}
           </View>
           <View style={{ width: "5%" }}></View>
           <View style={styles.dateFields}>
@@ -280,36 +272,32 @@ function OrderScreen({ navigation, route }) {
             >
               End Date
             </Text>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              {Platform.OS === "android" ? (
-                <TouchableOpacity onPress={() => setShowDatePickerEnd(true)}>
-                  <Text style={{ color: colors.medium }}>
-                    {selectedDateEnd.toLocaleString().slice(0, 10)}
-                  </Text>
-                  {showDatePickerEnd && (
-                    <DateTimePicker
-                      value={selectedDateEnd}
-                      mode="date"
-                      display="default"
-                      onChange={handleEndDateChange}
-                    />
-                  )}
-                </TouchableOpacity>
-              ) : (
-                <DateTimePicker
-                  value={selectedDateEnd}
-                  mode="date"
-                  display="default"
-                  onChange={handleEndDateChange}
-                />
-              )}
-            </View>
+            {Platform.OS === "android" ? (
+              <TouchableOpacity onPress={() => setShowDatePickerEnd(true)}>
+                <Text style={{ color: colors.medium }}>
+                  {selectedDateEnd.toLocaleString().slice(0, 10)}
+                </Text>
+                {showDatePickerEnd && (
+                  <DateTimePicker
+                    accentColor={colors.primary}
+                    value={selectedDateEnd}
+                    timeZoneOffsetInMinutes={1}
+                    mode="date"
+                    display="default"
+                    onChange={handleEndDateChange}
+                  />
+                )}
+              </TouchableOpacity>
+            ) : (
+              <DateTimePicker
+                accentColor={colors.primary}
+                value={selectedDateEnd}
+                timeZoneOffsetInMinutes={1}
+                mode="date"
+                display="default"
+                onChange={handleEndDateChange}
+              />
+            )}
           </View>
         </View>
 
@@ -444,7 +432,6 @@ const styles = StyleSheet.create({
   },
   dateFields: {
     width: "47.5%",
-    flexDirection: "column",
     backgroundColor: colors.white,
     padding: 10,
     borderRadius: 8,
