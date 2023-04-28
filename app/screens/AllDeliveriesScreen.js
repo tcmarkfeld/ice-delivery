@@ -6,6 +6,7 @@ import {
   Button,
   TouchableOpacity,
   TextInput,
+  RefreshControl,
 } from "react-native";
 
 import { DataTable } from "react-native-paper";
@@ -17,9 +18,22 @@ import deliveryApi from "../api/delivery";
 import useApi from "../hooks/useApi";
 import Text from "../components/Text";
 
+const wait = (timeout) => {
+  return new Promise((resolve) => setTimeout(resolve, timeout));
+};
+
 function AllDeliveriesScreen({ navigation }) {
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    wait(500).then(async () => {
+      let deliveries = await getDeliveriesApi.request();
+      setRefreshing(false);
+    });
+  }, []);
 
   const getDeliveriesApi = useApi(deliveryApi.getAll);
   const deliveries = useMemo(
@@ -53,16 +67,34 @@ function AllDeliveriesScreen({ navigation }) {
   }
 
   const table = filtered_array.map((data) => (
-    <DataTable.Row key={data.id} style={styles.tableRow}>
-      <View style={styles.orderContainer}>
-        <View style={{ width: "95%" }}>
-          <Text style={{ color: colors.medium, padding: 5 }}>
-            {data.start_date.slice(0, 10)}{" "}
-            <MaterialCommunityIcons name="arrow-right" size={15} />{" "}
-            {data.end_date.slice(0, 10)}
-          </Text>
+    <DataTable.Row key={data.id} style={styles.orderContainer}>
+      <View style={styles.mainView}>
+        <View>
+          <View flexDirection="row">
+            <Text style={{ color: colors.medium, padding: 5 }}>
+              {data.start_date.slice(0, 10)}{" "}
+              <MaterialCommunityIcons name="arrow-right" size={15} />{" "}
+              {data.end_date.slice(0, 10)}
+            </Text>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("Edit Order", { id: data.id })}
+              style={styles.editTouchable}
+            >
+              <Text style={{ color: colors.primary, fontWeight: "500" }}>
+                Edit Order
+              </Text>
+              <MaterialCommunityIcons
+                name="chevron-right"
+                color={colors.primary}
+                size={20}
+              />
+            </TouchableOpacity>
+          </View>
           <View style={styles.greyContainer}>
-            <Text style={{ color: colors.medium }}>Customer</Text>
+            <Text style={{ color: colors.medium }}>
+              <MaterialCommunityIcons name="account-circle-outline" size={15} />{" "}
+              Customer
+            </Text>
             <View style={{ right: 0, marginLeft: "auto" }}>
               <Text
                 style={{
@@ -75,7 +107,9 @@ function AllDeliveriesScreen({ navigation }) {
             </View>
           </View>
           <View style={styles.whiteContainer}>
-            <Text style={{ color: colors.medium }}>Cooler</Text>
+            <Text style={{ color: colors.medium }}>
+              <MaterialCommunityIcons name="air-humidifier" size={15} /> Cooler
+            </Text>
             <View style={{ right: 0, marginLeft: "auto" }}>
               <Text
                 style={{
@@ -88,7 +122,10 @@ function AllDeliveriesScreen({ navigation }) {
             </View>
           </View>
           <View style={styles.greyContainer}>
-            <Text style={{ color: colors.medium }}>Address</Text>
+            <Text style={{ color: colors.medium }}>
+              <MaterialCommunityIcons name="map-marker-radius" size={17.5} />{" "}
+              Address
+            </Text>
             <View style={{ right: 0, marginLeft: "auto" }}>
               <Text
                 style={{
@@ -101,66 +138,61 @@ function AllDeliveriesScreen({ navigation }) {
             </View>
           </View>
         </View>
-        <TouchableOpacity
-          style={{ justifyContent: "center", height: "100%" }}
-          onPress={() => navigation.navigate("Order", { id: data.id })}
-        >
-          <MaterialCommunityIcons name="chevron-right" size={25} />
-        </TouchableOpacity>
       </View>
     </DataTable.Row>
   ));
 
   return (
-    <>
-      <ScrollView
-        style={{ backgroundColor: colors.lightgrey }}
-        showsVerticalScrollIndicator={false}
+    <ScrollView
+      style={{ backgroundColor: colors.lightgrey }}
+      showsVerticalScrollIndicator={false}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+    >
+      <ActivityIndicator visible={getDeliveriesApi.loading} />
+      <View
+        style={{
+          justifyContent: "center",
+          alignItems: "center",
+          marginBottom: 10,
+        }}
       >
-        <View
-          style={{
-            justifyContent: "center",
-            alignItems: "center",
-            marginBottom: 5,
-          }}
-        >
-          <View style={styles.searchContainer}>
-            <MaterialCommunityIcons name="magnify" size={15} />
-            <TextInput
-              style={styles.searchBar}
-              onChangeText={(event) => setSearchTerm(event)}
-              placeholder="Search..."
-            ></TextInput>
-          </View>
+        <View style={styles.searchContainer}>
+          <MaterialCommunityIcons name="magnify" size={15} />
+          <TextInput
+            icon={"magnify"}
+            style={styles.searchBar}
+            onChangeText={(event) => setSearchTerm(event)}
+            placeholder="Search..."
+          ></TextInput>
         </View>
-        {getDeliveriesApi.error && (
-          <>
-            <Text>Couldn't retrieve the deliveries.</Text>
-            <Button title="Retry" onPress={getDeliveriesApi.request} />
-          </>
-        )}
-        {deliveries.length == 0 ? (
-          <Text style={styles.noEvents}>No deliveries</Text>
-        ) : (
-          <DataTable>{table}</DataTable>
-        )}
-      </ScrollView>
-    </>
+      </View>
+      {getDeliveriesApi.error && (
+        <>
+          <Text>Couldn't retrieve the deliveries.</Text>
+          <Button title="Retry" onPress={getDeliveriesApi.request} />
+        </>
+      )}
+      {deliveries.length == 0 ? (
+        <Text style={styles.noEvents}>No deliveries</Text>
+      ) : (
+        <DataTable style={{ marginBottom: 20 }}>{table}</DataTable>
+      )}
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  tableRow: {
-    justifyContent: "center",
-    alignItems: "center",
-  },
   orderContainer: {
-    flexDirection: "row",
-    marginVertical: 5,
-    marginHorizontal: 5,
+    flexDirection: "column",
+    marginVertical: 7.5,
+    justifyContent: "center",
     padding: 10,
     backgroundColor: colors.white,
-    borderRadius: 8,
+  },
+  mainView: {
+    width: "100%",
   },
   greyContainer: {
     backgroundColor: colors.lightgrey,
@@ -174,6 +206,14 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 5,
     justifyContent: "center",
+  },
+  editTouchable: {
+    alignItems: "center",
+    justifyContent: "flex-end",
+    flexDirection: "row",
+    marginVertical: 2.5,
+    right: 0,
+    marginLeft: "auto",
   },
   searchContainer: {
     flexDirection: "row",

@@ -1,60 +1,76 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { StyleSheet, View, Platform } from "react-native";
+import { useFormikContext } from "formik";
 import { Dropdown } from "react-native-element-dropdown";
 import colors from "../config/colors";
+import AppText from "./Text";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import ErrorMessage from "./forms/ErrorMessage";
 
-const DropdownComponent = (props) => {
-  const [value, setValue] = useState(props.value);
-  const [isFocus, setIsFocus] = useState(false);
+const DropdownComponent = ({ name, label, icon, data, ...otherProps }) => {
+  const { values, setFieldValue, setFieldTouched, errors, touched } =
+    useFormikContext();
+  const value = values[name];
+  const error = touched[name] && errors[name];
 
-  useEffect(() => {
-    if (props.value != null) {
-      setValue(props.value);
-    }
-  }, [props.value]);
+  const handleValueChange = (itemValue) => {
+    setFieldValue(name, itemValue);
+    setFieldTouched(name, true);
+  };
 
   return (
-    <View>
+    <View style={{ width: "100%" }}>
+      {label && <AppText style={styles.label}>{label}</AppText>}
       <Dropdown
-        style={[styles.dropdown, isFocus, props.style]}
+        style={styles.dropdown}
         placeholderStyle={styles.placeholderStyle}
-        iconStyle={styles.iconStyle}
-        data={props.data}
-        maxHeight={300}
+        data={data}
         labelField="label"
         valueField="value"
-        placeholder={!isFocus ? props.placeholder : "..."}
+        placeholder="..."
         value={value}
-        onFocus={() => setIsFocus(true)}
-        onBlur={() => setIsFocus(false)}
-        onChange={(item) => {
-          setValue(item.value);
-          props.onParentCallback(item.label);
-          setIsFocus(false);
-        }}
+        activeColor={colors.primary}
+        statusBarIsTranslucent={true}
+        fontFamily={Platform.OS === "android" ? "Roboto" : "Avenir"}
+        itemTextStyle={{ color: colors.medium }}
+        renderLeftIcon={() => (
+          <MaterialCommunityIcons
+            name={icon}
+            size={20}
+            color={colors.medium}
+            style={styles.icon}
+          />
+        )}
+        onChange={handleValueChange}
         dropdownOffset={{ bottom: -100 }}
         dropdownPosition="bottom"
+        {...otherProps}
       />
+      <ErrorMessage error={errors[name]} visible={touched[name]} />
     </View>
   );
 };
-
 export default DropdownComponent;
 
 const styles = StyleSheet.create({
   dropdown: {
-    backgroundColor: colors.lightgrey,
-    borderRadius: 25,
+    backgroundColor: colors.white,
+    borderRadius: 8,
     padding: 10,
     marginVertical: 10,
-    fontFamily: Platform.OS === "android" ? "Roboto" : "Avenir",
+    width: "100%",
+    alignItems: "center",
   },
   placeholderStyle: {
-    color: "gray",
-    fontFamily: Platform.OS === "android" ? "Roboto" : "Avenir",
+    color: colors.medium,
+    fontSize: 14,
   },
-  iconStyle: {
-    width: 20,
-    height: 20,
+  label: {
+    marginLeft: 1,
+    marginBottom: -5,
+    color: colors.medium,
+  },
+  icon: {
+    marginRight: 10,
   },
 });

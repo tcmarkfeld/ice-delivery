@@ -1,11 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   StyleSheet,
   View,
   TouchableOpacity,
   Linking,
   Platform,
-  TouchableHighlight,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useToggleCheck } from "../hooks/handleCheck";
@@ -86,7 +85,6 @@ function DeliveryCard({
   }
 
   const { check, rightIcon, handleCheck } = useToggleCheck();
-  const [hidden, setHidden] = useState(true);
 
   const openMap = async () => {
     const destination = encodeURIComponent(`${address} Corolla, NC 27927`);
@@ -124,113 +122,105 @@ function DeliveryCard({
             : styles.current
         }
       >
-        <View style={styles.addressDateContainer}>
-          <View>
-            <Text style={styles.importantText}>
-              {ending ? (
-                <Text>
-                  PICKUP {cooler} {ice}
-                </Text>
-              ) : (
-                <Text>
-                  {cooler} {ice}
-                </Text>
-              )}
-            </Text>
-            <TouchableOpacity onPress={openMap}>
-              <Text style={styles.addressText}>
-                <MaterialCommunityIcons name="map-marker-radius" size={15} />{" "}
-                {address}
-              </Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.dateContainer}>
-            <Text style={styles.mainText}>
-              Starts: {startMonth} {startDay}
-            </Text>
-            <Text style={styles.mainText}>
-              Ends: {endMonth} {endDay}
-            </Text>
-          </View>
-        </View>
-        <View style={styles.checkChevronContainer}>
-          <TouchableOpacity onPress={handleCheck}>
+        <View flexDirection={"row"}>
+          <TouchableOpacity style={styles.checkContainer} onPress={handleCheck}>
+            <Text>Completed:</Text>
             <MaterialCommunityIcons
               name={rightIcon}
               color={colors.black}
-              size={25}
+              size={20}
+              style={{ marginLeft: 5 }}
             />
           </TouchableOpacity>
-          {/* Name Email and Phone Wrapper for hiding */}
-          <TouchableHighlight
-            underlayColor={
-              check ? "#B1D8B7" : ending ? "#fee9ea" : colors.lightgrey
-            }
-            onPress={() => (hidden ? setHidden(false) : setHidden(true))}
-            style={styles.hiddenChevron}
-          >
-            <MaterialCommunityIcons
-              name={hidden ? "chevron-down" : "chevron-up"}
-              color={colors.black}
-              size={25}
-            />
-          </TouchableHighlight>
+          <Text style={styles.rightSideGrey}>
+            {startMonth} {startDay}
+            {"  "}
+            <MaterialCommunityIcons name="arrow-right" size={15} />
+            {"  "}
+            {endMonth} {endDay}
+          </Text>
         </View>
-        {hidden ? (
-          <></>
-        ) : (
+        <View
+          style={{
+            borderTopWidth: StyleSheet.hairlineWidth,
+            marginVertical: 10,
+            borderTopColor: colors.medium,
+          }}
+        ></View>
+        <View style={styles.whiteContainer}>
           <View>
-            <Text style={styles.mainText}>
-              <MaterialCommunityIcons
-                name="account-circle-outline"
-                color={colors.black}
-                size={17.5}
-              />{" "}
-              {name}
-            </Text>
+            {ending ? (
+              <Text style={styles.importantText}>
+                PICKUP {cooler} {ice}
+              </Text>
+            ) : (
+              <Text style={styles.importantText}>
+                {cooler} {ice}
+              </Text>
+            )}
+            <TouchableOpacity onPress={openMap}>
+              <Text style={{ color: colors.primary, fontWeight: "500" }}>
+                <MaterialCommunityIcons name="map-marker-radius" size={17.5} />{" "}
+                {address}{" "}
+              </Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.doubleContainer}>
             <TouchableOpacity
               onPress={() => {
                 Linking.openURL(`tel:${phone}`);
               }}
-              style={styles.touchableContainer}
+              style={{ marginBottom: 5 }}
             >
-              <MaterialCommunityIcons
-                name="phone"
-                color={colors.black}
-                size={15}
-              />
-              <Text style={styles.mainText}>{phone}</Text>
+              <Text style={styles.linkText}>
+                <MaterialCommunityIcons
+                  name="phone"
+                  color={colors.primary}
+                  size={17.5}
+                />{" "}
+                {phone}
+              </Text>
             </TouchableOpacity>
-            <Text style={styles.mainText}>
+            <Text>
               <MaterialCommunityIcons
-                name="email"
-                color={colors.black}
-                size={15}
+                name="account-circle-outline"
+                color={colors.medium}
+                size={17.5}
               />{" "}
-              {email}
+              {name}
             </Text>
-            {special.length == 0
-              ? null
-              : (special = "none" ? null : (
-                  <Text style={styles.specialInstructions}>
-                    Instructions: {special}
-                  </Text>
-                ))}
           </View>
+        </View>
+
+        {special.length == 0 ? null : special == "none" ? null : (
+          <Text style={styles.mainText}>
+            <MaterialCommunityIcons
+              name="star"
+              color={colors.medium}
+              size={17.5}
+            />{" "}
+            Special Instructions: {special}
+          </Text>
         )}
+
         {ending == true ? (
-          <TouchableOpacity
-            onPress={sendText}
-            style={styles.touchableContainer}
-          >
+          <TouchableOpacity onPress={sendText} style={styles.checkContainer}>
             <MaterialCommunityIcons
               name="send-circle"
-              color={"#006ee6"}
-              size={20}
+              color={colors.primary}
+              size={17.5}
             />
-            <Text style={styles.phoneText}> Send review text</Text>
+            <Text style={styles.reviewText}>Send review text</Text>
           </TouchableOpacity>
         ) : null}
+
+        <View
+          style={{
+            borderTopWidth: StyleSheet.hairlineWidth,
+            marginVertical: 10,
+            borderTopColor: colors.medium,
+          }}
+        ></View>
       </View>
     </>
   );
@@ -238,63 +228,61 @@ function DeliveryCard({
 
 const styles = StyleSheet.create({
   completedDelivery: {
-    backgroundColor: "#B1D8B7",
+    backgroundColor: "#c9e5d5",
     padding: 10,
-    borderTopColor: colors.medium,
-    borderTopWidth: 1,
+    marginVertical: 7.5,
   },
   ending: {
     backgroundColor: "#fee9ea",
     padding: 10,
-    borderTopColor: colors.medium,
-    borderTopWidth: 1,
+    marginVertical: 7.5,
   },
   current: {
-    backgroundColor: colors.lightgrey,
     padding: 10,
-    borderTopColor: colors.medium,
-    borderTopWidth: 1,
+    marginVertical: 7.5,
+    backgroundColor: colors.white,
   },
-  addressDateContainer: {
-    flexDirection: "row",
-    marginBottom: 5,
-    marginLeft: 5,
+  doubleContainer: {
+    left: 0,
+    marginLeft: "auto",
+    marginRight: 5,
   },
-  dateContainer: {
+  rightSideGrey: {
+    color: colors.medium,
     right: 0,
     marginLeft: "auto",
-  },
-  addressText: {
-    marginVertical: 2.5,
-  },
-  phoneText: {
-    marginVertical: 2,
-    paddingLeft: 2.5,
-  },
-  checkChevronContainer: {
-    flexDirection: "row",
-    marginLeft: 5,
-    marginBottom: 2.5,
+    marginRight: 5,
   },
   importantText: {
     fontWeight: "500",
-    marginVertical: 2.5,
+    // marginVertical: 2.5,
+    marginBottom: 5,
   },
   mainText: {
     marginVertical: 2.5,
     marginLeft: 5,
   },
-  hiddenChevron: {
-    right: 0,
-    marginLeft: "auto",
-  },
-  specialInstructions: {
+  linkText: {
     marginVertical: 2.5,
+    fontWeight: "500",
+    color: colors.primary,
   },
-  touchableContainer: {
-    flexDirection: "row",
-    alignItems: "center",
+  reviewText: {
+    marginVertical: 2.5,
     marginLeft: 5,
+    fontWeight: "500",
+    color: colors.primary,
+  },
+  whiteContainer: {
+    flexDirection: "row",
+    marginLeft: 5,
+    alignItems: "center",
+    marginBottom: 5,
+  },
+  checkContainer: {
+    marginLeft: 5,
+    alignItems: "center",
+    flexDirection: "row",
     width: 200,
   },
 });

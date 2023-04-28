@@ -12,6 +12,7 @@ const getTodayDeliveries = () => client.get("/api/delivery/gettoday");
 const getEndingToday = () => client.get("/api/delivery/getending");
 const getAll = () => client.get("/api/delivery/getall");
 const getOne = (id) => client.get(`/api/delivery/${id}`);
+const deleteOne = (id) => client.delete(`/api/delivery/delete/${id}`);
 
 const post = (
   cooler,
@@ -25,7 +26,7 @@ const post = (
   neighborhood,
   special
 ) => {
-  if (special === "") {
+  if (!special) {
     special = "";
   }
   //create new delivery in database
@@ -108,4 +109,5 @@ export default {
   post,
   put,
   getOne,
+  deleteOne,
 };

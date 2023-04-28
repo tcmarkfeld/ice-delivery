@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useMemo } from "react";
 import {
   StyleSheet,
-  // Text,
   View,
   ScrollView,
   RefreshControl,
@@ -15,6 +14,8 @@ import deliveryApi from "../api/delivery";
 import useApi from "../hooks/useApi";
 import colors from "../config/colors";
 import Text from "../components/Text";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 const wait = (timeout) => {
   return new Promise((resolve) => setTimeout(resolve, timeout));
@@ -22,6 +23,7 @@ const wait = (timeout) => {
 
 function DeliveryScreen(props) {
   const [refreshing, setRefreshing] = useState(false);
+  const [hidden, setHidden] = useState(true);
 
   const getDeliveriesApi = useApi(deliveryApi.getTodayDeliveries);
   const deliveries = getDeliveriesApi.data;
@@ -94,7 +96,6 @@ function DeliveryScreen(props) {
     ordered_array = mapOrder(ordered_array, item_order, "neighborhood");
   } catch {
     var ordered_array = [];
-    console.log("no deliveries");
   }
 
   var deliverieslist = ordered_array.map((data) => (
@@ -127,37 +128,35 @@ function DeliveryScreen(props) {
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
+        style={{ backgroundColor: colors.lightgrey }}
       >
-        <StatusBar barStyle="dark-content" translucent={true} />
+        <StatusBar barStyle="light-content" translucent={true} />
         <ActivityIndicator visible={getDeliveriesApi.loading} />
-        <View style={styles.countContainer}>
-          <View style={{ flexDirection: "row" }}>
-            <View style={styles.coolerNumContainer}>
-              <Text style={styles.countText}>
-                62 Quart Bagged: {count62Bagged}
-              </Text>
-              <Text style={styles.countText}>
-                40 Quart Bagged: {count40Bagged}
-              </Text>
-              <View style={styles.separator} />
-              <Text style={styles.countText}>Number of bags: {countBags}</Text>
-            </View>
-            <View style={styles.looseContainer}>
-              <Text style={styles.countText}>62 Quart Loose: {count62}</Text>
-              <Text style={styles.countText}>40 Quart Loose: {count40}</Text>
-            </View>
+
+        <View style={styles.coolerNumContainer}>
+          <View style={styles.baggedContainer}>
+            <Text style={styles.countText}>
+              62 Quart Bagged - {count62Bagged}
+            </Text>
+            <Text style={styles.countText}>
+              40 Quart Bagged - {count40Bagged}
+            </Text>
+            <Text style={styles.bagText}>Total Bags - {countBags}</Text>
+          </View>
+          <View style={styles.looseContainer}>
+            <Text style={styles.countText}>62 Quart Loose - {count62}</Text>
+            <Text style={styles.countText}>40 Quart Loose - {count40}</Text>
           </View>
         </View>
+
         <View style={styles.body}>
           {getDeliveriesApi.error && (
-            <>
-              <View style={styles.noDelivContainer}>
-                <Text style={styles.noDeliveries}>
-                  Couldn't retrieve the deliveries.
-                </Text>
-                <Button title="Retry" onPress={getDeliveriesApi.request} />
-              </View>
-            </>
+            <View style={styles.noDelivContainer}>
+              <Text style={styles.noDeliveries}>
+                Couldn't retrieve the deliveries.
+              </Text>
+              <Button title="Retry" onPress={getDeliveriesApi.request} />
+            </View>
           )}
         </View>
         {deliverieslist.length == 0 ? (
@@ -165,37 +164,57 @@ function DeliveryScreen(props) {
             <Text style={styles.noDeliveries}>No deliveries</Text>
           </View>
         ) : (
-          deliverieslist
+          <>{deliverieslist}</>
         )}
-        <View style={styles.extraLine}></View>
       </ScrollView>
     </>
   );
 }
 
 const styles = StyleSheet.create({
-  coolerNumContainer: {
-    backgroundColor: colors.lightgrey,
-    padding: 10,
-    borderRadius: 5,
+  body: {
+    marginTop: 7.5,
   },
   countContainer: {
     margin: 10,
+    backgroundColor: colors.white,
+    borderRadius: 8,
+    flexDirection: "row",
+    padding: 10,
   },
   countText: {
-    fontWeight: "500",
-    fontSize: 17.5,
     marginVertical: 2.5,
+    color: colors.onyx,
+    fontWeight: "500",
+  },
+  chevronContainer: {
+    backgroundColor: colors.white,
+    marginTop: 7.5,
+    flexDirection: "row",
+    alignItems: "center",
+    height: 50,
+  },
+  bagText: {
+    marginVertical: 2.5,
+    right: 0,
+    marginLeft: "auto",
+    color: colors.onyx,
+    fontWeight: "500",
   },
   looseContainer: {
     right: 0,
     marginLeft: "auto",
-    backgroundColor: colors.lightgrey,
-    padding: 10,
-    borderRadius: 5,
-    height: 75,
-    justifyContent: "center",
-    alignItems: "center",
+  },
+  coolerNumContainer: {
+    backgroundColor: colors.white,
+    marginTop: 10,
+    flexDirection: "row",
+    paddingHorizontal: 15,
+    padding: 5,
+    borderRadius: 25,
+    marginHorizontal: 15,
+    borderColor: colors.primary,
+    borderWidth: 2,
   },
   noDelivContainer: {
     backgroundColor: colors.grey,
@@ -206,14 +225,6 @@ const styles = StyleSheet.create({
   },
   noDeliveries: {
     textAlign: "center",
-  },
-  separator: {
-    borderBottomColor: colors.black,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-  },
-  extraLine: {
-    borderTopColor: colors.medium,
-    borderTopWidth: 1,
   },
 });
 

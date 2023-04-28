@@ -5,6 +5,7 @@ import {
   ScrollView,
   View,
   TouchableOpacity,
+  Platform,
 } from "react-native";
 
 import * as Yup from "yup";
@@ -15,7 +16,6 @@ import Form from "../components/forms/Form";
 import FormField from "../components/forms/FormField";
 import SubmitButton from "../components/forms/SubmitButton";
 import delivery from "../api/delivery";
-import NeighborhoodDropdown from "../components/NeighborhoodDropdown";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import colors from "../config/colors";
 import Text from "../components/Text";
@@ -23,20 +23,23 @@ import Text from "../components/Text";
 // These are regex expressions for form validation
 const nameRegExp = /^(?!.{126,})([\w+]{3,}\s+[\w+]{3,} ?)$/;
 
+const phoneRegExp = /^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4}$/im;
+
 const validationSchema = Yup.object().shape({
-  delivery_address: Yup.string().required().label("Delivery Address"),
+  delivery_address: Yup.string().required().min(5).label("Delivery Address"),
   name: Yup.string()
     .matches(nameRegExp, "Enter first and last name (3 character min. each)")
     .required()
-    .label("Customer Name"),
+    .label("Name"),
   phone_number: Yup.string()
-    // .min(10, "Phone number must be 10 digits")
-    // .max(10, "Phone number must be 10 digits")
-    // .matches(phoneRegExp, "Phone number is not valid")
+    .matches(phoneRegExp, "Phone number is not valid")
     .required()
     .label("Phone Number"),
-  email: Yup.string().required().email().label("Email"),
+  email: Yup.string().email().label("Email"),
   special_instructions: Yup.string().label("Special Instructions"),
+  cooler: Yup.object().required().label("Cooler"),
+  ice: Yup.object().required().label("Ice Type"),
+  neighborhood: Yup.object().required().label("Neighborhood"),
 });
 
 function AddDeliveryScreen(props) {
@@ -48,30 +51,23 @@ function AddDeliveryScreen(props) {
   const [selectedDateEnd, setSelectedDateEnd] = useState(new Date());
   const [showDatePickerEnd, setShowDatePickerEnd] = useState(false);
 
-  const handleSubmit = (userInfo) => {
-    console.log("here");
+  const handleSubmit = (userInfo, { resetForm }) => {
     const result = delivery.post(
-      cooler,
-      ice,
+      userInfo.cooler.label,
+      userInfo.ice.label,
       userInfo.delivery_address,
       userInfo.name,
       userInfo.phone_number,
       userInfo.email,
       selectedDateStart,
       selectedDateEnd,
-      neighborhood,
+      userInfo.neighborhood.value,
       userInfo.special_instructions
     );
-    setCooler("");
-    setIce("");
-    setNeighborhood("");
-    (userInfo.delivery_address = ""),
-      (userInfo.name = ""),
-      (userInfo.phone_number = ""),
-      (userInfo.email = ""),
-      (userInfo.start_date = ""),
-      (userInfo.end_date = ""),
-      (userInfo.special_instructions = "");
+    setSelectedDateStart(new Date());
+    setSelectedDateEnd(new Date());
+
+    resetForm();
   };
 
   const data1 = [
@@ -129,12 +125,12 @@ function AddDeliveryScreen(props) {
   };
 
   return (
-    <>
-      <KeyboardAvoidingView behavior="padding">
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          style={styles.container}
-        >
+    <KeyboardAvoidingView
+      behavior="padding"
+      keyboardVerticalOffset={Platform.OS === "ios" ? 80 : -220}
+    >
+      <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
+        <View style={{ marginBottom: 20 }}>
           <Form
             initialValues={{
               delivery_address: "",
@@ -142,32 +138,12 @@ function AddDeliveryScreen(props) {
               phone_number: "",
               email: "",
               special_instructions: "",
+              cooler: "",
+              ice: "",
             }}
             onSubmit={handleSubmit}
             validationSchema={validationSchema}
           >
-            <Dropdown
-              data={data1}
-              placeholder={"Select cooler size..."}
-              onParentCallback={handleCallBackCooler}
-            ></Dropdown>
-            <Dropdown
-              data={data2}
-              placeholder={"Select ice type..."}
-              onParentCallback={handleCallBackIce}
-            ></Dropdown>
-            <NeighborhoodDropdown
-              data={data3}
-              placeholder={"Select neighborhood..."}
-              onParentCallback={handleCallBackNeighborhood}
-            ></NeighborhoodDropdown>
-            <FormField
-              autoCapitalize="words"
-              autoCorrect={false}
-              icon="map-marker-radius"
-              name="delivery_address"
-              placeholder="Delivery Address"
-            />
             <FormField
               autoCapitalize="words"
               autoCorrect={false}
@@ -176,59 +152,132 @@ function AddDeliveryScreen(props) {
               placeholder="Customer Name"
             />
             <FormField
-              autoCorrect={false}
               icon="phone"
               name="phone_number"
-              placeholder="Phone Number"
-              keyboardType="numbers-and-punctuation"
+              placeholder="(000) 000-0000"
+              keyboardType={"phone-pad"}
               returnKeyType="done"
             />
+            <FormField
+              autoCapitalize="words"
+              autoCorrect={false}
+              icon="map-marker-radius"
+              name="delivery_address"
+              placeholder="Delivery Address"
+            />
+
+            <View style={{ width: "100%", flexDirection: "row" }}>
+              <View width={"47.5%"}>
+                <Text style={styles.dateLabel}>Start Date </Text>
+                <View style={styles.dateFields}>
+                  <MaterialCommunityIcons
+                    name="calendar-start"
+                    color={colors.medium}
+                    style={{ marginRight: 10 }}
+                    size={20}
+                  />
+                  {Platform.OS === "android" ? (
+                    <TouchableOpacity
+                      onPress={() => setShowDatePickerStart(true)}
+                    >
+                      <Text style={{ color: colors.medium }}>
+                        {selectedDateStart.toLocaleString().slice(0, 10)}
+                      </Text>
+                      {showDatePickerStart && (
+                        <DateTimePicker
+                          value={selectedDateStart}
+                          mode="date"
+                          display="default"
+                          onChange={handleStartDateChange}
+                        />
+                      )}
+                    </TouchableOpacity>
+                  ) : (
+                    <DateTimePicker
+                      value={selectedDateStart}
+                      mode="date"
+                      display="default"
+                      onChange={handleStartDateChange}
+                    />
+                  )}
+                </View>
+              </View>
+              <View style={{ width: "5%" }}></View>
+              <View width={"47.5%"}>
+                <Text style={styles.dateLabel}>End Date</Text>
+                <View style={styles.dateFields}>
+                  <MaterialCommunityIcons
+                    name="calendar-end"
+                    color={colors.medium}
+                    style={{ marginRight: 10 }}
+                    size={20}
+                  />
+                  {Platform.OS === "android" ? (
+                    <TouchableOpacity
+                      onPress={() => setShowDatePickerEnd(true)}
+                    >
+                      <Text style={{ color: colors.medium }}>
+                        {selectedDateEnd.toLocaleString().slice(0, 10)}
+                      </Text>
+                      {showDatePickerEnd && (
+                        <DateTimePicker
+                          value={selectedDateEnd}
+                          mode="date"
+                          display="default"
+                          onChange={handleEndDateChange}
+                        />
+                      )}
+                    </TouchableOpacity>
+                  ) : (
+                    <DateTimePicker
+                      value={selectedDateEnd}
+                      mode="date"
+                      display="default"
+                      onChange={handleEndDateChange}
+                    />
+                  )}
+                </View>
+              </View>
+            </View>
+
+            <View flexDirection={"row"}>
+              <View style={{ width: "47.5%" }}>
+                <Dropdown
+                  data={data1}
+                  placeholder={"Select cooler..."}
+                  onParentCallback={handleCallBackCooler}
+                  icon="air-humidifier"
+                  name={"cooler"}
+                ></Dropdown>
+              </View>
+              <View style={{ width: "5%" }}></View>
+              <View style={{ width: "47.5%" }}>
+                <Dropdown
+                  data={data2}
+                  placeholder={"Select ice..."}
+                  onParentCallback={handleCallBackIce}
+                  icon="cube-outline"
+                  name={"ice"}
+                ></Dropdown>
+              </View>
+            </View>
+            <Dropdown
+              data={data3}
+              placeholder={"Select neighborhood..."}
+              onParentCallback={handleCallBackNeighborhood}
+              icon="home-group"
+              name={"neighborhood"}
+            ></Dropdown>
+
             <FormField
               autoCapitalize="none"
               autoCorrect={false}
               icon="email"
               keyboardType="email-address"
               name="email"
-              placeholder="Customer Email"
+              placeholder="Customer Email (optional)"
               textContentType="emailAddress"
             />
-
-            <View style={styles.dateFields}>
-              <MaterialCommunityIcons
-                name="calendar-start"
-                color={colors.medium}
-                style={{ marginRight: 10 }}
-                size={20}
-              />
-              <Text style={{ color: colors.medium }}>
-                Start Date:{" "}
-                <DateTimePicker
-                  value={selectedDateStart}
-                  mode="date"
-                  display="default"
-                  onChange={handleStartDateChange}
-                />
-              </Text>
-            </View>
-
-            <View style={styles.dateFields}>
-              <MaterialCommunityIcons
-                name="calendar-end"
-                color={colors.medium}
-                style={{ marginRight: 10 }}
-                size={20}
-              />
-              <Text style={{ color: colors.medium }}>
-                End Date:{" "}
-                <DateTimePicker
-                  value={selectedDateEnd}
-                  mode="date"
-                  display="default"
-                  onChange={handleEndDateChange}
-                />
-              </Text>
-            </View>
-
             <FormField
               autoCapitalize="words"
               autoCorrect={true}
@@ -239,25 +288,32 @@ function AddDeliveryScreen(props) {
             />
             <SubmitButton title="SAVE" />
           </Form>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </>
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     padding: 10,
-    bottom: 10,
+    height: "100%",
+    backgroundColor: colors.lightgrey,
   },
   dateFields: {
-    backgroundColor: colors.lightgrey,
-    borderRadius: 25,
-    flexDirection: "row",
-    padding: 15,
-    marginVertical: 10,
     width: "100%",
+    flexDirection: "row",
+    backgroundColor: colors.white,
+    padding: 10,
+    borderRadius: 8,
+    marginVertical: 15,
+    height: 55,
     alignItems: "center",
+  },
+  dateLabel: {
+    marginLeft: 1,
+    marginBottom: -5,
+    color: colors.medium,
   },
   selectedDate: {
     marginTop: 20,

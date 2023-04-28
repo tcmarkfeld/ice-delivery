@@ -5,10 +5,13 @@ import {
   View,
   TouchableOpacity,
   KeyboardAvoidingView,
+  Alert,
+  Platform,
 } from "react-native";
 
 import DateTimePicker from "@react-native-community/datetimepicker";
 import * as Yup from "yup";
+import moment from "moment";
 
 import useApi from "../hooks/useApi";
 import deliveryApi from "../api/delivery";
@@ -21,13 +24,27 @@ import NeighborhoodDropdown from "../components/NeighborhoodDropdown";
 import Form from "../components/forms/Form";
 import SubmitButton from "../components/forms/SubmitButton";
 import { ScrollView } from "react-native-gesture-handler";
+import AppButton from "../components/Button";
+
+const nameRegExp = /^(?!.{126,})([\w+]{3,}\s+[\w+]{3,} ?)$/;
+
+const phoneRegExp = /^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4}$/im;
 
 const validationSchema = Yup.object().shape({
-  delivery_address: Yup.string().required().label("Delivery Address"),
-  name: Yup.string().required().label("Customer Name"),
-  phone_number: Yup.string().required().label("Phone Number").max(13),
-  email: Yup.string().required().email().label("Email"),
+  delivery_address: Yup.string().required().min(5).label("Delivery Address"),
+  name: Yup.string()
+    .matches(nameRegExp, "Enter first and last name (3 character min. each)")
+    .required()
+    .label("Name"),
+  phone_number: Yup.string()
+    .matches(phoneRegExp, "Phone number is not valid")
+    .required()
+    .label("Phone Number"),
+  email: Yup.string().email().label("Email"),
   special_instructions: Yup.string().label("Special Instructions"),
+  cooler: Yup.object().required().label("Cooler"),
+  ice: Yup.object().required().label("Ice Type"),
+  neighborhood: Yup.object().required().label("Neighborhood"),
 });
 
 function OrderScreen({ navigation, route }) {
@@ -41,6 +58,7 @@ function OrderScreen({ navigation, route }) {
   const [cooler, setCooler] = useState();
 
   const getDelivery = useApi(deliveryApi.getOne);
+  const deleteDelivery = useApi(deliveryApi.deleteOne);
   const delivery = getDelivery.data;
 
   const data3 = [
@@ -64,7 +82,11 @@ function OrderScreen({ navigation, route }) {
 
   function getValueLabel(value) {
     const item = data3.find((obj) => obj.value === value);
-    return item ? item.label : null;
+    if (item) {
+      if (!isNaN(neighborhood)) {
+        setNeighborhood(item.label);
+      }
+    }
   }
 
   const fetchDelivery = async () => {
@@ -74,7 +96,7 @@ function OrderScreen({ navigation, route }) {
     setCooler(result.data[0].cooler_size);
     setNeighborhood(result.data[0].neighborhood);
     setIce(result.data[0].ice_type);
-    setNeighborhood(getValueLabel(parseInt(neighborhood)));
+    await getValueLabel(parseInt(neighborhood));
     setLoading(false);
   };
 
@@ -101,6 +123,7 @@ function OrderScreen({ navigation, route }) {
   }
 
   const data = delivery[0];
+  console.log(selectedDateStart);
 
   const handleSubmit = async (userInfo) => {
     const result = await deliveryApi.put(
@@ -112,9 +135,33 @@ function OrderScreen({ navigation, route }) {
       selectedDateStart,
       selectedDateEnd,
       userInfo.special_instructions,
-      cooler,
-      ice,
-      neighborhood
+      userInfo.cooler.label,
+      userInfo.ice.label,
+      userInfo.neighborhood.value.toString()
+    );
+    navigation.navigate("All Deliveries");
+  };
+
+  const confirmDelete = async () => {
+    Alert.alert(
+      "Confirm",
+      "Are you sure you would like to delete this reservation?", // <- this part is optional, you can pass an empty string
+      [
+        {
+          text: "Cancel",
+          onPress: () => {},
+          style: "cancel",
+        },
+        {
+          text: "OK",
+          onPress: () => {
+            deleteDelivery.request(route.params.id);
+            navigation.navigate("All Deliveries");
+            Alert.alert("Success", "Reservation deleted. Refresh page.");
+          },
+        },
+      ],
+      { cancelable: true }
     );
   };
 
@@ -140,47 +187,128 @@ function OrderScreen({ navigation, route }) {
     { label: "BAGGED ICE", value: 2 },
   ];
 
+  var initialCooler;
+  if (data.cooler_size === "40 QUART") {
+    initialCooler = {
+      label: data.cooler_size,
+      value: 1,
+    };
+  } else {
+    initialCooler = {
+      label: data.cooler_size,
+      value: 2,
+    };
+  }
+  var initialIce;
+  if (data.ice_type === "LOOSE ICE") {
+    initialIce = {
+      label: data.ice_type,
+      value: 1,
+    };
+  } else {
+    initialIce = {
+      label: data.ice_type,
+      value: 2,
+    };
+  }
+  const initialNeighborhood = {
+    label: data.neighborhood_name,
+    value: data.neighborhood_id,
+  };
+  // const formattedDate = moment(selectedDateStart).format("YYYY/MM/DD");
+
+  // console.log(selectedDateStart);
+
   return (
-    <KeyboardAvoidingView behavior="padding">
+    <KeyboardAvoidingView
+      behavior="padding"
+      keyboardVerticalOffset={Platform.OS === "ios" ? 80 : -220}
+    >
       <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
-        <View style={{ flexDirection: "row", justifyContent: "center" }}>
+        <ActivityIndicator loading={getDelivery.loading} />
+        <View style={{ flexDirection: "row" }}>
           {/* Container for Start & End Date */}
           <View style={styles.dateFields}>
-            <Text style={{ color: colors.medium, textAlign: "center" }}>
-              Start Date:{" "}
+            <Text
+              style={{
+                color: colors.medium,
+                textAlign: "center",
+                marginBottom: 5,
+              }}
+            >
+              Start Date
             </Text>
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <MaterialCommunityIcons
-                name="calendar-start"
-                color={colors.medium}
-                style={{ marginRight: 10 }}
-                size={25}
-              />
-              <DateTimePicker
-                value={selectedDateStart}
-                mode="date"
-                display="default"
-                onChange={handleStartDateChange}
-              />
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              {Platform.OS === "android" ? (
+                <TouchableOpacity onPress={() => setShowDatePickerStart(true)}>
+                  <Text style={{ color: colors.medium }}>
+                    {selectedDateStart.toLocaleString().slice(0, 10)}
+                  </Text>
+                  {showDatePickerStart && (
+                    <DateTimePicker
+                      value={selectedDateStart}
+                      mode="date"
+                      display="default"
+                      onChange={handleStartDateChange}
+                    />
+                  )}
+                </TouchableOpacity>
+              ) : (
+                <DateTimePicker
+                  value={selectedDateStart}
+                  mode="date"
+                  display="default"
+                  onChange={handleStartDateChange}
+                />
+              )}
             </View>
           </View>
+          <View style={{ width: "5%" }}></View>
           <View style={styles.dateFields}>
-            <Text style={{ color: colors.medium, textAlign: "center" }}>
-              End Date:{" "}
+            <Text
+              style={{
+                color: colors.medium,
+                textAlign: "center",
+                marginBottom: 5,
+              }}
+            >
+              End Date
             </Text>
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <MaterialCommunityIcons
-                name="calendar-end"
-                color={colors.medium}
-                style={{ marginRight: 10 }}
-                size={25}
-              />
-              <DateTimePicker
-                value={selectedDateEnd}
-                mode="date"
-                display="default"
-                onChange={handleEndDateChange}
-              />
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              {Platform.OS === "android" ? (
+                <TouchableOpacity onPress={() => setShowDatePickerEnd(true)}>
+                  <Text style={{ color: colors.medium }}>
+                    {selectedDateEnd.toLocaleString().slice(0, 10)}
+                  </Text>
+                  {showDatePickerEnd && (
+                    <DateTimePicker
+                      value={selectedDateEnd}
+                      mode="date"
+                      display="default"
+                      onChange={handleEndDateChange}
+                    />
+                  )}
+                </TouchableOpacity>
+              ) : (
+                <DateTimePicker
+                  value={selectedDateEnd}
+                  mode="date"
+                  display="default"
+                  onChange={handleEndDateChange}
+                />
+              )}
             </View>
           </View>
         </View>
@@ -195,29 +323,77 @@ function OrderScreen({ navigation, route }) {
               phone_number: `${data.customer_phone}`,
               email: `${data.customer_email}`,
               special_instructions: `${data.special_instructions}`,
+              cooler: initialCooler,
+              ice: initialIce,
+              neighborhood: initialNeighborhood,
             }}
             onSubmit={handleSubmit}
             validationSchema={validationSchema}
           >
+            <View style={{ flexDirection: "row", justifyContent: "center" }}>
+              <FormField
+                width={"47.5%"}
+                autoCapitalize="words"
+                autoCorrect={false}
+                name="name"
+                placeholder="Customer Name"
+                icon="account-circle-outline"
+                label="Customer Name"
+              />
+              <View style={{ width: "5%" }}></View>
+              <FormField
+                width={"47.5%"}
+                autoCorrect={false}
+                name="phone_number"
+                placeholder="Phone Number"
+                keyboardType="numbers-and-punctuation"
+                returnKeyType="done"
+                icon="phone"
+                label="Phone Number"
+              />
+            </View>
             <FormField
-              style={styles.formField}
               autoCapitalize="words"
               autoCorrect={false}
-              name="name"
-              placeholder="Customer Name"
-              icon="account-circle-outline"
+              name="delivery_address"
+              placeholder="Delivery Address"
+              icon="map-marker-radius"
+              label="Delivery Address"
             />
+
+            <View flexDirection={"row"}>
+              <View style={{ width: "47.5%" }}>
+                <Dropdown
+                  data={data1}
+                  placeholder={cooler}
+                  onParentCallback={handleCallBackCooler}
+                  label="Cooler Size"
+                  icon="air-humidifier"
+                  name={"cooler"}
+                ></Dropdown>
+              </View>
+              <View style={{ width: "5%" }}></View>
+              <View style={{ width: "47.5%" }}>
+                <Dropdown
+                  data={data2}
+                  placeholder={ice}
+                  onParentCallback={handleCallBackIce}
+                  label="Ice Type"
+                  icon="cube-outline"
+                  name={"ice"}
+                ></Dropdown>
+              </View>
+            </View>
+
+            <Dropdown
+              data={data3}
+              placeholder={neighborhood}
+              onParentCallback={handleCallBackNeighborhood}
+              label="Neighborhood"
+              icon="home-group"
+              name={"neighborhood"}
+            ></Dropdown>
             <FormField
-              style={styles.formField}
-              autoCorrect={false}
-              name="phone_number"
-              placeholder="Phone Number"
-              keyboardType="numbers-and-punctuation"
-              returnKeyType="done"
-              icon="phone"
-            />
-            <FormField
-              style={styles.formField}
               autoCapitalize="none"
               autoCorrect={false}
               keyboardType="email-address"
@@ -225,33 +401,8 @@ function OrderScreen({ navigation, route }) {
               placeholder="Customer Email"
               textContentType="emailAddress"
               icon="email"
+              label="Customer Email"
             />
-            <FormField
-              style={styles.formField}
-              autoCapitalize="words"
-              autoCorrect={false}
-              name="delivery_address"
-              placeholder="Delivery Address"
-              icon="map-marker-radius"
-            />
-            <Dropdown
-              style={styles.dropdown}
-              data={data1}
-              placeholder={cooler}
-              onParentCallback={handleCallBackCooler}
-            ></Dropdown>
-            <Dropdown
-              data={data2}
-              style={styles.dropdown}
-              placeholder={ice}
-              onParentCallback={handleCallBackIce}
-            ></Dropdown>
-            <NeighborhoodDropdown
-              data={data3}
-              style={styles.dropdown}
-              placeholder={neighborhood}
-              onParentCallback={handleCallBackNeighborhood}
-            ></NeighborhoodDropdown>
             <FormField
               autoCapitalize="words"
               autoCorrect={true}
@@ -259,8 +410,21 @@ function OrderScreen({ navigation, route }) {
               name="special_instructions"
               placeholder="Special Instructions (optional)"
               returnKeyType="done"
+              label="Special Instructions"
             />
-            <SubmitButton style={styles.submitButton} title="SAVE" />
+            <View style={{ flexDirection: "row", justifyContent: "center" }}>
+              <View style={{ width: "47.5%" }}>
+                <SubmitButton style={styles.submitButton} title="SAVE" />
+              </View>
+              <View style={{ width: "5%" }}></View>
+              <View style={{ width: "47.5%" }}>
+                <AppButton
+                  onPress={confirmDelete}
+                  title={"Delete"}
+                  color="danger"
+                />
+              </View>
+            </View>
           </Form>
         </View>
       </ScrollView>
@@ -269,14 +433,25 @@ function OrderScreen({ navigation, route }) {
 }
 
 const styles = StyleSheet.create({
-  customerContainer: {
+  container: {
+    backgroundColor: colors.lightgrey,
     padding: 10,
+    height: "100%",
+  },
+  customerContainer: {
     bottom: 10,
+    width: "100%",
   },
   dateFields: {
-    flexDirection: "col",
+    width: "47.5%",
+    flexDirection: "column",
+    backgroundColor: colors.white,
     padding: 10,
-    marginVertical: 10,
+    borderRadius: 8,
+    marginVertical: 15,
+  },
+  dropdownStacked: {
+    width: "47.5%",
   },
 });
 

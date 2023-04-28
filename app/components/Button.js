@@ -11,7 +11,6 @@ function AppButton({
   buttonStyle,
   textStyle,
 }) {
-  //used on LoginScreen and RegisterScreen and HomeScreen(additional edi on screen)
   return (
     <TouchableOpacity
       style={[styles.button, buttonStyle, { backgroundColor: colors[color] }]}
@@ -25,7 +24,7 @@ function AppButton({
 const styles = StyleSheet.create({
   button: {
     backgroundColor: colors.primary,
-    borderRadius: 25,
+    borderRadius: 8,
     justifyContent: "center",
     alignItems: "center",
     padding: 15,
