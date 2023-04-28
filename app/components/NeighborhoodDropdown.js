@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Platform, StyleSheet, View } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 import colors from "../config/colors";
@@ -9,26 +9,36 @@ const DropdownComponent = (props) => {
   const [value, setValue] = useState(null);
   const [isFocus, setIsFocus] = useState(false);
 
-  const GetValue = () => {
-    //this is checking to see if I am already passing in a value from the edit appt screen to automatically fill in the dropdown at the BEGINNING
-    if (value == null && props.value != null) {
-      //shouldn't pass this condition check if no value is passed on props OR value has already been set once
-      setValue(props.value);
-    }
-    // else if (value != null && props.value == 'refresh') {
-    //   //console.log('test');
-    //   setValue(null);
-    // }
+  useEffect(() => {
+    // Update the state of the dropdown value when props.value changes
+    setValue(props.value);
+  }, [props.value]);
+
+  const handleDropdownChange = (item) => {
+    setValue(item.value);
+    props.onParentCallback(item.value);
+    setIsFocus(false);
   };
+
+  const handleOtherFieldChange = (value) => {
+    // Update the state of the dropdown value based on the other field value
+    setValue(value);
+    setIsFocus(true); // Set isFocus to true to make the dropdown appear active
+  };
+
+  const data = [
+    { label: "Option 1", value: "option1" },
+    { label: "Option 2", value: "option2" },
+    { label: "Option 3", value: "option3" },
+  ];
 
   return (
     <View>
-      {GetValue()}
       {props.label && <AppText style={styles.label}>{props.label}</AppText>}
       <Dropdown
         style={[styles.dropdown, isFocus, props.style]}
         placeholderStyle={styles.placeholderStyle}
-        data={props.data}
+        data={props.data || data}
         maxHeight={300}
         labelField="label"
         valueField="value"
@@ -48,11 +58,7 @@ const DropdownComponent = (props) => {
         )}
         onFocus={() => setIsFocus(true)}
         onBlur={() => setIsFocus(false)}
-        onChange={(item) => {
-          setValue(item.value); //for edit appt screen this still sets what is visible in the dropdown if they pick a different test, so user can still pick a new one
-          props.onParentCallback(item.value); //passes selected value back
-          setIsFocus(false);
-        }}
+        onChange={handleDropdownChange}
       />
     </View>
   );
@@ -68,9 +74,6 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     width: "100%",
     alignItems: "center",
-  },
-  icon: {
-    marginRight: 5,
   },
   placeholderStyle: {
     color: colors.medium,

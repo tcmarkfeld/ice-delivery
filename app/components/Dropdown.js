@@ -11,8 +11,8 @@ const DropdownComponent = ({ name, label, icon, data, ...otherProps }) => {
   const { values, setFieldValue, setFieldTouched, errors, touched } =
     useFormikContext();
   const value = values[name];
-  const error = touched[name] && errors[name];
 
+  console.log(value);
   const handleValueChange = (itemValue) => {
     setFieldValue(name, itemValue);
     setFieldTouched(name, true);
@@ -42,6 +42,7 @@ const DropdownComponent = ({ name, label, icon, data, ...otherProps }) => {
           />
         )}
         onChange={handleValueChange}
+        containerStyle={{ borderRadius: 8 }}
         dropdownOffset={{ bottom: -100 }}
         dropdownPosition="bottom"
         {...otherProps}

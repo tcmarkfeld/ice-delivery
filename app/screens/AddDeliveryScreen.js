@@ -12,13 +12,39 @@ import * as Yup from "yup";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
 import Dropdown from "../components/Dropdown";
+import NeighborhoodDropdown from "../components/NeighborhoodDropdown";
 import Form from "../components/forms/Form";
 import FormField from "../components/forms/FormField";
+import AddressFormField from "../components/forms/AddressField";
 import SubmitButton from "../components/forms/SubmitButton";
 import delivery from "../api/delivery";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import colors from "../config/colors";
 import Text from "../components/Text";
+import {
+  coolerData,
+  iceData,
+  neighborhoodData,
+  corollaLight,
+  sectionA,
+  sectionB,
+  sectionC,
+  sectionD,
+  sectionE,
+  sectionF,
+  hijo,
+  klmpq,
+  crownPoint,
+  spinDrift,
+  pineIsland,
+  buckIsland,
+  oceanHill,
+  cruzBay,
+  whalehead,
+  whaleheadRight,
+  monterayShores,
+  currituckClub,
+} from "../components/Constants";
 
 // These are regex expressions for form validation
 const nameRegExp = /^(?!.{126,})([\w+]{3,}\s+[\w+]{3,} ?)$/;
@@ -43,9 +69,10 @@ const validationSchema = Yup.object().shape({
 });
 
 function AddDeliveryScreen(props) {
-  const [neighborhood, setNeighborhood] = useState("");
+  const [neighborhood, setNeighborhood] = useState();
   const [ice, setIce] = useState("");
   const [cooler, setCooler] = useState("");
+  const [address, setAddress] = useState("");
   const [selectedDateStart, setSelectedDateStart] = useState(new Date());
   const [showDatePickerStart, setShowDatePickerStart] = useState(false);
   const [selectedDateEnd, setSelectedDateEnd] = useState(new Date());
@@ -70,32 +97,53 @@ function AddDeliveryScreen(props) {
     resetForm();
   };
 
-  const data1 = [
-    { label: "40 Quart", value: 1 },
-    { label: "62 Quart", value: 2 },
-  ];
-  const data2 = [
-    { label: "Loose ice", value: 1 },
-    { label: "Bagged ice", value: 2 },
-  ];
-  const data3 = [
-    { label: "Ocean Hill", value: 1 },
-    { label: "Corolla Light", value: 2 },
-    { label: "Whalehead", value: 3 },
-    { label: "Cruz Bay (Soundfront at Corolla Bay)", value: 16 },
-    { label: "Monteray Shores", value: 15 },
-    { label: "Buck Island", value: 14 },
-    { label: "Crown Point", value: 13 },
-    { label: "KLMPQ", value: 12 },
-    { label: "HIJO", value: 11 },
-    { label: "Section F", value: 10 },
-    { label: "Currituck Club", value: 4 },
-    { label: "Section D", value: 9 },
-    { label: "Section C", value: 8 },
-    { label: "Section B", value: 7 },
-    { label: "Section A", value: 6 },
-    { label: "Pine Island", value: 5 },
-  ];
+  const checkAddress = (str) => {
+    str = str.replaceAll(/\s|[0-9]/g, "").toUpperCase();
+    if (sectionA.includes(str)) {
+      setNeighborhood(7);
+    } else if (sectionB.includes(str)) {
+      setNeighborhood(8);
+    } else if (sectionC.includes(str)) {
+      setNeighborhood(9);
+    } else if (sectionD.includes(str)) {
+      setNeighborhood(10);
+    } else if (sectionE.includes(str)) {
+      setNeighborhood(11);
+    } else if (sectionF.includes(str)) {
+      setNeighborhood(12);
+    } else if (hijo.includes(str)) {
+      setNeighborhood(13);
+    } else if (klmpq.includes(str)) {
+      setNeighborhood(14);
+    } else if (crownPoint.includes(str)) {
+      setNeighborhood(15);
+    } else if (spinDrift.includes(str)) {
+      setNeighborhood(6);
+    } else if (pineIsland.includes(str)) {
+      setNeighborhood(5);
+    } else if (buckIsland.includes(str)) {
+      setNeighborhood(16);
+    } else if (oceanHill.includes(str)) {
+      setNeighborhood(1);
+    } else if (corollaLight.includes(str)) {
+      setNeighborhood(2);
+    } else if (cruzBay.includes(str)) {
+      setNeighborhood(19);
+    } else if (whalehead.includes(str)) {
+      setNeighborhood(3);
+    } else if (whaleheadRight.includes(str)) {
+      setNeighborhood(18);
+    } else if (monterayShores.includes(str)) {
+      setNeighborhood(17);
+    } else if (currituckClub.includes(str)) {
+      setNeighborhood(4);
+    }
+  };
+
+  const getAddress = (childData) => {
+    setAddress(childData);
+    checkAddress(childData);
+  };
 
   const handleCallBackCooler = (childData) => {
     //parent function, dropdown passes selected item back to this function through a prop
@@ -140,6 +188,7 @@ function AddDeliveryScreen(props) {
               special_instructions: "",
               cooler: "",
               ice: "",
+              neighborhood: "",
             }}
             onSubmit={handleSubmit}
             validationSchema={validationSchema}
@@ -158,12 +207,14 @@ function AddDeliveryScreen(props) {
               keyboardType={"phone-pad"}
               returnKeyType="done"
             />
-            <FormField
+            <AddressFormField
               autoCapitalize="words"
               autoCorrect={false}
               icon="map-marker-radius"
               name="delivery_address"
+              value={address}
               placeholder="Delivery Address"
+              onParentCallback={getAddress}
             />
 
             <View style={{ width: "100%", flexDirection: "row" }}>
@@ -243,7 +294,7 @@ function AddDeliveryScreen(props) {
             <View flexDirection={"row"}>
               <View style={{ width: "47.5%" }}>
                 <Dropdown
-                  data={data1}
+                  data={coolerData}
                   placeholder={"Select cooler..."}
                   onParentCallback={handleCallBackCooler}
                   icon="air-humidifier"
@@ -253,7 +304,7 @@ function AddDeliveryScreen(props) {
               <View style={{ width: "5%" }}></View>
               <View style={{ width: "47.5%" }}>
                 <Dropdown
-                  data={data2}
+                  data={iceData}
                   placeholder={"Select ice..."}
                   onParentCallback={handleCallBackIce}
                   icon="cube-outline"
@@ -261,13 +312,14 @@ function AddDeliveryScreen(props) {
                 ></Dropdown>
               </View>
             </View>
-            <Dropdown
-              data={data3}
+            <NeighborhoodDropdown
+              data={neighborhoodData}
               placeholder={"Select neighborhood..."}
+              value={neighborhood}
               onParentCallback={handleCallBackNeighborhood}
               icon="home-group"
               name={"neighborhood"}
-            ></Dropdown>
+            ></NeighborhoodDropdown>
 
             <FormField
               autoCapitalize="none"

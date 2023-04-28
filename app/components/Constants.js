@@ -1,0 +1,310 @@
+export const coolerData = [
+  { label: "40 Quart", value: 1 },
+  { label: "62 Quart", value: 2 },
+];
+
+export const iceData = [
+  { label: "Loose ice", value: 1 },
+  { label: "Bagged ice", value: 2 },
+];
+
+export const neighborhoodData = [
+  { label: "Ocean Hill", value: 1 },
+  { label: "Corolla Light", value: 2 },
+  { label: "Whalehead", value: 3 },
+  { label: "Whalehead Right", value: 18 },
+  { label: "Cruz Bay (Soundfront at Corolla Bay)", value: 19 },
+  { label: "Monteray Shores", value: 17 },
+  { label: "Buck Island", value: 16 },
+  { label: "Crown Point", value: 15 },
+  { label: "KLMPQ", value: 14 },
+  { label: "HIJO", value: 13 },
+  { label: "Section F", value: 12 },
+  { label: "Currituck Club", value: 4 },
+  { label: "Section E", value: 11 },
+  { label: "Section D", value: 10 },
+  { label: "Section C", value: 9 },
+  { label: "Section B", value: 8 },
+  { label: "Section A", value: 7 },
+  { label: "Spindrift", value: 6 },
+  { label: "Pine Island", value: 5 },
+];
+
+// Spelling out Arch and Way, Abbreviate Lane to LN,
+// Court to CT, Road to RD, Crescent to CRES, Point to PT
+// Circle to CIR
+export const sectionA = ["OCEANWAY", "BREAKERSARCH"];
+
+export const sectionB = ["SEASHELLLN", "CONCHCRES"];
+
+export const sectionC = ["SANDHILLLN", "SANDBUCKETARCH"];
+
+export const sectionD = [
+  "MARLINWAY",
+  "TROLLINGLN",
+  "WHITEWHALEWAY",
+  "PORPOISEPT",
+];
+
+export const sectionE = [
+  "SCHOONERRIDGEDR",
+  "STAYSAILCRES",
+  "STAYSAILCRESCENT",
+  "MAINSAILLN",
+  "TOPSAILARCH",
+  "SCHOONERRIDGE",
+];
+
+export const sectionF = [
+  "SANDFIDDLERTRAIL",
+  "SANDFIDDLERTR",
+  "SURFSONGLN",
+  "SEAOATSCT",
+  "SALTSPRAYCT",
+  "SURFSONGCT",
+  "SALTSPRAYCIR",
+  "SANDFIDDLERCIR",
+  "SANDFIDDLERCIRCLE",
+];
+
+export const hijo = [
+  "SEABIRDWAY",
+  "CORMORANTTRAIL",
+  "CORMORANTTR",
+  "WWILLETCT",
+  "EWILLETCT",
+  "WGRACKLECT",
+  "EGRACKLECT",
+  "WKNOTCT",
+  "WKNOT",
+  "EKNOTCT",
+  "EKNOT",
+  "CORMORANTCT",
+  "SANDERLINGTRAIL",
+  "SANDERLINGTR",
+  "SKIMMERCT",
+  "SKIMMERCT",
+  "SKIMMERARCH",
+  "GREBECT",
+  "GANNETCT",
+  "TERNCT",
+  "TERNARCH",
+  "OCEANFRONTARCH",
+  "OCEANLAKETRAIL",
+  "OCEANLAKETR",
+  "MYRTLEWOODCT",
+  "SANDPLUMCT",
+  "WAVEARCH",
+  "OLEANDERCT",
+  "JUNIPERBERRYCT",
+  "TIDEARCH",
+  "PAMPASCT",
+  "WPLOVERCT",
+  "EPLOVERCT",
+  "WSANDPIPERCT",
+  "ESANDPIPERCT",
+  "FISHCROWCT",
+];
+
+export const klmpq = [
+  "DRIFTWOODWAY",
+  "SUNRISELN",
+  "GULFSTREAMCT",
+  "FISHERMANSCT",
+  "LAKEVIEWCT",
+  "LAKESHORECT",
+  "SEAHORSECT",
+  "WATERSEDGE",
+  "MARINERDR",
+  "MAINSAILARCH",
+  "SPINNAKERARCH",
+  "SEAMISTLN",
+  "SANDDOLLARCT",
+  "STARFISHCT",
+  "SEAMISTCT",
+  "MYRTLECT",
+  "BAYBERRYCT",
+  "SUNRISECT",
+];
+
+export const crownPoint = ["CROWNPOINTCIR", "KINGSGRANTDR"];
+
+export const spinDrift = ["SPINDRIFTTRAIL", "CLAMSHELLCT", "LANDFALLCT"];
+
+export const pineIsland = [
+  "CADWALLRD",
+  "SALTHOUSERD",
+  "COTTAGECOVE",
+  "HICKSBAYLN",
+  "LONGFELLOWCOVE",
+  "WHITEPT",
+  "AUDUBONLN",
+  "LINDSEYLN",
+  "DEEPNECKRD",
+  "MYRTLEPONDRD",
+  "SPRIGPT",
+  "KITSY'SPOND",
+  "BLACKPINERD",
+  "NCOVERD",
+  "ISLANDLEADRD",
+  "PIPSI'SPOINTRD",
+  "PIPSI'SPT",
+  "GREATGAPPT",
+  "COTTAGECOVERD",
+  "NBAUMTRAIL",
+  "SBAUMTRAIL",
+];
+
+export const buckIsland = [
+  "ORIONSWAY",
+  "RANGERRD",
+  "WMEETINGST",
+  "BROADST",
+  "APOLLORD",
+  "MERCURCYRD",
+  "COLUMBIARD",
+  "GALILEORD",
+  "VOYAGERRD",
+  "EMEETINGST",
+];
+
+export const oceanHill = [
+  "SANDCASTLEDR",
+  "STILLWINDCT",
+  "BEARFOOTPATH",
+  "LOSTLAKELN",
+  "LAKESIDEDR",
+  "CRYSTALLAKECT",
+  "FAIRWINDSLN",
+  "OCEANHILLCT",
+  "BLUEWATERCT",
+  "CLEARWATERLN",
+  "STILLWATERCT",
+  "NLAKECT",
+  "WINDANCELN",
+  "HOMEPORTCTW",
+  "HOMEPORTCTE",
+  "FOURWINDSCT",
+  "WINDJAMMERCT",
+  "CORALLN",
+  "PACIFICAVE",
+  "BISMARKDR",
+  "ATLANTICAVE",
+  "IONIANLN",
+  "ADRIATICAVE",
+  "PERSIMMONST",
+  "SCHOOLHOUSELN",
+  "KARENSWAY",
+  "THIRDST",
+];
+
+export const corollaLight = [
+  "MORRISDR",
+  "FRANKLYNST",
+  "PAYSONST",
+  "PAYSONCT",
+  "BALDWINCT",
+  "FRANKLYNCT",
+  "STRONGCT",
+  "VILLACT",
+  "TWIFORDST",
+  "GRAYCT",
+  "BODIECT",
+  "HATTERASCT",
+  "ALBERMARLECT",
+  "OCRACOKECT",
+  "AUSTINST",
+  "DUNTONCT",
+  "BRUMSEYCT",
+  "SIMMONSCT",
+  "SNOWCT",
+];
+
+export const cruzBay = ["CRUZBAYLN", "DEVILSBAY"];
+
+export const whalehead = [
+  "SHADST",
+  "COROLLADR",
+  "WHALEHEADDR",
+  "LIGHTHOUSEDR",
+  "DOLPHINST",
+  "ALBACOREST",
+];
+
+export const whaleheadRight = [
+  "HERRINGST",
+  "CANEGARDENBAYCIR",
+  "PELICANCT",
+  "NHARBORVIEW",
+  "SEAVIEWCT",
+];
+
+export const monterayShores = [
+  "OCEANFORESTCT",
+  "MISTYPONDCT",
+  "SUNBURSTCT",
+  "SHARBORVIEW",
+  "MARINACT",
+  "MONTERAYDR",
+  "CINNAMONCT",
+  "SEAWHISPERCT",
+  "WINDWARDWAY",
+  "LOOKOUTWAY",
+  "SEASCAPECT",
+  "SEACLIFFCT",
+  "SEADRIFTCT",
+  "DRIFTINGSANDSDR",
+  "SPYGLASSCT",
+  "GOLDENBLUFFWAY",
+  "WINDSWEPTCT",
+  "SPOINTCT",
+  "ROSEWOODCT",
+  "AZURECT",
+  "OAKRIDGECT",
+  "IVORYCT",
+  "WELKCT",
+  "MARSHLANDING",
+  "SEARIDGEDR",
+  "AMBERCT",
+  "SHORESIDECT",
+  "INDIGOCT",
+  "EMERALDCT",
+];
+
+export const currituckClub = [
+  "COTTAGE LN",
+  "SANDANDSEACT",
+  "LOBLOLLYCT",
+  "HIGHSANDDUNECT",
+  "OYSTERCATCHERCT",
+  "SHOVLERCT",
+  "WILDCHERRYCT",
+  "DOTTIESWALK",
+  "TERRAPINPONDCT",
+  "SEAFAIRDR",
+  "DUNEPOINTRD",
+  "DUNEPT",
+  "RIDGEPOINTDR",
+  "RIDGEPT",
+  "HAMMOCKLN",
+  "CURRITUCKCAY",
+  "MOONGATELN",
+  "GROUSECT",
+  "WHISTLERCT",
+  "HUNTCLUBDR",
+  "OAKVIEWCT",
+  "MEADOWLN",
+  "MAGNOLIAWAY",
+  "MAGNOLIACT",
+  "BROWNPELICANCT",
+  "NIGHTHERONCT",
+  "WHOOPINGCRANECT",
+  "OLDSANDYRD",
+  "HISTORICLOOP",
+  "BARNCT",
+  "TRUMPETERSWANCT",
+  "LIVEOAKCT",
+  "GOLFVIEWTRAIL",
+  "HERRINGGULLCT",
+  "LAUGHINGGULLCT",
+];
