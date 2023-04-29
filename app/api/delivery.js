@@ -24,7 +24,9 @@ const post = (
   start_date,
   end_date,
   neighborhood,
-  special
+  special,
+  cooler_num,
+  bag_limes
 ) => {
   if (!special) {
     special = "";
@@ -49,6 +51,8 @@ const post = (
       cooler_size: cooler,
       ice_type: ice,
       neighborhood: neighborhood,
+      cooler_num: cooler_num,
+      bag_limes: bag_limes,
     }),
   }).then((response) => {
     if (response.status == 200) {
@@ -70,7 +74,9 @@ const put = (
   special_instructions,
   cooler_size,
   ice_type,
-  neighborhood
+  neighborhood,
+  cooler_num,
+  bag_limes
 ) => {
   const saveDeliveryURL = baseURL + `/api/delivery/edit/${id}`;
   fetch(saveDeliveryURL, {
@@ -92,6 +98,8 @@ const put = (
       cooler_size: cooler_size,
       ice_type: ice_type,
       neighborhood: neighborhood,
+      cooler_num: cooler_num,
+      bag_limes: bag_limes,
     }),
   }).then((response) => {
     if (response.status == 200) {

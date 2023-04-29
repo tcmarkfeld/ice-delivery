@@ -21,30 +21,7 @@ import delivery from "../api/delivery";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import colors from "../config/colors";
 import Text from "../components/Text";
-import {
-  coolerData,
-  iceData,
-  neighborhoodData,
-  corollaLight,
-  sectionA,
-  sectionB,
-  sectionC,
-  sectionD,
-  sectionE,
-  sectionF,
-  hijo,
-  klmpq,
-  crownPoint,
-  spinDrift,
-  pineIsland,
-  buckIsland,
-  oceanHill,
-  cruzBay,
-  whalehead,
-  whaleheadRight,
-  monterayShores,
-  currituckClub,
-} from "../components/Constants";
+import { coolerData, iceData, neighborhoodData } from "../components/Constants";
 
 // These are regex expressions for form validation
 const nameRegExp = /^(?!.{126,})([\w+]{3,}\s+[\w+]{3,} ?)$/;
@@ -52,27 +29,29 @@ const nameRegExp = /^(?!.{126,})([\w+]{3,}\s+[\w+]{3,} ?)$/;
 const phoneRegExp = /^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4}$/im;
 
 const validationSchema = Yup.object().shape({
-  delivery_address: Yup.string().required().min(5).label("Delivery Address"),
+  delivery_address: Yup.string().required().max(149).label("Delivery Address"),
   name: Yup.string()
     .matches(nameRegExp, "Enter first and last name (3 character min. each)")
     .required()
+    .max(75)
     .label("Name"),
   phone_number: Yup.string()
     .matches(phoneRegExp, "Phone number is not valid")
     .required()
     .label("Phone Number"),
-  email: Yup.string().email().label("Email"),
-  special_instructions: Yup.string().label("Special Instructions"),
+  email: Yup.string().email().max(75).label("Email"),
+  special_instructions: Yup.string().max(150).label("Special Instructions"),
   cooler: Yup.object().required().label("Cooler"),
+  cooler_num: Yup.number().min(1).max(10).required().label("Cooler Number"),
   ice: Yup.object().required().label("Ice Type"),
   neighborhood: Yup.object().required().label("Neighborhood"),
+  bag_limes: Yup.number().min(0).max(5).required().label("Limes"),
 });
 
 function AddDeliveryScreen(props) {
   const [neighborhood, setNeighborhood] = useState();
   const [ice, setIce] = useState("");
   const [cooler, setCooler] = useState("");
-  const [address, setAddress] = useState("");
   const [selectedDateStart, setSelectedDateStart] = useState(new Date());
   const [showDatePickerStart, setShowDatePickerStart] = useState(false);
   const [selectedDateEnd, setSelectedDateEnd] = useState(new Date());
@@ -89,60 +68,14 @@ function AddDeliveryScreen(props) {
       selectedDateStart,
       selectedDateEnd,
       userInfo.neighborhood.value,
-      userInfo.special_instructions
+      userInfo.special_instructions,
+      userInfo.cooler_num,
+      userInfo.bag_limes
     );
     setSelectedDateStart(new Date());
     setSelectedDateEnd(new Date());
 
     resetForm();
-  };
-
-  const checkAddress = (str) => {
-    str = str.replaceAll(/\s|[0-9]/g, "").toUpperCase();
-    if (sectionA.includes(str)) {
-      setNeighborhood(7);
-    } else if (sectionB.includes(str)) {
-      setNeighborhood(8);
-    } else if (sectionC.includes(str)) {
-      setNeighborhood(9);
-    } else if (sectionD.includes(str)) {
-      setNeighborhood(10);
-    } else if (sectionE.includes(str)) {
-      setNeighborhood(11);
-    } else if (sectionF.includes(str)) {
-      setNeighborhood(12);
-    } else if (hijo.includes(str)) {
-      setNeighborhood(13);
-    } else if (klmpq.includes(str)) {
-      setNeighborhood(14);
-    } else if (crownPoint.includes(str)) {
-      setNeighborhood(15);
-    } else if (spinDrift.includes(str)) {
-      setNeighborhood(6);
-    } else if (pineIsland.includes(str)) {
-      setNeighborhood(5);
-    } else if (buckIsland.includes(str)) {
-      setNeighborhood(16);
-    } else if (oceanHill.includes(str)) {
-      setNeighborhood(1);
-    } else if (corollaLight.includes(str)) {
-      setNeighborhood(2);
-    } else if (cruzBay.includes(str)) {
-      setNeighborhood(19);
-    } else if (whalehead.includes(str)) {
-      setNeighborhood(3);
-    } else if (whaleheadRight.includes(str)) {
-      setNeighborhood(18);
-    } else if (monterayShores.includes(str)) {
-      setNeighborhood(17);
-    } else if (currituckClub.includes(str)) {
-      setNeighborhood(4);
-    }
-  };
-
-  const getAddress = (childData) => {
-    setAddress(childData);
-    checkAddress(childData);
   };
 
   const handleCallBackCooler = (childData) => {
@@ -187,8 +120,10 @@ function AddDeliveryScreen(props) {
               email: "",
               special_instructions: "",
               cooler: "",
+              cooler_num: "1",
               ice: "",
               neighborhood: "",
+              bag_limes: "0",
             }}
             onSubmit={handleSubmit}
             validationSchema={validationSchema}
@@ -207,14 +142,12 @@ function AddDeliveryScreen(props) {
               keyboardType={"phone-pad"}
               returnKeyType="done"
             />
-            <AddressFormField
+            <FormField
               autoCapitalize="words"
               autoCorrect={false}
               icon="map-marker-radius"
               name="delivery_address"
-              value={address}
               placeholder="Delivery Address"
-              onParentCallback={getAddress}
             />
 
             <View style={{ width: "100%", flexDirection: "row" }}>
@@ -225,6 +158,7 @@ function AddDeliveryScreen(props) {
                     name="calendar-start"
                     color={colors.medium}
                     size={20}
+                    style={{ marginRight: 5 }}
                   />
                   {Platform.OS === "android" ? (
                     <TouchableOpacity
@@ -261,6 +195,7 @@ function AddDeliveryScreen(props) {
                   <MaterialCommunityIcons
                     name="calendar-end"
                     color={colors.medium}
+                    style={{ marginRight: 5 }}
                     size={20}
                   />
                   {Platform.OS === "android" ? (
@@ -314,6 +249,31 @@ function AddDeliveryScreen(props) {
                 ></Dropdown>
               </View>
             </View>
+
+            <View flexDirection={"row"}>
+              <View style={{ width: "47.5%" }}>
+                <FormField
+                  keyboardType="number-pad"
+                  icon="pound"
+                  name="cooler_num"
+                  placeholder="Number of Coolers"
+                  returnKeyType="done"
+                  label="Number of Coolers"
+                />
+              </View>
+              <View style={{ width: "5%" }}></View>
+              <View style={{ width: "47.5%" }}>
+                <FormField
+                  keyboardType="number-pad"
+                  icon="pound"
+                  name="bag_limes"
+                  placeholder="Bag of Limes"
+                  label="Bag of Limes"
+                  returnKeyType="done"
+                />
+              </View>
+            </View>
+
             <NeighborhoodDropdown
               data={neighborhoodData}
               placeholder={"Select neighborhood..."}
@@ -367,6 +327,7 @@ const styles = StyleSheet.create({
   dateLabel: {
     marginLeft: 1,
     marginBottom: -5,
+    marginTop: 5,
     color: colors.medium,
   },
   selectedDate: {

@@ -4,45 +4,96 @@ import { Dropdown } from "react-native-element-dropdown";
 import colors from "../config/colors";
 import AppText from "./Text";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-
-const DropdownComponent = (props) => {
-  const [value, setValue] = useState(null);
+import ErrorMessage from "./forms/ErrorMessage";
+import { useFormikContext } from "formik";
+import {
+  corollaLight,
+  sectionA,
+  sectionB,
+  sectionC,
+  sectionD,
+  sectionE,
+  sectionF,
+  hijo,
+  klmpq,
+  crownPoint,
+  spinDrift,
+  pineIsland,
+  buckIsland,
+  oceanHill,
+  cruzBay,
+  whalehead,
+  whaleheadRight,
+  monterayShores,
+  currituckClub,
+} from "../components/Constants";
+const DropdownComponent = ({ name, label, icon, data, ...otherProps }) => {
+  const { values, setFieldValue, errors, touched } = useFormikContext();
   const [isFocus, setIsFocus] = useState(false);
 
+  const value = values[name];
+
   useEffect(() => {
-    // Update the state of the dropdown value when props.value changes
-    setValue(props.value);
-  }, [props.value]);
+    const str = values.delivery_address.replace(/\s|[0-9]/g, "").toUpperCase();
+    if (sectionA.includes(str)) {
+      setFieldValue("neighborhood", { label: "Section A", value: 7 });
+    } else if (sectionB.includes(str)) {
+      setFieldValue("neighborhood", { label: "Section B", value: 8 });
+    } else if (sectionC.includes(str)) {
+      setFieldValue("neighborhood", { label: "Section C", value: 9 });
+    } else if (sectionD.includes(str)) {
+      setFieldValue("neighborhood", { label: "Section D", value: 10 });
+    } else if (sectionE.includes(str)) {
+      setFieldValue("neighborhood", { label: "Section E", value: 11 });
+    } else if (sectionF.includes(str)) {
+      setFieldValue("neighborhood", { label: "Section F", value: 12 });
+    } else if (hijo.includes(str)) {
+      setFieldValue("neighborhood", { label: "HIJO", value: 13 });
+    } else if (klmpq.includes(str)) {
+      setFieldValue("neighborhood", { label: "KLMPQ", value: 14 });
+    } else if (crownPoint.includes(str)) {
+      setFieldValue("neighborhood", { label: "Crown Point", value: 15 });
+    } else if (spinDrift.includes(str)) {
+      setFieldValue("neighborhood", { label: "Spindrift", value: 6 });
+    } else if (pineIsland.includes(str)) {
+      setFieldValue("neighborhood", { label: "Pine Island", value: 5 });
+    } else if (buckIsland.includes(str)) {
+      setFieldValue("neighborhood", { label: "Buck Island", value: 16 });
+    } else if (oceanHill.includes(str)) {
+      setFieldValue("neighborhood", { label: "Ocean Hill", value: 1 });
+    } else if (corollaLight.includes(str)) {
+      setFieldValue("neighborhood", { label: "Corolla Light", value: 2 });
+    } else if (cruzBay.includes(str)) {
+      setFieldValue("neighborhood", {
+        label: "Cruz Bay (Soundfront at Corolla Bay)",
+        value: 19,
+      });
+    } else if (whalehead.includes(str)) {
+      setFieldValue("neighborhood", { label: "Whalehead", value: 3 });
+    } else if (whaleheadRight.includes(str)) {
+      setFieldValue("neighborhood", { label: "Whalehead Right", value: 18 });
+    } else if (monterayShores.includes(str)) {
+      setFieldValue("neighborhood", { label: "Monteray Shores", value: 17 });
+    } else if (currituckClub.includes(str)) {
+      setFieldValue("neighborhood", { label: "Currituck Club", value: 4 });
+    }
+  }, [values["delivery_address"]]);
 
-  const handleDropdownChange = (item) => {
-    setValue(item.value);
-    props.onParentCallback(item.value);
-    setIsFocus(false);
+  const handleDropdownChange = (itemValue) => {
+    setFieldValue(name, itemValue);
   };
-
-  const handleOtherFieldChange = (value) => {
-    // Update the state of the dropdown value based on the other field value
-    setValue(value);
-    setIsFocus(true); // Set isFocus to true to make the dropdown appear active
-  };
-
-  const data = [
-    { label: "Option 1", value: "option1" },
-    { label: "Option 2", value: "option2" },
-    { label: "Option 3", value: "option3" },
-  ];
 
   return (
     <View>
-      {props.label && <AppText style={styles.label}>{props.label}</AppText>}
+      {label && <AppText style={styles.label}>{label}</AppText>}
       <Dropdown
-        style={[styles.dropdown, isFocus, props.style]}
+        style={styles.dropdown}
         placeholderStyle={styles.placeholderStyle}
-        data={props.data || data}
+        data={data}
         maxHeight={300}
         labelField="label"
         valueField="value"
-        placeholder={!isFocus ? props.placeholder : "..."}
+        placeholder="Select neighborhood..."
         value={value}
         statusBarIsTranslucent={true}
         activeColor={colors.primary}
@@ -50,7 +101,7 @@ const DropdownComponent = (props) => {
         itemTextStyle={{ color: colors.medium }}
         renderLeftIcon={() => (
           <MaterialCommunityIcons
-            name={props.icon}
+            name={icon}
             size={20}
             color={colors.medium}
             style={styles.icon}
@@ -60,6 +111,7 @@ const DropdownComponent = (props) => {
         onBlur={() => setIsFocus(false)}
         onChange={handleDropdownChange}
       />
+      <ErrorMessage error={errors[name]} visible={touched[name]} />
     </View>
   );
 };

@@ -11,4 +11,5 @@ export default {
   lightgrey: "#F0F0F0",
   onyx: "#353935",
   blue: "#006ee6",
+  lime: "#29A829",
 };

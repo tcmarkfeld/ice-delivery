@@ -22,7 +22,6 @@ import Form from "../components/forms/Form";
 import SubmitButton from "../components/forms/SubmitButton";
 import { ScrollView } from "react-native-gesture-handler";
 import AppButton from "../components/Button";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 const nameRegExp = /^(?!.{126,})([\w+]{3,}\s+[\w+]{3,} ?)$/;
 
@@ -43,6 +42,8 @@ const validationSchema = Yup.object().shape({
   cooler: Yup.object().required().label("Cooler"),
   ice: Yup.object().required().label("Ice Type"),
   neighborhood: Yup.object().required().label("Neighborhood"),
+  cooler_num: Yup.string().required().label("Cooler Number"),
+  bag_limes: Yup.string().required().label("Limes"),
 });
 
 function OrderScreen({ navigation, route }) {
@@ -134,7 +135,9 @@ function OrderScreen({ navigation, route }) {
       userInfo.special_instructions,
       userInfo.cooler.label,
       userInfo.ice.label,
-      userInfo.neighborhood.value.toString()
+      userInfo.neighborhood.value.toString(),
+      userInfo.cooler_num,
+      userInfo.bag_limes
     );
     navigation.navigate("All Deliveries");
   };
@@ -211,212 +214,240 @@ function OrderScreen({ navigation, route }) {
     label: data.neighborhood_name,
     value: data.neighborhood_id,
   };
-  // const formattedDate = moment(selectedDateStart).format("YYYY/MM/DD");
-
-  // console.log(selectedDateStart);
 
   return (
-    <KeyboardAvoidingView
-      behavior="padding"
-      keyboardVerticalOffset={Platform.OS === "ios" ? 80 : -220}
-    >
-      <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
-        <ActivityIndicator loading={loading} />
-        <View style={{ flexDirection: "row" }}>
-          {/* Container for Start & End Date */}
-          <View style={styles.dateFields}>
-            <Text
-              style={{
-                color: colors.medium,
-                textAlign: "center",
-                marginBottom: 5,
-              }}
-            >
-              Start Date
-            </Text>
-            {Platform.OS === "android" ? (
-              <TouchableOpacity onPress={() => setShowDatePickerStart(true)}>
-                <Text style={{ color: colors.medium }}>
-                  {selectedDateStart.toLocaleString().slice(0, 10)}
-                </Text>
-                {showDatePickerStart && (
-                  <DateTimePicker
-                    value={selectedDateStart}
-                    accentColor={colors.primary}
-                    timeZoneOffsetInMinutes={1}
-                    mode="date"
-                    display="default"
-                    onChange={handleStartDateChange}
-                  />
-                )}
-              </TouchableOpacity>
-            ) : (
-              <DateTimePicker
-                value={selectedDateStart}
-                accentColor={colors.primary}
-                timeZoneOffsetInMinutes={1}
-                mode="date"
-                display="default"
-                onChange={handleStartDateChange}
-              />
-            )}
-          </View>
-          <View style={{ width: "5%" }}></View>
-          <View style={styles.dateFields}>
-            <Text
-              style={{
-                color: colors.medium,
-                textAlign: "center",
-                marginBottom: 5,
-              }}
-            >
-              End Date
-            </Text>
-            {Platform.OS === "android" ? (
-              <TouchableOpacity onPress={() => setShowDatePickerEnd(true)}>
-                <Text style={{ color: colors.medium }}>
-                  {selectedDateEnd.toLocaleString().slice(0, 10)}
-                </Text>
-                {showDatePickerEnd && (
-                  <DateTimePicker
-                    accentColor={colors.primary}
-                    value={selectedDateEnd}
-                    timeZoneOffsetInMinutes={1}
-                    mode="date"
-                    display="default"
-                    onChange={handleEndDateChange}
-                  />
-                )}
-              </TouchableOpacity>
-            ) : (
-              <DateTimePicker
-                accentColor={colors.primary}
-                value={selectedDateEnd}
-                timeZoneOffsetInMinutes={1}
-                mode="date"
-                display="default"
-                onChange={handleEndDateChange}
-              />
-            )}
-          </View>
-        </View>
-
-        {/* Container for Customer Information */}
-        <View style={styles.customerContainer}>
-          <Form
-            initialValues={{
-              id: `${route.params.id}`,
-              delivery_address: `${data.delivery_address}`,
-              name: `${data.customer_name}`,
-              phone_number: `${data.customer_phone}`,
-              email: `${data.customer_email}`,
-              special_instructions: `${data.special_instructions}`,
-              cooler: initialCooler,
-              ice: initialIce,
-              neighborhood: initialNeighborhood,
-            }}
-            onSubmit={handleSubmit}
-            validationSchema={validationSchema}
-          >
-            <View style={{ flexDirection: "row", justifyContent: "center" }}>
-              <FormField
-                width={"47.5%"}
-                autoCapitalize="words"
-                autoCorrect={false}
-                name="name"
-                placeholder="Customer Name"
-                icon="account-circle-outline"
-                label="Customer Name"
-              />
-              <View style={{ width: "5%" }}></View>
-              <FormField
-                width={"47.5%"}
-                autoCorrect={false}
-                name="phone_number"
-                placeholder="Phone Number"
-                keyboardType="numbers-and-punctuation"
-                returnKeyType="done"
-                icon="phone"
-                label="Phone Number"
-              />
+    <>
+      <ActivityIndicator loading={loading} />
+      <KeyboardAvoidingView
+        behavior="padding"
+        keyboardVerticalOffset={Platform.OS === "ios" ? 80 : -220}
+      >
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          style={styles.container}
+        >
+          <View style={{ flexDirection: "row" }}>
+            {/* Container for Start & End Date */}
+            <View style={styles.dateFields}>
+              <Text
+                style={{
+                  color: colors.medium,
+                  textAlign: "center",
+                  marginBottom: 5,
+                }}
+              >
+                Start Date
+              </Text>
+              {Platform.OS === "android" ? (
+                <TouchableOpacity onPress={() => setShowDatePickerStart(true)}>
+                  <Text style={{ color: colors.medium }}>
+                    {selectedDateStart.toLocaleString().slice(0, 10)}
+                  </Text>
+                  {showDatePickerStart && (
+                    <DateTimePicker
+                      value={selectedDateStart}
+                      accentColor={colors.primary}
+                      timeZoneOffsetInMinutes={1}
+                      mode="date"
+                      display="default"
+                      onChange={handleStartDateChange}
+                    />
+                  )}
+                </TouchableOpacity>
+              ) : (
+                <DateTimePicker
+                  value={selectedDateStart}
+                  accentColor={colors.primary}
+                  timeZoneOffsetInMinutes={1}
+                  mode="date"
+                  display="default"
+                  onChange={handleStartDateChange}
+                />
+              )}
             </View>
-            <FormField
-              autoCapitalize="words"
-              autoCorrect={false}
-              name="delivery_address"
-              placeholder="Delivery Address"
-              icon="map-marker-radius"
-              label="Delivery Address"
-            />
-
-            <View flexDirection={"row"}>
-              <View style={{ width: "47.5%" }}>
-                <Dropdown
-                  data={data1}
-                  placeholder={cooler}
-                  onParentCallback={handleCallBackCooler}
-                  label="Cooler Size"
-                  icon="air-humidifier"
-                  name={"cooler"}
-                ></Dropdown>
-              </View>
-              <View style={{ width: "5%" }}></View>
-              <View style={{ width: "47.5%" }}>
-                <Dropdown
-                  data={data2}
-                  placeholder={ice}
-                  onParentCallback={handleCallBackIce}
-                  label="Ice Type"
-                  icon="cube-outline"
-                  name={"ice"}
-                ></Dropdown>
-              </View>
+            <View style={{ width: "5%" }}></View>
+            <View style={styles.dateFields}>
+              <Text
+                style={{
+                  color: colors.medium,
+                  textAlign: "center",
+                  marginBottom: 5,
+                }}
+              >
+                End Date
+              </Text>
+              {Platform.OS === "android" ? (
+                <TouchableOpacity onPress={() => setShowDatePickerEnd(true)}>
+                  <Text style={{ color: colors.medium }}>
+                    {selectedDateEnd.toLocaleString().slice(0, 10)}
+                  </Text>
+                  {showDatePickerEnd && (
+                    <DateTimePicker
+                      accentColor={colors.primary}
+                      value={selectedDateEnd}
+                      timeZoneOffsetInMinutes={1}
+                      mode="date"
+                      display="default"
+                      onChange={handleEndDateChange}
+                    />
+                  )}
+                </TouchableOpacity>
+              ) : (
+                <DateTimePicker
+                  accentColor={colors.primary}
+                  value={selectedDateEnd}
+                  timeZoneOffsetInMinutes={1}
+                  mode="date"
+                  display="default"
+                  onChange={handleEndDateChange}
+                />
+              )}
             </View>
+          </View>
 
-            <Dropdown
-              data={data3}
-              placeholder={neighborhood}
-              onParentCallback={handleCallBackNeighborhood}
-              label="Neighborhood"
-              icon="home-group"
-              name={"neighborhood"}
-            ></Dropdown>
-            <FormField
-              autoCapitalize="none"
-              autoCorrect={false}
-              keyboardType="email-address"
-              name="email"
-              placeholder="Customer Email"
-              textContentType="emailAddress"
-              icon="email"
-              label="Customer Email"
-            />
-            <FormField
-              autoCapitalize="words"
-              autoCorrect={true}
-              icon="star"
-              name="special_instructions"
-              placeholder="Special Instructions (optional)"
-              returnKeyType="done"
-              label="Special Instructions"
-            />
-            <View style={{ flexDirection: "row", justifyContent: "center" }}>
-              <View style={{ width: "47.5%" }}>
-                <SubmitButton style={styles.submitButton} title="SAVE" />
-              </View>
-              <View style={{ width: "5%" }}></View>
-              <View style={{ width: "47.5%" }}>
-                <AppButton
-                  onPress={confirmDelete}
-                  title={"Delete"}
-                  color="danger"
+          {/* Container for Customer Information */}
+          <View style={styles.customerContainer}>
+            <Form
+              initialValues={{
+                id: `${route.params.id}`,
+                delivery_address: `${data.delivery_address}`,
+                name: `${data.customer_name}`,
+                phone_number: `${data.customer_phone}`,
+                email: `${data.customer_email}`,
+                special_instructions: `${data.special_instructions}`,
+                cooler: initialCooler,
+                ice: initialIce,
+                neighborhood: initialNeighborhood,
+                cooler_num: `${data.cooler_num}`,
+                bag_limes: `${data.bag_limes}`,
+              }}
+              onSubmit={handleSubmit}
+              validationSchema={validationSchema}
+            >
+              <View style={{ flexDirection: "row", justifyContent: "center" }}>
+                <FormField
+                  width={"47.5%"}
+                  autoCapitalize="words"
+                  autoCorrect={false}
+                  name="name"
+                  placeholder="Customer Name"
+                  icon="account-circle-outline"
+                  label="Customer Name"
+                />
+                <View style={{ width: "5%" }}></View>
+                <FormField
+                  width={"47.5%"}
+                  autoCorrect={false}
+                  name="phone_number"
+                  placeholder="Phone Number"
+                  keyboardType="numbers-and-punctuation"
+                  returnKeyType="done"
+                  icon="phone"
+                  label="Phone Number"
                 />
               </View>
-            </View>
-          </Form>
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+              <FormField
+                autoCapitalize="words"
+                autoCorrect={false}
+                name="delivery_address"
+                placeholder="Delivery Address"
+                icon="map-marker-radius"
+                label="Delivery Address"
+              />
+
+              <View flexDirection={"row"}>
+                <View style={{ width: "47.5%" }}>
+                  <Dropdown
+                    data={data1}
+                    placeholder={cooler}
+                    onParentCallback={handleCallBackCooler}
+                    label="Cooler Size"
+                    icon="air-humidifier"
+                    name={"cooler"}
+                  ></Dropdown>
+                </View>
+                <View style={{ width: "5%" }}></View>
+                <View style={{ width: "47.5%" }}>
+                  <Dropdown
+                    data={data2}
+                    placeholder={ice}
+                    onParentCallback={handleCallBackIce}
+                    label="Ice Type"
+                    icon="cube-outline"
+                    name={"ice"}
+                  ></Dropdown>
+                </View>
+              </View>
+
+              <View flexDirection={"row"}>
+                <View style={{ width: "47.5%" }}>
+                  <FormField
+                    keyboardType="number-pad"
+                    icon="pound"
+                    name="cooler_num"
+                    placeholder="Number of Coolers"
+                    returnKeyType="done"
+                    label="Number of Coolers"
+                  />
+                </View>
+                <View style={{ width: "5%" }}></View>
+                <View style={{ width: "47.5%" }}>
+                  <FormField
+                    keyboardType="number-pad"
+                    icon="pound"
+                    name="bag_limes"
+                    placeholder="Bag of Limes"
+                    label="Bag of Limes"
+                    returnKeyType="done"
+                  />
+                </View>
+              </View>
+
+              <Dropdown
+                data={data3}
+                placeholder={neighborhood}
+                onParentCallback={handleCallBackNeighborhood}
+                label="Neighborhood"
+                icon="home-group"
+                name={"neighborhood"}
+              ></Dropdown>
+              <FormField
+                autoCapitalize="none"
+                autoCorrect={false}
+                keyboardType="email-address"
+                name="email"
+                placeholder="Customer Email"
+                textContentType="emailAddress"
+                icon="email"
+                label="Customer Email"
+              />
+              <FormField
+                autoCapitalize="words"
+                autoCorrect={true}
+                icon="star"
+                name="special_instructions"
+                placeholder="Special Instructions (optional)"
+                returnKeyType="done"
+                label="Special Instructions"
+              />
+              <View style={{ flexDirection: "row", justifyContent: "center" }}>
+                <View style={{ width: "47.5%" }}>
+                  <SubmitButton style={styles.submitButton} title="SAVE" />
+                </View>
+                <View style={{ width: "5%" }}></View>
+                <View style={{ width: "47.5%" }}>
+                  <AppButton
+                    onPress={confirmDelete}
+                    title={"Delete"}
+                    color="danger"
+                  />
+                </View>
+              </View>
+            </Form>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </>
   );
 }
 

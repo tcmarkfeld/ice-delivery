@@ -15,7 +15,6 @@ import useApi from "../hooks/useApi";
 import colors from "../config/colors";
 import Text from "../components/Text";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { TouchableOpacity } from "react-native-gesture-handler";
 
 const wait = (timeout) => {
   return new Promise((resolve) => setTimeout(resolve, timeout));
@@ -44,6 +43,7 @@ function DeliveryScreen(props) {
   var count40Bagged = 0;
   var count62Bagged = 0;
   var countBags = 0;
+  var bagLimes = 0;
 
   var yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000)
     .toISOString()
@@ -58,28 +58,30 @@ function DeliveryScreen(props) {
         deliveries[i].ice_type.toLowerCase() == "loose ice" &&
         today != deliveries[i].end_date.slice(0, 10)
       ) {
-        count40 += 1;
+        count40 += 1 * deliveries[i].cooler_num;
       } else if (
         deliveries[i].cooler_size.toLowerCase() == "62 quart" &&
         deliveries[i].ice_type.toLowerCase() == "loose ice" &&
         today != deliveries[i].end_date.slice(0, 10)
       ) {
-        count62 += 1;
+        count62 += 1 * deliveries[i].cooler_num;
       }
       if (
         deliveries[i].ice_type.toLowerCase() == "bagged ice" &&
         deliveries[i].cooler_size.toLowerCase() == "62 quart" &&
         today != deliveries[i].end_date.slice(0, 10)
       ) {
-        count62Bagged += 1;
-        countBags += 2;
+        count62Bagged += 1 * deliveries[i].cooler_num;
+        countBags += 2 * deliveries[i].cooler_num;
       } else if (
         deliveries[i].ice_type.toLowerCase() == "bagged ice" &&
         deliveries[i].cooler_size.toLowerCase() == "40 quart" &&
         today != deliveries[i].end_date.slice(0, 10)
       ) {
-        count40Bagged += 1;
-        countBags += 1;
+        count40Bagged += 1 * deliveries[i].cooler_num;
+        countBags += 1 * deliveries[i].cooler_num;
+      } else if (parseInt(deliveries[i].bag_limes) > 0) {
+        bagLimes += 1;
       }
     }
   }
@@ -89,9 +91,15 @@ function DeliveryScreen(props) {
       const map = order.reduce((r, v, i) => ((r[v] = i), r), {});
       return a.sort((a, b) => map[a[key]] - map[b[key]]);
     }
-    var item_order = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
+    var item_order = [
+      1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+    ];
     var ordered_array = deliveries.sort(function (a, b) {
-      return parseFloat(a.delivery_address) - parseFloat(b.delivery_address);
+      if (a.neighborhood == "1" || b.neighborhood == "1") {
+        return parseFloat(a.delivery_address) - parseFloat(b.delivery_address);
+      } else {
+        return parseFloat(b.delivery_address) - parseFloat(a.delivery_address);
+      }
     });
     ordered_array = mapOrder(ordered_array, item_order, "neighborhood");
   } catch {
@@ -102,11 +110,11 @@ function DeliveryScreen(props) {
     <DeliveryCard
       key={data.id}
       cooler={data.cooler_size.toLowerCase()}
+      num_cooler={data.cooler_num}
       ice={data.ice_type.toLowerCase()}
       address={data.delivery_address}
       name={data.customer_name}
       phone={data.customer_phone}
-      email={data.customer_email}
       neighborhood={data.neighborhood}
       start={data.start_date.slice(0, 10)}
       end={data.end_date.slice(0, 10)}
@@ -114,6 +122,7 @@ function DeliveryScreen(props) {
         data.end_date.slice(0, 10) == yesterday.slice(0, 10) ? true : false
       }
       special={data.special_instructions}
+      bag_limes={data.bag_limes}
     />
   ));
 
@@ -123,6 +132,7 @@ function DeliveryScreen(props) {
 
   return (
     <>
+      <ActivityIndicator visible={getDeliveriesApi.loading} />
       <ScrollView
         showsVerticalScrollIndicator={false}
         refreshControl={
@@ -131,7 +141,6 @@ function DeliveryScreen(props) {
         style={{ backgroundColor: colors.lightgrey }}
       >
         <StatusBar barStyle="light-content" translucent={true} />
-        <ActivityIndicator visible={getDeliveriesApi.loading} />
 
         <View style={styles.coolerNumContainer}>
           <View style={styles.baggedContainer}>
@@ -146,6 +155,14 @@ function DeliveryScreen(props) {
           <View style={styles.looseContainer}>
             <Text style={styles.countText}>62 Quart Loose - {count62}</Text>
             <Text style={styles.countText}>40 Quart Loose - {count40}</Text>
+            <Text style={styles.limeText}>
+              <MaterialCommunityIcons
+                name="fruit-citrus"
+                color={colors.lime}
+                size={15}
+              />{" "}
+              Bag of Limes - {bagLimes}
+            </Text>
           </View>
         </View>
 
@@ -173,7 +190,7 @@ function DeliveryScreen(props) {
 
 const styles = StyleSheet.create({
   body: {
-    marginTop: 7.5,
+    marginVertical: 7.5,
   },
   countContainer: {
     margin: 10,
@@ -199,6 +216,11 @@ const styles = StyleSheet.create({
     right: 0,
     marginLeft: "auto",
     color: colors.onyx,
+    fontWeight: "500",
+  },
+  limeText: {
+    marginVertical: 2.5,
+    color: colors.lime,
     fontWeight: "500",
   },
   looseContainer: {

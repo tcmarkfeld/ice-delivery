@@ -14,15 +14,16 @@ import colors from "../config/colors";
 
 function DeliveryCard({
   cooler,
+  num_cooler,
   ice,
   address,
   start,
   end,
   name,
   phone,
-  email,
   ending,
   special,
+  bag_limes,
 }) {
   const startDate = start.split("-");
   var startMonth = startDate[1];
@@ -112,117 +113,126 @@ function DeliveryCard({
   }
 
   return (
-    <>
+    <View
+      style={
+        check == true
+          ? styles.completedDelivery
+          : ending == true
+          ? styles.ending
+          : styles.current
+      }
+    >
+      <View flexDirection={"row"}>
+        <TouchableOpacity style={styles.checkContainer} onPress={handleCheck}>
+          <Text>Completed:</Text>
+          <MaterialCommunityIcons
+            name={rightIcon}
+            color={colors.black}
+            size={20}
+            style={{ marginLeft: 5 }}
+          />
+        </TouchableOpacity>
+        <Text style={styles.rightSideGrey}>
+          {startMonth} {startDay}
+          {"  "}
+          <MaterialCommunityIcons name="arrow-right" size={15} />
+          {"  "}
+          {endMonth} {endDay}
+        </Text>
+      </View>
       <View
-        style={
-          check == true
-            ? styles.completedDelivery
-            : ending == true
-            ? styles.ending
-            : styles.current
-        }
-      >
-        <View flexDirection={"row"}>
-          <TouchableOpacity style={styles.checkContainer} onPress={handleCheck}>
-            <Text>Completed:</Text>
-            <MaterialCommunityIcons
-              name={rightIcon}
-              color={colors.black}
-              size={20}
-              style={{ marginLeft: 5 }}
-            />
+        style={{
+          borderTopWidth: StyleSheet.hairlineWidth,
+          marginVertical: 10,
+          borderTopColor: colors.medium,
+        }}
+      ></View>
+      <View style={styles.whiteContainer}>
+        <View>
+          {ending ? (
+            <Text style={styles.importantText}>
+              PICKUP {num_cooler > 1 ? num_cooler + "x" : null} {cooler} {ice}
+            </Text>
+          ) : (
+            <Text style={styles.importantText}>
+              {num_cooler > 1 ? num_cooler + "x" : null} {cooler} {ice}
+            </Text>
+          )}
+          <TouchableOpacity onPress={openMap}>
+            <Text style={{ color: colors.primary, fontWeight: "500" }}>
+              <MaterialCommunityIcons name="map-marker-radius" size={17.5} />{" "}
+              {address}{" "}
+            </Text>
           </TouchableOpacity>
-          <Text style={styles.rightSideGrey}>
-            {startMonth} {startDay}
-            {"  "}
-            <MaterialCommunityIcons name="arrow-right" size={15} />
-            {"  "}
-            {endMonth} {endDay}
-          </Text>
         </View>
-        <View
-          style={{
-            borderTopWidth: StyleSheet.hairlineWidth,
-            marginVertical: 10,
-            borderTopColor: colors.medium,
-          }}
-        ></View>
-        <View style={styles.whiteContainer}>
-          <View>
-            {ending ? (
-              <Text style={styles.importantText}>
-                PICKUP {cooler} {ice}
-              </Text>
-            ) : (
-              <Text style={styles.importantText}>
-                {cooler} {ice}
-              </Text>
-            )}
-            <TouchableOpacity onPress={openMap}>
-              <Text style={{ color: colors.primary, fontWeight: "500" }}>
-                <MaterialCommunityIcons name="map-marker-radius" size={17.5} />{" "}
-                {address}{" "}
-              </Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.doubleContainer}>
-            <TouchableOpacity
-              onPress={() => {
-                Linking.openURL(`tel:${phone}`);
-              }}
-              style={{ marginBottom: 5 }}
-            >
-              <Text style={styles.linkText}>
-                <MaterialCommunityIcons
-                  name="phone"
-                  color={colors.primary}
-                  size={17.5}
-                />{" "}
-                {phone}
-              </Text>
-            </TouchableOpacity>
-            <Text>
+        <View style={styles.doubleContainer}>
+          <TouchableOpacity
+            onPress={() => {
+              Linking.openURL(`tel:${phone}`);
+            }}
+            style={{ marginBottom: 5 }}
+          >
+            <Text style={styles.linkText}>
               <MaterialCommunityIcons
-                name="account-circle-outline"
-                color={colors.medium}
+                name="phone"
+                color={colors.primary}
                 size={17.5}
               />{" "}
-              {name}
+              {phone}
             </Text>
-          </View>
-        </View>
-
-        {special.length == 0 ? null : special == "none" ? null : (
-          <Text style={styles.mainText}>
+          </TouchableOpacity>
+          <Text>
             <MaterialCommunityIcons
-              name="star"
+              name="account-circle-outline"
               color={colors.medium}
               size={17.5}
             />{" "}
-            Special Instructions: {special}
+            {name}
           </Text>
-        )}
-
-        {ending == true ? (
-          <TouchableOpacity onPress={sendText} style={styles.checkContainer}>
-            <MaterialCommunityIcons
-              name="send-circle"
-              color={colors.primary}
-              size={17.5}
-            />
-            <Text style={styles.reviewText}>Send review text</Text>
-          </TouchableOpacity>
-        ) : null}
-
-        <View
-          style={{
-            borderTopWidth: StyleSheet.hairlineWidth,
-            marginVertical: 10,
-            borderTopColor: colors.medium,
-          }}
-        ></View>
+        </View>
       </View>
-    </>
+
+      {bag_limes == 0 ? null : ending == false ? (
+        <Text style={styles.limeText}>
+          <MaterialCommunityIcons
+            name="fruit-citrus"
+            color={colors.lime}
+            size={17.5}
+          />{" "}
+          Bag of Limes: {bag_limes}
+        </Text>
+      ) : null}
+
+      {special.length == 0 ? null : special == "none" ? null : (
+        <Text style={styles.mainText}>
+          <MaterialCommunityIcons
+            name="star"
+            color={colors.medium}
+            size={17.5}
+          />{" "}
+          Special Instructions: {special}
+        </Text>
+      )}
+
+      {ending == true ? (
+        <TouchableOpacity onPress={sendText} style={styles.checkContainer}>
+          <MaterialCommunityIcons
+            name="send-circle"
+            color={colors.primary}
+            size={17.5}
+          />
+          <Text style={styles.reviewText}>Send review text</Text>
+        </TouchableOpacity>
+      ) : null}
+
+      <View
+        style={{
+          borderTopWidth: StyleSheet.hairlineWidth,
+          marginVertical: 10,
+          borderTopColor: colors.medium,
+        }}
+      ></View>
+    </View>
   );
 }
 
@@ -261,6 +271,12 @@ const styles = StyleSheet.create({
   mainText: {
     marginVertical: 2.5,
     marginLeft: 5,
+  },
+  limeText: {
+    marginVertical: 2.5,
+    marginLeft: 5,
+    color: colors.lime,
+    fontWeight: "500",
   },
   linkText: {
     marginVertical: 2.5,

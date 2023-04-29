@@ -4,7 +4,7 @@
     "slug": "ice-delivery",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./app/assets/ice-delivery1024.png",
+    "icon": "./app/assets/ice-delivery-512.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./app/assets/ice-delivery(1).png",

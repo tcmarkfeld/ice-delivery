@@ -48,6 +48,7 @@ const styles = StyleSheet.create({
   label: {
     marginLeft: 1,
     marginBottom: -5,
+    marginTop: 5,
     color: colors.medium,
   },
 });

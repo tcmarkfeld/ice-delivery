@@ -143,43 +143,45 @@ function AllDeliveriesScreen({ navigation }) {
   ));
 
   return (
-    <ScrollView
-      style={{ backgroundColor: colors.lightgrey }}
-      showsVerticalScrollIndicator={false}
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }
-    >
+    <>
       <ActivityIndicator visible={getDeliveriesApi.loading} />
-      <View
-        style={{
-          justifyContent: "center",
-          alignItems: "center",
-          marginBottom: 10,
-        }}
+      <ScrollView
+        style={{ backgroundColor: colors.lightgrey }}
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
       >
-        <View style={styles.searchContainer}>
-          <MaterialCommunityIcons name="magnify" size={15} />
-          <TextInput
-            icon={"magnify"}
-            style={styles.searchBar}
-            onChangeText={(event) => setSearchTerm(event)}
-            placeholder="Search..."
-          ></TextInput>
+        <View
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+            marginBottom: 10,
+          }}
+        >
+          <View style={styles.searchContainer}>
+            <MaterialCommunityIcons name="magnify" size={15} />
+            <TextInput
+              icon={"magnify"}
+              style={styles.searchBar}
+              onChangeText={(event) => setSearchTerm(event)}
+              placeholder="Search..."
+            ></TextInput>
+          </View>
         </View>
-      </View>
-      {getDeliveriesApi.error && (
-        <>
-          <Text>Couldn't retrieve the deliveries.</Text>
-          <Button title="Retry" onPress={getDeliveriesApi.request} />
-        </>
-      )}
-      {deliveries.length == 0 ? (
-        <Text style={styles.noEvents}>No deliveries</Text>
-      ) : (
-        <DataTable style={{ marginBottom: 20 }}>{table}</DataTable>
-      )}
-    </ScrollView>
+        {getDeliveriesApi.error && (
+          <>
+            <Text>Couldn't retrieve the deliveries.</Text>
+            <Button title="Retry" onPress={getDeliveriesApi.request} />
+          </>
+        )}
+        {deliveries.length == 0 ? (
+          <Text style={styles.noEvents}>No deliveries</Text>
+        ) : (
+          <DataTable style={{ marginBottom: 20 }}>{table}</DataTable>
+        )}
+      </ScrollView>
+    </>
   );
 }
 
