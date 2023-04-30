@@ -85,6 +85,20 @@ function DeliveryCard({
     endMonth = "Dec";
   }
 
+  const today = new Date()
+    .toLocaleString("en-US", {
+      timeZone: "America/New_York",
+    })
+    .slice(0, 10);
+
+  const startdatestring = new Date(
+    new Date(start).setDate(new Date(start).getDate() + 1)
+  )
+    .toLocaleString("en-US", {
+      timeZone: "America/New_York",
+    })
+    .slice(0, 10);
+
   const { check, rightIcon, handleCheck } = useToggleCheck();
 
   const openMap = async () => {
@@ -112,6 +126,8 @@ function DeliveryCard({
     return Platform.OS === "ios" ? "&" : "?";
   }
 
+  console.log(today, startdatestring);
+
   return (
     <View
       style={
@@ -133,6 +149,16 @@ function DeliveryCard({
           />
         </TouchableOpacity>
         <Text style={styles.rightSideGrey}>
+          {startdatestring === today ? (
+            <>
+              <Text style={{ color: colors.medium }}>NEW </Text>
+              <MaterialCommunityIcons
+                name="star"
+                color={"#FFD700"}
+                size={15}
+              />{" "}
+            </>
+          ) : null}
           {startMonth} {startDay}
           {"  "}
           <MaterialCommunityIcons name="arrow-right" size={15} />
@@ -253,7 +279,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
   },
   doubleContainer: {
-    left: 0,
+    right: 0,
     marginLeft: "auto",
     marginRight: 5,
   },

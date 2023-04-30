@@ -4,10 +4,10 @@
     "slug": "ice-delivery",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./app/assets/ice-delivery-512.png",
+    "icon": "./app/assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./app/assets/ice-delivery(1).png",
+      "image": "./app/assets/iphone-splash-preview.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -21,13 +21,9 @@
       "supportsTablet": true
     },
     "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
-      }
+      
     },
     "web": {
-      "favicon": "./assets/favicon.png"
     }
   }
 }

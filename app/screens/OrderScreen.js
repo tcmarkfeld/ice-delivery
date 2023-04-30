@@ -416,7 +416,7 @@ function OrderScreen({ navigation, route }) {
                 autoCorrect={false}
                 keyboardType="email-address"
                 name="email"
-                placeholder="Customer Email"
+                placeholder="Customer Email (optional)"
                 textContentType="emailAddress"
                 icon="email"
                 label="Customer Email"
