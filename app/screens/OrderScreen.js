@@ -255,14 +255,16 @@ function OrderScreen({ navigation, route }) {
                   )}
                 </TouchableOpacity>
               ) : (
-                <DateTimePicker
-                  value={selectedDateStart}
-                  accentColor={colors.primary}
-                  timeZoneOffsetInMinutes={1}
-                  mode="date"
-                  display="default"
-                  onChange={handleStartDateChange}
-                />
+                <View style={{ marginRight: 20 }}>
+                  <DateTimePicker
+                    value={selectedDateStart}
+                    accentColor={colors.primary}
+                    timeZoneOffsetInMinutes={1}
+                    mode="date"
+                    display="default"
+                    onChange={handleStartDateChange}
+                  />
+                </View>
               )}
             </View>
             <View style={{ width: "5%" }}></View>
@@ -293,14 +295,16 @@ function OrderScreen({ navigation, route }) {
                   )}
                 </TouchableOpacity>
               ) : (
-                <DateTimePicker
-                  accentColor={colors.primary}
-                  value={selectedDateEnd}
-                  timeZoneOffsetInMinutes={1}
-                  mode="date"
-                  display="default"
-                  onChange={handleEndDateChange}
-                />
+                <View style={{ marginRight: 20 }}>
+                  <DateTimePicker
+                    accentColor={colors.primary}
+                    value={selectedDateEnd}
+                    timeZoneOffsetInMinutes={1}
+                    mode="date"
+                    display="default"
+                    onChange={handleEndDateChange}
+                  />
+                </View>
               )}
             </View>
           </View>

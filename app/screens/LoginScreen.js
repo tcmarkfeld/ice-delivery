@@ -4,6 +4,7 @@ import {
   Image,
   KeyboardAvoidingView,
   ScrollView,
+  View,
 } from "react-native";
 import * as Yup from "yup";
 
@@ -41,60 +42,61 @@ function LoginScreen() {
     await auth.logIn(result.data, email);
   };
   return (
-    <KeyboardAvoidingView behavior="padding">
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <Image
-          style={styles.logo}
-          source={require("../assets/ice-delivery.png")}
-        />
-        <Text style={styles.subtitle}>Corolla Ice Delivery</Text>
-
-        <Form
-          initialValues={{ email: "", password: "" }}
-          onSubmit={handleSubmit}
-          validationSchema={validationSchema}
+    <View style={styles.container}>
+      <KeyboardAvoidingView behavior="padding">
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          style={{ height: "100%", paddingTop: 100 }}
         >
-          <ErrorMessage
-            error="Invalid email and/or password."
-            visible={loginFailed}
-          />
-          <FormField
-            autoCapitalize="none"
-            autoCorrect={false}
-            icon="email"
-            keyboardType="email-address"
-            name="email"
-            placeholder="Email"
-            textContentType="emailAddress"
-          />
-          <FormField
-            autoCapitalize="none"
-            autoCorrect={false}
-            icon="lock"
-            name="password"
-            placeholder="Password"
-            secureTextEntry
-            textContentType="password"
-          />
-          <SubmitButton title="LOGIN" />
-        </Form>
-      </ScrollView>
-    </KeyboardAvoidingView>
+          <Image style={styles.logo} source={require("../assets/icon.png")} />
+          <Text style={styles.subtitle}>Corolla Ice Delivery</Text>
+
+          <Form
+            initialValues={{ email: "", password: "" }}
+            onSubmit={handleSubmit}
+            validationSchema={validationSchema}
+          >
+            <ErrorMessage
+              error="Invalid email and/or password."
+              visible={loginFailed}
+            />
+            <FormField
+              autoCapitalize="none"
+              autoCorrect={false}
+              icon="email"
+              keyboardType="email-address"
+              name="email"
+              placeholder="Email"
+              textContentType="emailAddress"
+            />
+            <FormField
+              autoCapitalize="none"
+              autoCorrect={false}
+              icon="lock"
+              name="password"
+              placeholder="Password"
+              secureTextEntry
+              textContentType="password"
+            />
+            <SubmitButton title="LOGIN" />
+          </Form>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    top: "20%",
+    height: "100%",
     justifyContent: "center",
-    flexDirection: "row",
-    flexWrap: "wrap",
-    alignContent: "flex-start",
-    margin: "2%",
+    padding: 20,
+    alignContent: "center",
+    backgroundColor: colors.lightgrey,
   },
   logo: {
     width: 225,
-    height: 150,
+    height: 220,
     alignSelf: "center",
     marginTop: 50,
     marginBottom: 20,

@@ -6,8 +6,6 @@ const baseURL = settings.apiUrl;
 
 const token = storage.getToken();
 
-console.log("api call");
-
 const getTodayDeliveries = () => client.get("/api/delivery/gettoday");
 const getEndingToday = () => client.get("/api/delivery/getending");
 const getAll = () => client.get("/api/delivery/getall");

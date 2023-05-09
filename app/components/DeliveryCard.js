@@ -126,8 +126,6 @@ function DeliveryCard({
     return Platform.OS === "ios" ? "&" : "?";
   }
 
-  console.log(today, startdatestring);
-
   return (
     <View
       style={

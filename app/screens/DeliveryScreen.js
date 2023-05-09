@@ -229,7 +229,7 @@ const styles = StyleSheet.create({
   },
   coolerNumContainer: {
     backgroundColor: colors.white,
-    marginTop: 10,
+    marginTop: 20,
     flexDirection: "row",
     paddingHorizontal: 15,
     padding: 5,

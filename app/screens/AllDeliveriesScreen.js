@@ -117,6 +117,7 @@ function AllDeliveriesScreen({ navigation }) {
                   color: colors.onyx,
                 }}
               >
+                {data.cooler_num > 1 ? data.cooler_num + "x" : null}{" "}
                 {data.cooler_size.toLowerCase()} {data.ice_type.toLowerCase()}
               </Text>
             </View>
@@ -176,7 +177,9 @@ function AllDeliveriesScreen({ navigation }) {
           </>
         )}
         {deliveries.length == 0 ? (
-          <Text style={styles.noEvents}>No deliveries</Text>
+          <View style={styles.noDelivContainer}>
+            <Text style={styles.noDeliveries}>No deliveries</Text>
+          </View>
         ) : (
           <DataTable style={{ marginBottom: 20 }}>{table}</DataTable>
         )}
@@ -230,6 +233,16 @@ const styles = StyleSheet.create({
     width: "100%",
     padding: 5,
     marginLeft: 5,
+  },
+  noDelivContainer: {
+    backgroundColor: colors.grey,
+    borderRadius: 10,
+    padding: 10,
+    marginLeft: 10,
+    marginRight: 10,
+  },
+  noDeliveries: {
+    textAlign: "center",
   },
 });
 

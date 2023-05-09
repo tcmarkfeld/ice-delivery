@@ -34,7 +34,8 @@ const DropdownComponent = ({ name, label, icon, data, ...otherProps }) => {
   const value = values[name];
 
   useEffect(() => {
-    const str = values.delivery_address.replace(/\s|[0-9]/g, "").toUpperCase();
+    const str = values.delivery_address.replace(/[^a-zA-Z]/g, "").toUpperCase();
+    console.log(str);
     if (sectionA.includes(str)) {
       setFieldValue("neighborhood", { label: "Section A", value: 7 });
     } else if (sectionB.includes(str)) {

@@ -293,7 +293,6 @@ function AddDeliveryScreen(props) {
               textContentType="emailAddress"
             />
             <FormField
-              autoCapitalize="words"
               autoCorrect={true}
               icon="star"
               name="special_instructions"
