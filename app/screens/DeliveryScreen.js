@@ -65,8 +65,7 @@ function DeliveryScreen(props) {
         today != deliveries[i].end_date.slice(0, 10)
       ) {
         count62 += 1 * deliveries[i].cooler_num;
-      }
-      if (
+      } else if (
         deliveries[i].ice_type.toLowerCase() == "bagged ice" &&
         deliveries[i].cooler_size.toLowerCase() == "62 quart" &&
         today != deliveries[i].end_date.slice(0, 10)
@@ -80,8 +79,11 @@ function DeliveryScreen(props) {
       ) {
         count40Bagged += 1 * deliveries[i].cooler_num;
         countBags += 1 * deliveries[i].cooler_num;
-      } else if (parseInt(deliveries[i].bag_limes) > 0) {
-        bagLimes += 1;
+      }
+    }
+    if (deliveries[i].end_date.slice(0, 10) != yesterday.slice(0, 10)) {
+      if (parseInt(deliveries[i].bag_limes) > 0) {
+        bagLimes += parseInt(deliveries[i].bag_limes);
       }
     }
   }

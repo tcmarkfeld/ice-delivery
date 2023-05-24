@@ -372,6 +372,8 @@ export const whaleheadRight = [
   "NHARBORVIEW",
   "SEAVIEWCT",
   "SEAVIEWCOURT",
+  "MIRAGEST",
+  "MIRAGE",
 ];
 
 export const monterayShores = [

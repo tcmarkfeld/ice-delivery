@@ -22,6 +22,7 @@ import Form from "../components/forms/Form";
 import SubmitButton from "../components/forms/SubmitButton";
 import { ScrollView } from "react-native-gesture-handler";
 import AppButton from "../components/Button";
+import { coolerData, iceData, neighborhoodData } from "../components/Constants";
 
 const nameRegExp = /^(?!.{126,})([\w+]{3,}\s+[\w+]{3,} ?)$/;
 
@@ -215,6 +216,8 @@ function OrderScreen({ navigation, route }) {
     value: data.neighborhood_id,
   };
 
+  console.log(data.neighborhood_name);
+
   return (
     <>
       <ActivityIndicator loading={loading} />
@@ -362,7 +365,7 @@ function OrderScreen({ navigation, route }) {
               <View flexDirection={"row"}>
                 <View style={{ width: "47.5%" }}>
                   <Dropdown
-                    data={data1}
+                    data={coolerData}
                     placeholder={cooler}
                     onParentCallback={handleCallBackCooler}
                     label="Cooler Size"
@@ -373,7 +376,7 @@ function OrderScreen({ navigation, route }) {
                 <View style={{ width: "5%" }}></View>
                 <View style={{ width: "47.5%" }}>
                   <Dropdown
-                    data={data2}
+                    data={iceData}
                     placeholder={ice}
                     onParentCallback={handleCallBackIce}
                     label="Ice Type"
@@ -408,7 +411,7 @@ function OrderScreen({ navigation, route }) {
               </View>
 
               <Dropdown
-                data={data3}
+                data={neighborhoodData}
                 placeholder={neighborhood}
                 onParentCallback={handleCallBackNeighborhood}
                 label="Neighborhood"
