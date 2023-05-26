@@ -216,8 +216,6 @@ function OrderScreen({ navigation, route }) {
     value: data.neighborhood_id,
   };
 
-  console.log(data.neighborhood_name);
-
   return (
     <>
       <ActivityIndicator loading={loading} />
