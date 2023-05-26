@@ -64,20 +64,20 @@ function AllDeliveriesScreen({ navigation }) {
   });
 
   if (startDate != null && endDate != null) {
-    filtered_array = ordered_array.filter(
-      (item) => {
-        console.log(item.start_date, item.end_date, startDate, endDate);
-        if (
-          new Date(item.start_date).getTime() + 24 * 60 * 60 * 1000 >=
-            new Date(startDate) &&
-          new Date(item.end_date).getTime() - 24 * 60 * 60 * 1000 <=
-            new Date(endDate)
-        ) {
-          return item;
-        }
-      },
-      [startDate, endDate]
-    );
+    filtered_array = ordered_array.filter((item) => {
+      const itemStartDate = new Date(item.start_date);
+      const itemEndDate = new Date(item.end_date);
+      const rangeStartDate = new Date(startDate);
+      const rangeEndDate = new Date(endDate);
+
+      // Check if any day within item's range falls within the range of startDate and endDate
+      const isItemInRange =
+        (itemStartDate >= rangeStartDate && itemStartDate <= rangeEndDate) ||
+        (itemEndDate >= rangeStartDate && itemEndDate <= rangeEndDate) ||
+        (itemStartDate <= rangeStartDate && itemEndDate >= rangeEndDate);
+
+      return isItemInRange;
+    });
   }
 
   function getWeekStartEndDates(startMonth, endMonth) {
