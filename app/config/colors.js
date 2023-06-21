@@ -12,4 +12,7 @@ export default {
   onyx: "#353935",
   blue: "#006ee6",
   lime: "#29A829",
+  orange: "#FFA500",
+  lemon: "#F4D00C",
+  salt: "#cdd7ce",
 };

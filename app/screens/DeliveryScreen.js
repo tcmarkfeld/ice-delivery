@@ -44,6 +44,9 @@ function DeliveryScreen(props) {
   var count62Bagged = 0;
   var countBags = 0;
   var bagLimes = 0;
+  var bagOranges = 0;
+  var bagLemons = 0;
+  var margSalt = 0;
 
   var yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000)
     .toISOString()
@@ -86,6 +89,21 @@ function DeliveryScreen(props) {
         bagLimes += parseInt(deliveries[i].bag_limes);
       }
     }
+    if (deliveries[i].end_date.slice(0, 10) != yesterday.slice(0, 10)) {
+      if (parseInt(deliveries[i].bag_oranges) > 0) {
+        bagOranges += parseInt(deliveries[i].bag_oranges);
+      }
+    }
+    if (deliveries[i].end_date.slice(0, 10) != yesterday.slice(0, 10)) {
+      if (parseInt(deliveries[i].bag_lemons) > 0) {
+        bagLemons += parseInt(deliveries[i].bag_lemons);
+      }
+    }
+    if (deliveries[i].end_date.slice(0, 10) != yesterday.slice(0, 10)) {
+      if (parseInt(deliveries[i].marg_salt) > 0) {
+        margSalt += parseInt(deliveries[i].marg_salt);
+      }
+    }
   }
 
   try {
@@ -97,7 +115,12 @@ function DeliveryScreen(props) {
       1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
     ];
     var ordered_array = deliveries.sort(function (a, b) {
-      if (a.neighborhood == "1" || b.neighborhood == "1") {
+      if (
+        a.neighborhood == "1" ||
+        b.neighborhood == "1" ||
+        a.neighborhood == "5" ||
+        b.neighborhood == "5"
+      ) {
         return parseFloat(a.delivery_address) - parseFloat(b.delivery_address);
       } else {
         return parseFloat(b.delivery_address) - parseFloat(a.delivery_address);
@@ -125,6 +148,9 @@ function DeliveryScreen(props) {
       }
       special={data.special_instructions}
       bag_limes={data.bag_limes}
+      bag_oranges={data.bag_oranges}
+      bag_lemons={data.bag_lemons}
+      marg_salt={data.marg_salt}
     />
   ));
 
@@ -153,18 +179,50 @@ function DeliveryScreen(props) {
               40 Quart Bagged - {count40Bagged}
             </Text>
             <Text style={styles.bagText}>Total Bags - {countBags}</Text>
+            {bagLemons > 0 ? (
+              <Text style={styles.lemonText}>
+                <MaterialCommunityIcons
+                  name="fruit-citrus"
+                  color={colors.lemon}
+                  size={15}
+                />{" "}
+                Bag of Lemons - {bagLemons}
+              </Text>
+            ) : null}
+            {margSalt > 0 ? (
+              <Text style={styles.saltText}>
+                <MaterialCommunityIcons
+                  name="shaker"
+                  color={colors.medium}
+                  size={15}
+                />{" "}
+                Marg Salt - {margSalt}
+              </Text>
+            ) : null}
           </View>
           <View style={styles.looseContainer}>
             <Text style={styles.countText}>62 Quart Loose - {count62}</Text>
             <Text style={styles.countText}>40 Quart Loose - {count40}</Text>
-            <Text style={styles.limeText}>
-              <MaterialCommunityIcons
-                name="fruit-citrus"
-                color={colors.lime}
-                size={15}
-              />{" "}
-              Bag of Limes - {bagLimes}
-            </Text>
+            {bagLimes > 0 ? (
+              <Text style={styles.limeText}>
+                <MaterialCommunityIcons
+                  name="fruit-citrus"
+                  color={colors.lime}
+                  size={15}
+                />{" "}
+                Bag of Limes - {bagLimes}
+              </Text>
+            ) : null}
+            {bagOranges > 0 ? (
+              <Text style={styles.orangeText}>
+                <MaterialCommunityIcons
+                  name="fruit-citrus"
+                  color={colors.orange}
+                  size={15}
+                />{" "}
+                Bag of Oranges - {bagOranges}
+              </Text>
+            ) : null}
           </View>
         </View>
 
@@ -223,6 +281,21 @@ const styles = StyleSheet.create({
   limeText: {
     marginVertical: 2.5,
     color: colors.lime,
+    fontWeight: "500",
+  },
+  saltText: {
+    marginVertical: 2.5,
+    color: colors.medium,
+    fontWeight: "500",
+  },
+  lemonText: {
+    marginVertical: 2.5,
+    color: colors.lemon,
+    fontWeight: "500",
+  },
+  orangeText: {
+    marginVertical: 2.5,
+    color: colors.orange,
     fontWeight: "500",
   },
   looseContainer: {

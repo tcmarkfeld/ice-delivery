@@ -24,6 +24,9 @@ function DeliveryCard({
   ending,
   special,
   bag_limes,
+  bag_oranges,
+  bag_lemons,
+  marg_salt,
 }) {
   const startDate = start.split("-");
   var startMonth = startDate[1];
@@ -216,16 +219,56 @@ function DeliveryCard({
         </View>
       </View>
 
-      {bag_limes == 0 ? null : ending == false ? (
-        <Text style={styles.limeText}>
-          <MaterialCommunityIcons
-            name="fruit-citrus"
-            color={colors.lime}
-            size={17.5}
-          />{" "}
-          Bag of Limes: {bag_limes}
-        </Text>
-      ) : null}
+      <View style={styles.whiteContainer}>
+        {bag_limes == 0 ? null : ending == false ? (
+          <Text style={styles.limeText}>
+            <MaterialCommunityIcons
+              name="fruit-citrus"
+              color={colors.lime}
+              size={17.5}
+            />{" "}
+            Bag of Limes: {bag_limes}
+          </Text>
+        ) : null}
+        {bag_oranges == 0 ? null : ending == false ? (
+          <View style={styles.doubleContainer}>
+            <Text style={styles.orangeText}>
+              <MaterialCommunityIcons
+                name="fruit-citrus"
+                color={colors.orange}
+                size={17.5}
+              />{" "}
+              Bag of Oranges: {bag_oranges}
+            </Text>
+          </View>
+        ) : null}
+      </View>
+
+      <View style={styles.whiteContainer}>
+        {bag_lemons == 0 ? null : ending == false ? (
+          <Text style={styles.lemonText}>
+            <MaterialCommunityIcons
+              name="fruit-citrus"
+              color={colors.lemon}
+              size={17.5}
+            />{" "}
+            Bag of Lemons: {bag_lemons}
+          </Text>
+        ) : null}
+
+        {marg_salt == 0 ? null : ending == false ? (
+          <View style={styles.doubleContainer}>
+            <Text style={styles.saltText}>
+              <MaterialCommunityIcons
+                name="shaker"
+                color={colors.medium}
+                size={17.5}
+              />{" "}
+              Marg Salt: {marg_salt}
+            </Text>
+          </View>
+        ) : null}
+      </View>
 
       {special.length == 0 ? null : special == "none" ? null : (
         <Text style={styles.mainText}>
@@ -298,8 +341,22 @@ const styles = StyleSheet.create({
   },
   limeText: {
     marginVertical: 2.5,
-    marginLeft: 5,
     color: colors.lime,
+    fontWeight: "500",
+  },
+  saltText: {
+    marginVertical: 2.5,
+    color: colors.medium,
+    fontWeight: "500",
+  },
+  lemonText: {
+    marginVertical: 2.5,
+    color: colors.lemon,
+    fontWeight: "500",
+  },
+  orangeText: {
+    marginVertical: 2.5,
+    color: colors.orange,
     fontWeight: "500",
   },
   linkText: {

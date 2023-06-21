@@ -45,6 +45,9 @@ const validationSchema = Yup.object().shape({
   neighborhood: Yup.object().required().label("Neighborhood"),
   cooler_num: Yup.string().required().label("Cooler Number"),
   bag_limes: Yup.string().required().label("Limes"),
+  bag_lemons: Yup.string().required().label("Lemons"),
+  bag_oranges: Yup.string().required().label("Oranges"),
+  marg_salt: Yup.string().required().label("Marg Salt"),
 });
 
 function OrderScreen({ navigation, route }) {
@@ -138,7 +141,10 @@ function OrderScreen({ navigation, route }) {
       userInfo.ice.label,
       userInfo.neighborhood.value.toString(),
       userInfo.cooler_num,
-      userInfo.bag_limes
+      userInfo.bag_limes,
+      userInfo.bag_lemons,
+      userInfo.bag_oranges,
+      userInfo.marg_salt
     );
     navigation.navigate("All Deliveries");
   };
@@ -325,6 +331,9 @@ function OrderScreen({ navigation, route }) {
                 neighborhood: initialNeighborhood,
                 cooler_num: `${data.cooler_num}`,
                 bag_limes: `${data.bag_limes}`,
+                bag_lemons: `${data.bag_lemons}`,
+                bag_oranges: `${data.bag_oranges}`,
+                marg_salt: `${data.marg_salt}`,
               }}
               onSubmit={handleSubmit}
               validationSchema={validationSchema}
@@ -399,10 +408,45 @@ function OrderScreen({ navigation, route }) {
                 <View style={{ width: "47.5%" }}>
                   <FormField
                     keyboardType="number-pad"
-                    icon="pound"
+                    icon="fruit-citrus"
                     name="bag_limes"
                     placeholder="Bag of Limes"
                     label="Bag of Limes"
+                    returnKeyType="done"
+                  />
+                </View>
+              </View>
+
+              <View flexDirection={"row"}>
+                <View style={{ width: "30%" }}>
+                  <FormField
+                    keyboardType="number-pad"
+                    icon="pound"
+                    name="bag_oranges"
+                    placeholder="Oranges"
+                    label="Bag of Oranges"
+                    returnKeyType="done"
+                  />
+                </View>
+                <View style={{ width: "5%" }}></View>
+                <View style={{ width: "30%" }}>
+                  <FormField
+                    keyboardType="number-pad"
+                    icon="pound"
+                    name="bag_lemons"
+                    placeholder="Lemons"
+                    label="Bag of Lemons"
+                    returnKeyType="done"
+                  />
+                </View>
+                <View style={{ width: "5%" }}></View>
+                <View style={{ width: "30%" }}>
+                  <FormField
+                    keyboardType="number-pad"
+                    icon="shaker"
+                    name="marg_salt"
+                    placeholder="Marg Salt"
+                    label="Marg Salt"
                     returnKeyType="done"
                   />
                 </View>

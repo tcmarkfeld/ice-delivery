@@ -51,8 +51,6 @@ function AllDeliveriesScreen({ navigation }) {
     );
   }, [deliveries]);
 
-  const isDateSelected = startDate && endDate;
-
   var filtered_array = ordered_array.filter((item) => {
     return (
       item.delivery_address.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -152,21 +150,46 @@ function AllDeliveriesScreen({ navigation }) {
 
   const weeks = weeklyDates.map((data, index) => (
     <View key={index}>
-      <View style={{ height: 5 }}></View>
+      {/* <View style={{ height: 5 }}></View> */}
       <TouchableOpacity
         style={styles.filterDatesContainer}
         onPress={() => setDates(data.start, data.end)}
       >
-        <Text style={{ marginRight: 15, marginLeft: 5, color: colors.medium }}>
+        <Text
+          style={{
+            marginRight: 10,
+            color: colors.onyx,
+            width: "35%",
+            textAlign: "center",
+            fontWeight: "500",
+          }}
+        >
           {data.start}
         </Text>
         <MaterialCommunityIcons
           name="arrow-right"
           size={15}
-          color={colors.medium}
+          color={colors.onyx}
         />
-        <Text style={{ marginLeft: 15, color: colors.medium }}>{data.end}</Text>
+        <Text
+          style={{
+            marginLeft: 10,
+            color: colors.onyx,
+            width: "35%",
+            textAlign: "center",
+            fontWeight: "500",
+          }}
+        >
+          {data.end}
+        </Text>
       </TouchableOpacity>
+      <View
+        style={{
+          borderTopWidth: StyleSheet.hairlineWidth,
+          borderTopColor: colors.medium,
+          marginVertical: 5,
+        }}
+      ></View>
     </View>
   ));
 
@@ -266,13 +289,27 @@ function AllDeliveriesScreen({ navigation }) {
           }}
         >
           <View style={styles.searchContainer}>
-            <MaterialCommunityIcons name="magnify" size={15} />
+            <MaterialCommunityIcons
+              name="magnify"
+              color={colors.medium}
+              size={15}
+            />
             <TextInput
               icon={"magnify"}
               style={styles.searchBar}
+              value={searchTerm}
               onChangeText={(event) => setSearchTerm(event)}
               placeholder="Search..."
             ></TextInput>
+            {searchTerm.length > 0 ? (
+              <TouchableOpacity onPress={() => setSearchTerm("")}>
+                <MaterialCommunityIcons
+                  color={colors.medium}
+                  name="window-close"
+                  size={15}
+                />
+              </TouchableOpacity>
+            ) : null}
           </View>
           <TouchableOpacity
             style={styles.filterTouchable}
@@ -391,7 +428,7 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   searchBar: {
-    width: "100%",
+    width: "82.5%",
     padding: 5,
     marginLeft: 5,
   },
