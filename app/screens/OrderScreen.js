@@ -24,7 +24,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import AppButton from "../components/Button";
 import { coolerData, iceData, neighborhoodData } from "../components/Constants";
 
-const nameRegExp = /^(?!.{126,})([\w+]{3,}\s+[\w+]{3,} ?)$/;
+const nameRegExp = /^(?!.{126,})([\w+]{1,}\s+[\w+]{1,} ?)$/;
 
 const phoneRegExp = /^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4}$/im;
 
@@ -48,6 +48,7 @@ const validationSchema = Yup.object().shape({
   bag_lemons: Yup.string().required().label("Lemons"),
   bag_oranges: Yup.string().required().label("Oranges"),
   marg_salt: Yup.string().required().label("Marg Salt"),
+  tip: Yup.string().required().label("Tip"),
 });
 
 function OrderScreen({ navigation, route }) {
@@ -144,7 +145,8 @@ function OrderScreen({ navigation, route }) {
       userInfo.bag_limes,
       userInfo.bag_lemons,
       userInfo.bag_oranges,
-      userInfo.marg_salt
+      userInfo.marg_salt,
+      userInfo.tip
     );
     navigation.navigate("All Deliveries");
   };
@@ -334,6 +336,7 @@ function OrderScreen({ navigation, route }) {
                 bag_lemons: `${data.bag_lemons}`,
                 bag_oranges: `${data.bag_oranges}`,
                 marg_salt: `${data.marg_salt}`,
+                tip: `${data.tip}`,
               }}
               onSubmit={handleSubmit}
               validationSchema={validationSchema}
@@ -451,6 +454,15 @@ function OrderScreen({ navigation, route }) {
                   />
                 </View>
               </View>
+
+              <FormField
+                keyboardType="number-pad"
+                icon="currency-usd"
+                name="tip"
+                placeholder="Tip"
+                label="Tip"
+                returnKeyType="done"
+              />
 
               <Dropdown
                 data={neighborhoodData}

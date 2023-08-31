@@ -54,6 +54,13 @@ function DeliveryScreen(props) {
       timeZone: "America/New_York",
     });
 
+  var date = new Date();
+
+  var getYear = date.toLocaleString("default", { year: "numeric" });
+  var getMonth = date.toLocaleString("default", { month: "2-digit" });
+  var getDay = date.toLocaleString("default", { day: "2-digit" });
+  var dateFormat = getYear + "-" + getMonth + "-" + getDay;
+
   for (let i = 0; i < deliveries.length; i++) {
     if (deliveries[i].end_date.slice(0, 10) != yesterday.slice(0, 10)) {
       if (
@@ -84,22 +91,22 @@ function DeliveryScreen(props) {
         countBags += 1 * deliveries[i].cooler_num;
       }
     }
-    if (deliveries[i].end_date.slice(0, 10) != yesterday.slice(0, 10)) {
+    if (deliveries[i].start_date.slice(0, 10) == dateFormat) {
       if (parseInt(deliveries[i].bag_limes) > 0) {
         bagLimes += parseInt(deliveries[i].bag_limes);
       }
     }
-    if (deliveries[i].end_date.slice(0, 10) != yesterday.slice(0, 10)) {
+    if (deliveries[i].start_date.slice(0, 10) == dateFormat) {
       if (parseInt(deliveries[i].bag_oranges) > 0) {
         bagOranges += parseInt(deliveries[i].bag_oranges);
       }
     }
-    if (deliveries[i].end_date.slice(0, 10) != yesterday.slice(0, 10)) {
+    if (deliveries[i].start_date.slice(0, 10) == dateFormat) {
       if (parseInt(deliveries[i].bag_lemons) > 0) {
         bagLemons += parseInt(deliveries[i].bag_lemons);
       }
     }
-    if (deliveries[i].end_date.slice(0, 10) != yesterday.slice(0, 10)) {
+    if (deliveries[i].start_date.slice(0, 10) == dateFormat) {
       if (parseInt(deliveries[i].marg_salt) > 0) {
         margSalt += parseInt(deliveries[i].marg_salt);
       }
@@ -114,7 +121,21 @@ function DeliveryScreen(props) {
     var item_order = [
       1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
     ];
-    var ordered_array = deliveries.sort(function (a, b) {
+
+    var addressPriority = {
+      C: 0,
+      W: 1,
+      L: 2,
+    };
+
+    const deliveryordered = deliveries.sort(function (a, b) {
+      return parseFloat(b.delivery_address) - parseFloat(a.delivery_address);
+    });
+
+    var ordered_array = deliveryordered.sort(function (a, b) {
+      var aNeighborhoodPriority = item_order[a.neighborhood];
+      var bNeighborhoodPriority = item_order[b.neighborhood];
+
       if (
         a.neighborhood == "1" ||
         b.neighborhood == "1" ||
@@ -122,6 +143,43 @@ function DeliveryScreen(props) {
         b.neighborhood == "5"
       ) {
         return parseFloat(a.delivery_address) - parseFloat(b.delivery_address);
+      } else if (a.neighborhood == "3" || b.neighborhood == "3") {
+        if (aNeighborhoodPriority !== bNeighborhoodPriority) {
+          return bNeighborhoodPriority - aNeighborhoodPriority;
+        } else {
+          var aAddressPrefix = a.delivery_address
+            .replace(/[^a-zA-Z]/g, "")
+            .toUpperCase()
+            .slice(0, 1);
+          var bAddressPrefix = b.delivery_address
+            .replace(/[^a-zA-Z]/g, "")
+            .toUpperCase()
+            .slice(0, 1);
+
+          var aAddressPriority = addressPriority[aAddressPrefix];
+          var bAddressPriority = addressPriority[bAddressPrefix];
+
+          var aAddressValue = parseFloat(a.delivery_address);
+          var bAddressValue = parseFloat(b.delivery_address);
+          var exceeds925 = aAddressValue > 925 || bAddressValue > 925;
+
+          if (aAddressValue !== bAddressValue) {
+            if (exceeds925) {
+              if (aAddressValue >= 925 && bAddressValue >= 925) {
+                return aAddressPriority - bAddressPriority;
+              } else if (aAddressValue >= 925) {
+                return -1;
+              } else if (bAddressValue >= 925) {
+                return 1;
+              }
+            }
+            return bAddressValue - aAddressValue;
+          } else if (aAddressPrefix !== bAddressPrefix) {
+            return aAddressPriority - bAddressPriority;
+          } else {
+            return 0;
+          }
+        }
       } else {
         return parseFloat(b.delivery_address) - parseFloat(a.delivery_address);
       }

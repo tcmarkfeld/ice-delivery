@@ -24,7 +24,7 @@ import Text from "../components/Text";
 import { coolerData, iceData, neighborhoodData } from "../components/Constants";
 
 // These are regex expressions for form validation
-const nameRegExp = /^(?!.{126,})([\w+]{3,}\s+[\w+]{3,} ?)$/;
+const nameRegExp = /^(?!.{126,})([\w+]{1,}\s+[\w+]{1,} ?)$/;
 
 const phoneRegExp = /^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4}$/im;
 
@@ -49,6 +49,7 @@ const validationSchema = Yup.object().shape({
   bag_lemons: Yup.number().min(0).max(5).required().label("Lemons"),
   bag_oranges: Yup.number().min(0).max(5).required().label("Oranges"),
   marg_salt: Yup.number().min(0).max(5).required().label("Marg Salt"),
+  tip: Yup.number().min(0).required().label("Tip"),
 });
 
 function AddDeliveryScreen(props) {
@@ -76,7 +77,8 @@ function AddDeliveryScreen(props) {
       userInfo.bag_limes,
       userInfo.bag_lemons,
       userInfo.bag_oranges,
-      userInfo.marg_salt
+      userInfo.marg_salt,
+      userInfo.tip
     );
     setSelectedDateStart(new Date());
     setSelectedDateEnd(new Date());
@@ -101,6 +103,12 @@ function AddDeliveryScreen(props) {
     setShowDatePickerStart(false);
     if (newDate !== undefined) {
       setSelectedDateStart(newDate);
+      if (
+        selectedDateEnd.toISOString().slice(0, 10) ==
+        new Date().toISOString().slice(0, 10)
+      ) {
+        setSelectedDateEnd(newDate);
+      }
     }
   };
 
@@ -133,6 +141,7 @@ function AddDeliveryScreen(props) {
               bag_lemons: "0",
               bag_oranges: "0",
               marg_salt: "0",
+              tip: "0",
             }}
             onSubmit={handleSubmit}
             validationSchema={validationSchema}
@@ -276,8 +285,8 @@ function AddDeliveryScreen(props) {
                   keyboardType="number-pad"
                   icon="fruit-citrus"
                   name="bag_limes"
-                  placeholder="Bag of Limes"
-                  label="Bag of Limes"
+                  placeholder="Limes"
+                  label="Limes"
                   returnKeyType="done"
                 />
               </View>
@@ -290,7 +299,7 @@ function AddDeliveryScreen(props) {
                   icon="pound"
                   name="bag_oranges"
                   placeholder="Oranges"
-                  label="Bag of Oranges"
+                  label="Oranges"
                   returnKeyType="done"
                 />
               </View>
@@ -301,7 +310,7 @@ function AddDeliveryScreen(props) {
                   icon="pound"
                   name="bag_lemons"
                   placeholder="Lemons"
-                  label="Bag of Lemons"
+                  label="Lemons"
                   returnKeyType="done"
                 />
               </View>
@@ -317,6 +326,15 @@ function AddDeliveryScreen(props) {
                 />
               </View>
             </View>
+
+            <FormField
+              keyboardType="number-pad"
+              icon="currency-usd"
+              name="tip"
+              placeholder="Tip"
+              label="Tip"
+              returnKeyType="done"
+            />
 
             <NeighborhoodDropdown
               data={neighborhoodData}

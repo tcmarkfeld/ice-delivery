@@ -11,6 +11,8 @@ const getEndingToday = () => client.get("/api/delivery/getending");
 const getAll = () => client.get("/api/delivery/getall");
 const getOne = (id) => client.get(`/api/delivery/${id}`);
 const deleteOne = (id) => client.delete(`/api/delivery/delete/${id}`);
+const tipReport = (start_date, end_date) =>
+  client.get(`/api/delivery/tips/${start_date}/${end_date}`);
 
 const post = (
   cooler,
@@ -27,7 +29,8 @@ const post = (
   bag_limes,
   bag_lemons,
   bag_oranges,
-  marg_salt
+  marg_salt,
+  tip
 ) => {
   if (!special) {
     special = "";
@@ -57,6 +60,7 @@ const post = (
       bag_lemons: bag_lemons,
       bag_oranges: bag_oranges,
       marg_salt: marg_salt,
+      tip: tip,
     }),
   }).then((response) => {
     if (response.status == 200) {
@@ -83,7 +87,8 @@ const put = (
   bag_limes,
   bag_lemons,
   bag_oranges,
-  marg_salt
+  marg_salt,
+  tip
 ) => {
   const saveDeliveryURL = baseURL + `/api/delivery/edit/${id}`;
   fetch(saveDeliveryURL, {
@@ -110,6 +115,7 @@ const put = (
       bag_lemons: bag_lemons,
       bag_oranges: bag_oranges,
       marg_salt: marg_salt,
+      tip: tip,
     }),
   }).then((response) => {
     if (response.status == 200) {
@@ -128,4 +134,5 @@ export default {
   put,
   getOne,
   deleteOne,
+  tipReport,
 };

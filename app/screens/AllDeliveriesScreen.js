@@ -12,6 +12,7 @@ import {
 
 import { DataTable } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import DateTimePicker from "@react-native-community/datetimepicker";
 
 import ActivityIndicator from "../components/ActivityIndicator";
 import colors from "../config/colors";
@@ -28,8 +29,14 @@ function AllDeliveriesScreen({ navigation }) {
   const [refreshing, setRefreshing] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
+  const [tipModalVisible, setTipModalVisible] = useState(false);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
+  const [selectedDateStart, setSelectedDateStart] = useState(new Date());
+  const [showDatePickerStart, setShowDatePickerStart] = useState(false);
+  const [selectedDateEnd, setSelectedDateEnd] = useState(new Date());
+  const [showDatePickerEnd, setShowDatePickerEnd] = useState(false);
+  const [tipAmount, setTipAmount] = useState(null);
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
@@ -38,6 +45,8 @@ function AllDeliveriesScreen({ navigation }) {
       setRefreshing(false);
     });
   }, []);
+
+  const tipReport = useApi(deliveryApi.tipReport);
 
   const getDeliveriesApi = useApi(deliveryApi.getAll);
   const deliveries = useMemo(
@@ -127,9 +136,6 @@ function AllDeliveriesScreen({ navigation }) {
 
   // Generate array of start and end dates for each week from April (month 4) until September (month 9)
   var startMonth = 4;
-  if (startMonth < today) {
-    startMonth = today;
-  }
   const endMonth = 8;
   const weeklyDates = getWeekStartEndDates(startMonth, endMonth);
 
@@ -147,6 +153,47 @@ function AllDeliveriesScreen({ navigation }) {
     setEndDate(end);
     setModalVisible(false);
   }
+
+  const handleStartDateChange = (event, newDate) => {
+    setShowDatePickerStart(false);
+    if (newDate !== undefined) {
+      setSelectedDateStart(newDate);
+    }
+  };
+
+  const handleEndDateChange = (event, newDate) => {
+    setShowDatePickerEnd(false);
+    if (newDate !== undefined) {
+      setSelectedDateEnd(newDate);
+    }
+  };
+
+  const clearModal = () => {
+    setTipModalVisible(!tipModalVisible);
+    setSelectedDateEnd(new Date());
+    setSelectedDateStart(new Date());
+    setTipAmount(0);
+  };
+
+  const runTipReport = () => {
+    var tip_array = ordered_array.filter((item) => {
+      const itemDate = new Date(item.timestamp);
+      const rangeStartDate = new Date(selectedDateStart);
+      const rangeEndDate = new Date(selectedDateEnd);
+
+      // Check if any day within item's timestamp falls within the range of startDate and endDate
+      const isItemInRange =
+        rangeStartDate <= itemDate && itemDate <= rangeEndDate;
+
+      return isItemInRange;
+    });
+    var totalTips = 0;
+
+    for (var i = 0; i < tip_array.length; i++) {
+      totalTips += parseInt(tip_array[i].tip);
+    }
+    setTipAmount(totalTips);
+  };
 
   const weeks = weeklyDates.map((data, index) => (
     <View key={index}>
@@ -322,7 +369,21 @@ function AllDeliveriesScreen({ navigation }) {
             />
             <Text style={{ color: colors.medium }}>Filter</Text>
           </TouchableOpacity>
+
+          {/* TIP MODAL TOUCHABLE */}
+          <TouchableOpacity
+            style={styles.filterTouchable}
+            onPress={() => setTipModalVisible(true)}
+          >
+            <MaterialCommunityIcons
+              name="currency-usd"
+              size={15}
+              color={colors.medium}
+            />
+            <Text style={{ color: colors.medium }}>Tips</Text>
+          </TouchableOpacity>
         </View>
+        {/* FILTER BY WEEK MODAL */}
         <Modal
           animationType="slide"
           transparent={true}
@@ -340,6 +401,103 @@ function AllDeliveriesScreen({ navigation }) {
               <TouchableOpacity
                 style={[styles.button, styles.buttonClose]}
                 onPress={() => setModalVisible(!modalVisible)}
+              >
+                <Text style={styles.textStyle}>Close</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+
+        {/* TIP REPORT MODAL */}
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={tipModalVisible}
+          onRequestClose={() => {
+            setTipModalVisible(!tipModalVisible);
+          }}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <View style={{ marginBottom: 20 }}>
+                <View style={{ marginBottom: 10, alignItems: "center" }}>
+                  <Text>Start Date:</Text>
+                  {Platform.OS === "android" ? (
+                    <TouchableOpacity
+                      onPress={() => setShowDatePickerStart(true)}
+                    >
+                      <Text style={{ color: colors.medium }}>
+                        {selectedDateStart.toLocaleString().slice(0, 10)}
+                      </Text>
+                      {showDatePickerStart && (
+                        <DateTimePicker
+                          value={selectedDateStart}
+                          accentColor={colors.primary}
+                          mode="date"
+                          display="default"
+                          onChange={handleStartDateChange}
+                        />
+                      )}
+                    </TouchableOpacity>
+                  ) : (
+                    <DateTimePicker
+                      value={selectedDateStart}
+                      accentColor={colors.primary}
+                      mode="date"
+                      display="default"
+                      onChange={handleStartDateChange}
+                    />
+                  )}
+                </View>
+
+                <View style={{ marginBottom: 10, alignItems: "center" }}>
+                  <Text>End Date:</Text>
+                  {Platform.OS === "android" ? (
+                    <TouchableOpacity
+                      onPress={() => setShowDatePickerEnd(true)}
+                    >
+                      <Text style={{ color: colors.medium }}>
+                        {selectedDateEnd.toLocaleString().slice(0, 10)}
+                      </Text>
+                      {showDatePickerEnd && (
+                        <DateTimePicker
+                          value={selectedDateEnd}
+                          accentColor={colors.primary}
+                          mode="date"
+                          display="default"
+                          onChange={handleEndDateChange}
+                        />
+                      )}
+                    </TouchableOpacity>
+                  ) : (
+                    <DateTimePicker
+                      value={selectedDateEnd}
+                      accentColor={colors.primary}
+                      mode="date"
+                      display="default"
+                      onChange={handleEndDateChange}
+                    />
+                  )}
+                </View>
+              </View>
+              <Text
+                style={{
+                  color: colors.black,
+                  marginBottom: 20,
+                  fontWeight: "500",
+                }}
+              >
+                Total tips: ${tipAmount}
+              </Text>
+              <TouchableOpacity
+                style={[styles.button, styles.tipButton]}
+                onPress={runTipReport}
+              >
+                <Text style={styles.textStyle}>Run Report</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.button, styles.buttonClose]}
+                onPress={() => clearModal()}
               >
                 <Text style={styles.textStyle}>Close</Text>
               </TouchableOpacity>
@@ -424,17 +582,17 @@ const styles = StyleSheet.create({
     backgroundColor: colors.grey,
     marginTop: 15,
     borderRadius: 8,
-    width: "60%",
+    width: "45%",
     padding: 5,
   },
   searchBar: {
-    width: "82.5%",
+    width: "80%",
     padding: 5,
     marginLeft: 5,
   },
   filterTouchable: {
     backgroundColor: colors.grey,
-    width: "25%",
+    width: "20%",
     marginLeft: "5%",
     height: "75%",
     marginTop: 15,
@@ -467,6 +625,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 20,
     padding: 35,
+    maxHeight: 500,
     alignItems: "center",
     shadowColor: "#000",
     shadowOffset: {
@@ -485,6 +644,11 @@ const styles = StyleSheet.create({
   },
   buttonClose: {
     backgroundColor: colors.primary,
+    width: 105,
+  },
+  tipButton: {
+    backgroundColor: colors.lime,
+    width: 105,
   },
   textStyle: {
     color: "white",
