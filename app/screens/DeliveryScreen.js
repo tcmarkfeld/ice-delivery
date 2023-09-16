@@ -209,6 +209,8 @@ function DeliveryScreen(props) {
       bag_oranges={data.bag_oranges}
       bag_lemons={data.bag_lemons}
       marg_salt={data.marg_salt}
+      deliverytime={data.deliverytime}
+      dayornight={data.dayornight}
     />
   ));
 

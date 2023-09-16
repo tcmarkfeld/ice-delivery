@@ -15,13 +15,17 @@ import Dropdown from "../components/Dropdown";
 import NeighborhoodDropdown from "../components/NeighborhoodDropdown";
 import Form from "../components/forms/Form";
 import FormField from "../components/forms/FormField";
-import AddressFormField from "../components/forms/AddressField";
 import SubmitButton from "../components/forms/SubmitButton";
 import delivery from "../api/delivery";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import colors from "../config/colors";
 import Text from "../components/Text";
-import { coolerData, iceData, neighborhoodData } from "../components/Constants";
+import {
+  coolerData,
+  iceData,
+  neighborhoodData,
+  timeData,
+} from "../components/Constants";
 
 // These are regex expressions for form validation
 const nameRegExp = /^(?!.{126,})([\w+]{1,}\s+[\w+]{1,} ?)$/;
@@ -50,12 +54,14 @@ const validationSchema = Yup.object().shape({
   bag_oranges: Yup.number().min(0).max(5).required().label("Oranges"),
   marg_salt: Yup.number().min(0).max(5).required().label("Marg Salt"),
   tip: Yup.number().min(0).required().label("Tip"),
+  time: Yup.number().min(1).max(12).required().label("Time"),
 });
 
 function AddDeliveryScreen(props) {
   const [neighborhood, setNeighborhood] = useState();
   const [ice, setIce] = useState("");
   const [cooler, setCooler] = useState("");
+  const [timeam, setTimeAm] = useState("");
   const [selectedDateStart, setSelectedDateStart] = useState(new Date());
   const [showDatePickerStart, setShowDatePickerStart] = useState(false);
   const [selectedDateEnd, setSelectedDateEnd] = useState(new Date());
@@ -71,6 +77,8 @@ function AddDeliveryScreen(props) {
       userInfo.email,
       selectedDateStart,
       selectedDateEnd,
+      userInfo.time,
+      userInfo.timeam.label,
       userInfo.neighborhood.value,
       userInfo.special_instructions,
       userInfo.cooler_num,
@@ -80,19 +88,28 @@ function AddDeliveryScreen(props) {
       userInfo.marg_salt,
       userInfo.tip
     );
-    setSelectedDateStart(new Date());
-    setSelectedDateEnd(new Date());
+    // setSelectedDateStart(new Date());
+    // setSelectedDateEnd(new Date());
+    // setSelectedTime(new Date());
 
-    resetForm();
+    // resetForm();
   };
 
   const handleCallBackCooler = (childData) => {
     //parent function, dropdown passes selected item back to this function through a prop
     setCooler(childData);
+    if (childData == "Big Ass 200 Qt") {
+      uesrInfo.special_instructions = "8 bags";
+    }
   };
 
   const handleCallBackIce = (childData) => {
     setIce(childData);
+  };
+
+  const handleCallBackTime = (childData) => {
+    console.log(childData);
+    setTimeAm(childData);
   };
 
   const handleCallBackNeighborhood = (childData) => {
@@ -119,6 +136,13 @@ function AddDeliveryScreen(props) {
     }
   };
 
+  const handleTimeChange = (event, newDate) => {
+    setShowTimePicker(false);
+    if (newDate !== undefined) {
+      setSelectedTime(newDate);
+    }
+  };
+
   return (
     <KeyboardAvoidingView
       behavior="padding"
@@ -142,6 +166,8 @@ function AddDeliveryScreen(props) {
               bag_oranges: "0",
               marg_salt: "0",
               tip: "0",
+              time: "",
+              timeam: "",
             }}
             onSubmit={handleSubmit}
             validationSchema={validationSchema}
@@ -344,6 +370,30 @@ function AddDeliveryScreen(props) {
               icon="home-group"
               name={"neighborhood"}
             ></NeighborhoodDropdown>
+
+            <View flexDirection={"row"}>
+              <View style={{ width: "47.5%" }}>
+                <FormField
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  icon="clock"
+                  name="time"
+                  keyboardType="number-pad"
+                  returnKeyType="done"
+                  placeholder="Delivery Time (optnl)"
+                />
+              </View>
+              <View style={{ width: "5%" }}></View>
+              <View style={{ width: "47.5%" }}>
+                <Dropdown
+                  data={timeData}
+                  placeholder={"AM/PM..."}
+                  onParentCallback={handleCallBackTime}
+                  icon="timer-sand"
+                  name={"timeam"}
+                ></Dropdown>
+              </View>
+            </View>
 
             <FormField
               autoCapitalize="none"

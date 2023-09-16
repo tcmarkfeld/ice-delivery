@@ -27,6 +27,8 @@ function DeliveryCard({
   bag_oranges,
   bag_lemons,
   marg_salt,
+  deliverytime,
+  dayornight,
 }) {
   const startDate = start.split("-");
   var startMonth = startDate[1];
@@ -278,6 +280,17 @@ function DeliveryCard({
             size={17.5}
           />{" "}
           Special Instructions: {special}
+        </Text>
+      )}
+
+      {deliverytime == null ? null : (
+        <Text style={styles.mainText}>
+          <MaterialCommunityIcons
+            name="clock"
+            color={colors.medium}
+            size={17.5}
+          />{" "}
+          Delivery Time: {deliverytime} {dayornight}
         </Text>
       )}
 

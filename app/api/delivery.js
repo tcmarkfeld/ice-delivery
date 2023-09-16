@@ -23,6 +23,8 @@ const post = (
   email,
   start_date,
   end_date,
+  time,
+  timeam,
   neighborhood,
   special,
   cooler_num,
@@ -35,6 +37,7 @@ const post = (
   if (!special) {
     special = "";
   }
+
   //create new delivery in database
   const url = baseURL + `/api/delivery/add`;
   fetch(url, {
@@ -61,6 +64,8 @@ const post = (
       bag_oranges: bag_oranges,
       marg_salt: marg_salt,
       tip: tip,
+      deliverytime: time,
+      dayornight: timeam,
     }),
   }).then((response) => {
     if (response.status == 200) {
@@ -88,7 +93,9 @@ const put = (
   bag_lemons,
   bag_oranges,
   marg_salt,
-  tip
+  tip,
+  deliverytime,
+  dayornight
 ) => {
   const saveDeliveryURL = baseURL + `/api/delivery/edit/${id}`;
   fetch(saveDeliveryURL, {
@@ -116,6 +123,8 @@ const put = (
       bag_oranges: bag_oranges,
       marg_salt: marg_salt,
       tip: tip,
+      deliverytime: deliverytime,
+      dayornight: dayornight,
     }),
   }).then((response) => {
     if (response.status == 200) {

@@ -22,7 +22,12 @@ import Form from "../components/forms/Form";
 import SubmitButton from "../components/forms/SubmitButton";
 import { ScrollView } from "react-native-gesture-handler";
 import AppButton from "../components/Button";
-import { coolerData, iceData, neighborhoodData } from "../components/Constants";
+import {
+  coolerData,
+  iceData,
+  neighborhoodData,
+  timeData,
+} from "../components/Constants";
 
 const nameRegExp = /^(?!.{126,})([\w+]{1,}\s+[\w+]{1,} ?)$/;
 
@@ -49,6 +54,7 @@ const validationSchema = Yup.object().shape({
   bag_oranges: Yup.string().required().label("Oranges"),
   marg_salt: Yup.string().required().label("Marg Salt"),
   tip: Yup.string().required().label("Tip"),
+  time: Yup.number().min(1).max(12).required().label("Time"),
 });
 
 function OrderScreen({ navigation, route }) {
@@ -146,7 +152,9 @@ function OrderScreen({ navigation, route }) {
       userInfo.bag_lemons,
       userInfo.bag_oranges,
       userInfo.marg_salt,
-      userInfo.tip
+      userInfo.tip,
+      userInfo.time,
+      userInfo.timeam.label
     );
     navigation.navigate("All Deliveries");
   };
@@ -186,6 +194,11 @@ function OrderScreen({ navigation, route }) {
     setNeighborhood(childData);
   };
 
+  const handleCallBackTime = (childData) => {
+    console.log(childData);
+    setTimeAm(childData);
+  };
+
   const data1 = [
     { label: "40 QUART", value: 1 },
     { label: "62 QUART", value: 2 },
@@ -223,6 +236,19 @@ function OrderScreen({ navigation, route }) {
     label: data.neighborhood_name,
     value: data.neighborhood_id,
   };
+
+  var initialTime;
+  if (data.dayornight === "AM") {
+    initialTime = {
+      label: data.dayornight,
+      value: 1,
+    };
+  } else {
+    initialTime = {
+      label: data.dayornight,
+      value: 2,
+    };
+  }
 
   return (
     <>
@@ -337,6 +363,8 @@ function OrderScreen({ navigation, route }) {
                 bag_oranges: `${data.bag_oranges}`,
                 marg_salt: `${data.marg_salt}`,
                 tip: `${data.tip}`,
+                time: `${data.deliverytime}`,
+                timeam: initialTime,
               }}
               onSubmit={handleSubmit}
               validationSchema={validationSchema}
@@ -472,6 +500,31 @@ function OrderScreen({ navigation, route }) {
                 icon="home-group"
                 name={"neighborhood"}
               ></Dropdown>
+
+              <View flexDirection={"row"}>
+                <View style={{ width: "47.5%" }}>
+                  <FormField
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    icon="clock"
+                    name="time"
+                    keyboardType="number-pad"
+                    returnKeyType="done"
+                    placeholder="Delivery Time (optnl)"
+                  />
+                </View>
+                <View style={{ width: "5%" }}></View>
+                <View style={{ width: "47.5%" }}>
+                  <Dropdown
+                    data={timeData}
+                    placeholder={"AM/PM..."}
+                    onParentCallback={handleCallBackTime}
+                    icon="timer-sand"
+                    name={"timeam"}
+                  ></Dropdown>
+                </View>
+              </View>
+
               <FormField
                 autoCapitalize="none"
                 autoCorrect={false}
