@@ -283,7 +283,18 @@ function DeliveryCard({
         </Text>
       )}
 
-      {deliverytime == null ? null : (
+      {cooler == "big ass 200 qt" ? (
+        <Text style={styles.mainText}>
+          <MaterialCommunityIcons
+            name="star"
+            color={colors.medium}
+            size={17.5}
+          />{" "}
+          Cooler gets 8 bags
+        </Text>
+      ) : null}
+
+      {deliverytime == null ? null : deliverytime == "" ? null : (
         <Text style={styles.mainText}>
           <MaterialCommunityIcons
             name="clock"

@@ -42,6 +42,7 @@ function DeliveryScreen(props) {
   var count62 = 0;
   var count40Bagged = 0;
   var count62Bagged = 0;
+  var count200Bagged = 0;
   var countBags = 0;
   var bagLimes = 0;
   var bagOranges = 0;
@@ -89,6 +90,13 @@ function DeliveryScreen(props) {
       ) {
         count40Bagged += 1 * deliveries[i].cooler_num;
         countBags += 1 * deliveries[i].cooler_num;
+      } else if (
+        deliveries[i].ice_type.toLowerCase() == "bagged ice" &&
+        deliveries[i].cooler_size.toLowerCase() == "big ass 200 qt" &&
+        today != deliveries[i].end_date.slice(0, 10)
+      ) {
+        count200Bagged += 1 * deliveries[i].cooler_num;
+        countBags += 8 * deliveries[i].cooler_num;
       }
     }
     if (deliveries[i].start_date.slice(0, 10) == dateFormat) {
@@ -238,6 +246,11 @@ function DeliveryScreen(props) {
             <Text style={styles.countText}>
               40 Quart Bagged - {count40Bagged}
             </Text>
+            {count200Bagged > 0 ? (
+              <Text style={styles.countText}>
+                200 Quart Bagged - {count200Bagged}
+              </Text>
+            ) : null}
             <Text style={styles.bagText}>Total Bags - {countBags}</Text>
             {bagLemons > 0 ? (
               <Text style={styles.lemonText}>

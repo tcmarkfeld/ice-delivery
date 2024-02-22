@@ -10,6 +10,7 @@ export const iceData = [
 ];
 
 export const timeData = [
+  { label: "AM/PM...", value: 3 },
   { label: "AM", value: 1 },
   { label: "PM", value: 2 },
 ];
@@ -19,6 +20,8 @@ export const neighborhoodData = [
   { label: "Corolla Light", value: 2 },
   { label: "Whalehead", value: 3 },
   { label: "Whalehead Right", value: 18 },
+  { label: "WHC South Lawn", value: 20 },
+  { label: "WHC North Lawn", value: 21 },
   { label: "Cruz Bay (Soundfront at Corolla Bay)", value: 19 },
   { label: "Monteray Shores", value: 17 },
   { label: "Buck Island", value: 16 },

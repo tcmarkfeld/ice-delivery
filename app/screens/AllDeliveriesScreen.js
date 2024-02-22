@@ -8,6 +8,7 @@ import {
   TextInput,
   RefreshControl,
   Modal,
+  Platform,
 } from "react-native";
 
 import { DataTable } from "react-native-paper";

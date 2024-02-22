@@ -37,6 +37,12 @@ const post = (
   if (!special) {
     special = "";
   }
+  if (!time || time === "AM/PM...") {
+    time = "";
+  }
+  if (!timeam || timeam === "AM/PM...") {
+    timeam = "";
+  }
 
   //create new delivery in database
   const url = baseURL + `/api/delivery/add`;
@@ -97,6 +103,16 @@ const put = (
   deliverytime,
   dayornight
 ) => {
+  if (!special_instructions) {
+    special = "";
+  }
+  if (!deliverytime || deliverytime === "AM/PM...") {
+    deliverytime = "";
+  }
+  if (!dayornight || dayornight === "AM/PM...") {
+    dayornight = "";
+  }
+
   const saveDeliveryURL = baseURL + `/api/delivery/edit/${id}`;
   fetch(saveDeliveryURL, {
     method: "PUT",

@@ -54,7 +54,7 @@ const validationSchema = Yup.object().shape({
   bag_oranges: Yup.number().min(0).max(5).required().label("Oranges"),
   marg_salt: Yup.number().min(0).max(5).required().label("Marg Salt"),
   tip: Yup.number().min(0).required().label("Tip"),
-  time: Yup.number().min(1).max(12).required().label("Time"),
+  time: Yup.number().min(1).max(12).label("Time"),
 });
 
 function AddDeliveryScreen(props) {
@@ -68,29 +68,51 @@ function AddDeliveryScreen(props) {
   const [showDatePickerEnd, setShowDatePickerEnd] = useState(false);
 
   const handleSubmit = (userInfo, { resetForm }) => {
-    const result = delivery.post(
-      userInfo.cooler.label,
-      userInfo.ice.label,
-      userInfo.delivery_address,
-      userInfo.name,
-      userInfo.phone_number,
-      userInfo.email,
-      selectedDateStart,
-      selectedDateEnd,
-      userInfo.time,
-      userInfo.timeam.label,
-      userInfo.neighborhood.value,
-      userInfo.special_instructions,
-      userInfo.cooler_num,
-      userInfo.bag_limes,
-      userInfo.bag_lemons,
-      userInfo.bag_oranges,
-      userInfo.marg_salt,
-      userInfo.tip
-    );
+    if (timeam == "") {
+      const result = delivery.post(
+        userInfo.cooler.label,
+        userInfo.ice.label,
+        userInfo.delivery_address,
+        userInfo.name,
+        userInfo.phone_number,
+        userInfo.email,
+        selectedDateStart,
+        selectedDateEnd,
+        userInfo.time,
+        null,
+        userInfo.neighborhood.value,
+        userInfo.special_instructions,
+        userInfo.cooler_num,
+        userInfo.bag_limes,
+        userInfo.bag_lemons,
+        userInfo.bag_oranges,
+        userInfo.marg_salt,
+        userInfo.tip
+      );
+    } else {
+      const result = delivery.post(
+        userInfo.cooler.label,
+        userInfo.ice.label,
+        userInfo.delivery_address,
+        userInfo.name,
+        userInfo.phone_number,
+        userInfo.email,
+        selectedDateStart,
+        selectedDateEnd,
+        userInfo.time,
+        userInfo.timeam.label,
+        userInfo.neighborhood.value,
+        userInfo.special_instructions,
+        userInfo.cooler_num,
+        userInfo.bag_limes,
+        userInfo.bag_lemons,
+        userInfo.bag_oranges,
+        userInfo.marg_salt,
+        userInfo.tip
+      );
+    }
     // setSelectedDateStart(new Date());
     // setSelectedDateEnd(new Date());
-    // setSelectedTime(new Date());
 
     // resetForm();
   };
@@ -108,7 +130,6 @@ function AddDeliveryScreen(props) {
   };
 
   const handleCallBackTime = (childData) => {
-    console.log(childData);
     setTimeAm(childData);
   };
 
@@ -133,13 +154,6 @@ function AddDeliveryScreen(props) {
     setShowDatePickerEnd(false);
     if (newDate !== undefined) {
       setSelectedDateEnd(newDate);
-    }
-  };
-
-  const handleTimeChange = (event, newDate) => {
-    setShowTimePicker(false);
-    if (newDate !== undefined) {
-      setSelectedTime(newDate);
     }
   };
 

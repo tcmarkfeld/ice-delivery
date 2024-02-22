@@ -19,12 +19,18 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.corollaicedelivery.icedelivery"
     },
-    "android": {
-      
-    },
-    "web": {
+    "android": {},
+    "web": {},
+    "plugins": [
+      "expo-secure-store"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "f53a6869-59e8-44c9-9d94-c6838fc0572d"
+      }
     }
   }
 }

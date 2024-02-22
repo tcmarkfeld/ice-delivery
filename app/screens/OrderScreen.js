@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Text,
   StyleSheet,
@@ -54,7 +54,7 @@ const validationSchema = Yup.object().shape({
   bag_oranges: Yup.string().required().label("Oranges"),
   marg_salt: Yup.string().required().label("Marg Salt"),
   tip: Yup.string().required().label("Tip"),
-  time: Yup.number().min(1).max(12).required().label("Time"),
+  time: Yup.number().min(1).max(12).label("Time"),
 });
 
 function OrderScreen({ navigation, route }) {
@@ -101,8 +101,17 @@ function OrderScreen({ navigation, route }) {
 
   const fetchDelivery = async () => {
     const result = await getDelivery.request(route.params.id);
-    setSelectedDateStart(new Date(result.data[0].start_date));
-    setSelectedDateEnd(new Date(result.data[0].end_date));
+    var startDateAsDate = new Date(result.data[0].start_date);
+    var startDate = startDateAsDate.setTime(
+      startDateAsDate.getTime() +
+        startDateAsDate.getTimezoneOffset() * 60 * 1000
+    );
+    setSelectedDateStart(new Date(startDate));
+    var endDateAsDate = new Date(result.data[0].end_date);
+    var endDate = endDateAsDate.setTime(
+      endDateAsDate.getTime() + endDateAsDate.getTimezoneOffset() * 60 * 1000
+    );
+    setSelectedDateEnd(new Date(endDate));
     setCooler(result.data[0].cooler_size);
     setNeighborhood(result.data[0].neighborhood);
     setIce(result.data[0].ice_type);
@@ -195,18 +204,8 @@ function OrderScreen({ navigation, route }) {
   };
 
   const handleCallBackTime = (childData) => {
-    console.log(childData);
     setTimeAm(childData);
   };
-
-  const data1 = [
-    { label: "40 QUART", value: 1 },
-    { label: "62 QUART", value: 2 },
-  ];
-  const data2 = [
-    { label: "LOOSE ICE", value: 1 },
-    { label: "BAGGED ICE", value: 2 },
-  ];
 
   var initialCooler;
   if (data.cooler_size === "40 QUART") {
@@ -238,7 +237,9 @@ function OrderScreen({ navigation, route }) {
   };
 
   var initialTime;
-  if (data.dayornight === "AM") {
+  if (data.dayornight === "" || data.dayornight === null) {
+    initialTime = "";
+  } else if (data.dayornight === "AM") {
     initialTime = {
       label: data.dayornight,
       value: 1,
@@ -282,7 +283,6 @@ function OrderScreen({ navigation, route }) {
                     <DateTimePicker
                       value={selectedDateStart}
                       accentColor={colors.primary}
-                      timeZoneOffsetInMinutes={1}
                       mode="date"
                       display="default"
                       onChange={handleStartDateChange}
@@ -294,7 +294,6 @@ function OrderScreen({ navigation, route }) {
                   <DateTimePicker
                     value={selectedDateStart}
                     accentColor={colors.primary}
-                    timeZoneOffsetInMinutes={1}
                     mode="date"
                     display="default"
                     onChange={handleStartDateChange}
@@ -322,7 +321,6 @@ function OrderScreen({ navigation, route }) {
                     <DateTimePicker
                       accentColor={colors.primary}
                       value={selectedDateEnd}
-                      timeZoneOffsetInMinutes={1}
                       mode="date"
                       display="default"
                       onChange={handleEndDateChange}
@@ -334,7 +332,6 @@ function OrderScreen({ navigation, route }) {
                   <DateTimePicker
                     accentColor={colors.primary}
                     value={selectedDateEnd}
-                    timeZoneOffsetInMinutes={1}
                     mode="date"
                     display="default"
                     onChange={handleEndDateChange}
