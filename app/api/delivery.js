@@ -51,7 +51,7 @@ const post = (
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      "auth-token": token._z,
+      "auth-token": token._j,
     },
     body: JSON.stringify({
       delivery_address: address,
@@ -119,7 +119,7 @@ const put = (
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      "auth-token": token._z,
+      "auth-token": token._j,
     },
     body: JSON.stringify({
       id: id,

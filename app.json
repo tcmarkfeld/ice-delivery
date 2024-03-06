@@ -13,7 +13,8 @@
       "backgroundColor": "#ffffff"
     },
     "updates": {
-      "fallbackToCacheTimeout": 0
+      "fallbackToCacheTimeout": 0,
+      "url": "https://u.expo.dev/f53a6869-59e8-44c9-9d94-c6838fc0572d"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -22,7 +23,9 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.corollaicedelivery.icedelivery"
     },
-    "android": {},
+    "android": {
+      "package": "com.corollaicedelivery.icedelivery"
+    },
     "web": {},
     "plugins": [
       "expo-secure-store"
@@ -31,6 +34,9 @@
       "eas": {
         "projectId": "f53a6869-59e8-44c9-9d94-c6838fc0572d"
       }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
     }
   }
 }

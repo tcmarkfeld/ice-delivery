@@ -111,10 +111,9 @@ function AddDeliveryScreen(props) {
         userInfo.tip
       );
     }
-    // setSelectedDateStart(new Date());
-    // setSelectedDateEnd(new Date());
-
-    // resetForm();
+    setSelectedDateStart(new Date());
+    setSelectedDateEnd(new Date());
+    resetForm();
   };
 
   const handleCallBackCooler = (childData) => {
@@ -139,21 +138,45 @@ function AddDeliveryScreen(props) {
 
   const handleStartDateChange = (event, newDate) => {
     setShowDatePickerStart(false);
-    if (newDate !== undefined) {
-      setSelectedDateStart(newDate);
+
+    newDate.setHours(0);
+    newDate.setMinutes(0);
+    newDate.setSeconds(0);
+    newDate.setMilliseconds(0);
+
+    var dateFormatted = new Date(
+      newDate.setTime(
+        newDate.getTime() + newDate.getTimezoneOffset() * 60 * 1000
+      )
+    );
+
+    if (dateFormatted !== undefined) {
+      setSelectedDateStart(dateFormatted);
       if (
         selectedDateEnd.toISOString().slice(0, 10) ==
         new Date().toISOString().slice(0, 10)
       ) {
-        setSelectedDateEnd(newDate);
+        setSelectedDateEnd(dateFormatted);
       }
     }
   };
 
   const handleEndDateChange = (event, newDate) => {
     setShowDatePickerEnd(false);
+
+    newDate.setHours(0);
+    newDate.setMinutes(0);
+    newDate.setSeconds(0);
+    newDate.setMilliseconds(0);
+
+    var dateFormatted = new Date(
+      newDate.setTime(
+        newDate.getTime() + newDate.getTimezoneOffset() * 60 * 1000
+      )
+    );
+
     if (newDate !== undefined) {
-      setSelectedDateEnd(newDate);
+      setSelectedDateEnd(dateFormatted);
     }
   };
 
