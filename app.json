@@ -3,7 +3,7 @@
     "name": "Corolla Ice Delivery",
     "owner": "corollaicedelivery",
     "slug": "ice-delivery",
-    "version": "1.0.0",
+    "version": "1.0.4",
     "orientation": "portrait",
     "icon": "./app/assets/icon.png",
     "userInterfaceStyle": "light",

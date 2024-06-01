@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
+import React, { useEffect, useState } from "react";
 import * as SplashScreen from "expo-splash-screen";
 
 import AppNavigator from "./app/navigation/AppNavigator";
@@ -21,7 +21,9 @@ export default function App() {
       try {
         // Restoring the user from previous session so they don't have to keep logging in
         const user = await authStorage.getUser();
-        if (user) setUser(user);
+        if (user) {
+          setUser(user);
+        }
       } catch (e) {
         console.warn(e);
       } finally {
@@ -41,7 +43,7 @@ export default function App() {
   return (
     <AuthContext.Provider value={{ user, setUser }}>
       <NavigationContainer ref={navigationRef} theme={navigationTheme}>
-        {user ? <AppNavigator /> : <AuthNavigator />}
+        {user != null ? <AppNavigator /> : <AuthNavigator />}
       </NavigationContainer>
     </AuthContext.Provider>
   );

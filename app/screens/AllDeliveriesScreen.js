@@ -73,17 +73,21 @@ function AllDeliveriesScreen({ navigation }) {
 
   if (startDate != null && endDate != null) {
     filtered_array = ordered_array.filter((item) => {
+      let [startMonth, startDay, startYear] = startDate.split("/").map(Number);
+      let [endMonth, endDay, endYear] = endDate.split("/").map(Number);
       const itemStartDate = new Date(item.start_date);
       const itemEndDate = new Date(item.end_date);
-      const rangeStartDate = new Date(startDate);
-      const rangeEndDate = new Date(endDate);
+      const rangeStartDate = new Date(startYear, startMonth - 1, startDay);
+      const rangeEndDate = new Date(endYear, endMonth - 1, endDay);
 
       // Check if any day within item's range falls within the range of startDate and endDate
       const isItemInRange =
         (itemStartDate >= rangeStartDate && itemStartDate <= rangeEndDate) ||
         (itemEndDate >= rangeStartDate && itemEndDate <= rangeEndDate) ||
         (itemStartDate <= rangeStartDate && itemEndDate >= rangeEndDate);
-
+      console.log(itemStartDate + " " + itemEndDate);
+      console.log(rangeStartDate + " " + rangeEndDate);
+      console.log(startDate);
       return isItemInRange;
     });
   }

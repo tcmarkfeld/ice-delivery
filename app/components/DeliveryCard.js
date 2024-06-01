@@ -294,16 +294,18 @@ function DeliveryCard({
         </Text>
       ) : null}
 
-      {deliverytime == null ? null : deliverytime == "" ? null : (
-        <Text style={styles.mainText}>
-          <MaterialCommunityIcons
-            name="clock"
-            color={colors.medium}
-            size={17.5}
-          />{" "}
-          Delivery Time: {deliverytime} {dayornight}
-        </Text>
-      )}
+      {startdatestring === today ? (
+        deliverytime == null ? null : deliverytime == "" ? null : (
+          <Text style={styles.mainText}>
+            <MaterialCommunityIcons
+              name="clock"
+              color={colors.medium}
+              size={17.5}
+            />{" "}
+            Delivery Time: {deliverytime} {dayornight}
+          </Text>
+        )
+      ) : null}
 
       {ending == true ? (
         <TouchableOpacity onPress={sendText} style={styles.checkContainer}>
