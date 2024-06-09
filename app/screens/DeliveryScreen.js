@@ -48,6 +48,7 @@ function DeliveryScreen(props) {
   var bagOranges = 0;
   var bagLemons = 0;
   var margSalt = 0;
+  var freezePops = 0;
 
   var yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000)
     .toISOString()
@@ -117,6 +118,11 @@ function DeliveryScreen(props) {
     if (deliveries[i].start_date.slice(0, 10) == dateFormat) {
       if (parseInt(deliveries[i].marg_salt) > 0) {
         margSalt += parseInt(deliveries[i].marg_salt);
+      }
+    }
+    if (deliveries[i].start_date.slice(0, 10) == dateFormat) {
+      if (parseInt(deliveries[i].freeze_pops) > 0) {
+        freezePops += parseInt(deliveries[i].freeze_pops);
       }
     }
   }
@@ -217,6 +223,7 @@ function DeliveryScreen(props) {
       bag_oranges={data.bag_oranges}
       bag_lemons={data.bag_lemons}
       marg_salt={data.marg_salt}
+      freeze_pops={data.freeze_pops}
       deliverytime={data.deliverytime}
       dayornight={data.dayornight}
     />
@@ -296,6 +303,16 @@ function DeliveryScreen(props) {
                 Bag of Oranges - {bagOranges}
               </Text>
             ) : null}
+            {freezePops > 0 ? (
+              <Text style={styles.redText}>
+                <MaterialCommunityIcons
+                  name="ice-pop"
+                  color={colors.red}
+                  size={15}
+                />{" "}
+                Freeeze Pops - {freezePops}
+              </Text>
+            ) : null}
           </View>
         </View>
 
@@ -369,6 +386,11 @@ const styles = StyleSheet.create({
   orangeText: {
     marginVertical: 2.5,
     color: colors.orange,
+    fontWeight: "500",
+  },
+  redText: {
+    marginVertical: 2.5,
+    color: colors.red,
     fontWeight: "500",
   },
   looseContainer: {

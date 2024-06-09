@@ -32,6 +32,7 @@ const post = (
   bag_lemons,
   bag_oranges,
   marg_salt,
+  freeze_pops,
   tip
 ) => {
   if (!special) {
@@ -69,6 +70,7 @@ const post = (
       bag_lemons: bag_lemons,
       bag_oranges: bag_oranges,
       marg_salt: marg_salt,
+      freeze_pops: freeze_pops,
       tip: tip,
       deliverytime: time,
       dayornight: timeam,
@@ -99,6 +101,7 @@ const put = (
   bag_lemons,
   bag_oranges,
   marg_salt,
+  freeze_pops,
   tip,
   deliverytime,
   dayornight
@@ -138,6 +141,7 @@ const put = (
       bag_lemons: bag_lemons,
       bag_oranges: bag_oranges,
       marg_salt: marg_salt,
+      freeze_pops: freeze_pops,
       tip: tip,
       deliverytime: deliverytime,
       dayornight: dayornight,

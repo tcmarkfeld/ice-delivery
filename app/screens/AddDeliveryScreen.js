@@ -53,6 +53,7 @@ const validationSchema = Yup.object().shape({
   bag_lemons: Yup.number().min(0).max(5).required().label("Lemons"),
   bag_oranges: Yup.number().min(0).max(5).required().label("Oranges"),
   marg_salt: Yup.number().min(0).max(5).required().label("Marg Salt"),
+  freeze_pops: Yup.number().min(0).max(5).required().label("Freeze Pops"),
   tip: Yup.number().min(0).required().label("Tip"),
   time: Yup.number().min(1).max(12).label("Time"),
 });
@@ -87,6 +88,7 @@ function AddDeliveryScreen(props) {
         userInfo.bag_lemons,
         userInfo.bag_oranges,
         userInfo.marg_salt,
+        userInfo.freeze_pops,
         userInfo.tip
       );
     } else {
@@ -108,6 +110,7 @@ function AddDeliveryScreen(props) {
         userInfo.bag_lemons,
         userInfo.bag_oranges,
         userInfo.marg_salt,
+        userInfo.freeze_pops,
         userInfo.tip
       );
     }
@@ -202,6 +205,7 @@ function AddDeliveryScreen(props) {
               bag_lemons: "0",
               bag_oranges: "0",
               marg_salt: "0",
+              freeze_pops: "0",
               tip: "0",
               time: "",
               timeam: "",
@@ -356,7 +360,7 @@ function AddDeliveryScreen(props) {
             </View>
 
             <View flexDirection={"row"}>
-              <View style={{ width: "30%" }}>
+              <View style={{ width: "47.5%" }}>
                 <FormField
                   keyboardType="number-pad"
                   icon="pound"
@@ -367,7 +371,7 @@ function AddDeliveryScreen(props) {
                 />
               </View>
               <View style={{ width: "5%" }}></View>
-              <View style={{ width: "30%" }}>
+              <View style={{ width: "47.5%" }}>
                 <FormField
                   keyboardType="number-pad"
                   icon="pound"
@@ -377,14 +381,27 @@ function AddDeliveryScreen(props) {
                   returnKeyType="done"
                 />
               </View>
-              <View style={{ width: "5%" }}></View>
-              <View style={{ width: "30%" }}>
+            </View>
+
+            <View flexDirection={"row"}>
+              <View style={{ width: "47.5%" }}>
                 <FormField
                   keyboardType="number-pad"
                   icon="shaker"
                   name="marg_salt"
                   placeholder="Marg Salt"
                   label="Marg Salt"
+                  returnKeyType="done"
+                />
+              </View>
+              <View style={{ width: "5%" }}></View>
+              <View style={{ width: "47.5%" }}>
+                <FormField
+                  keyboardType="number-pad"
+                  icon="ice-pop"
+                  name="freeze_pops"
+                  placeholder="Freeze Pops"
+                  label="Freeze Pops"
                   returnKeyType="done"
                 />
               </View>

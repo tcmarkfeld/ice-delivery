@@ -27,6 +27,7 @@ function DeliveryCard({
   bag_oranges,
   bag_lemons,
   marg_salt,
+  freeze_pops,
   deliverytime,
   dayornight,
 }) {
@@ -121,7 +122,7 @@ function DeliveryCard({
   };
 
   var textName = name.split(" ");
-  const body = `Hey ${textName[0]}, this is Tim with Corolla Ice Delivery. Just wanted to thank you for your business this past week and hope you enjoyed! If you would be willing to leave us a Google review we would really appreciate it! 
+  const body = `Hey ${textName[0]}, this is Benicio with Corolla Ice Delivery. Just wanted to thank you for your business this past week and hope you enjoyed! If you would be willing to leave us a Google review we would really appreciate it! 
   https://g.page/r/CUBe_7herDpHEAE/review`;
 
   const sendText = () => {
@@ -272,6 +273,19 @@ function DeliveryCard({
         ) : null}
       </View>
 
+      <View style={styles.whiteContainer}>
+        {freeze_pops == 0 ? null : ending == false ? (
+          <Text style={styles.redText}>
+            <MaterialCommunityIcons
+              name="ice-pop"
+              color={colors.red}
+              size={17.5}
+            />{" "}
+            Freeze Pops: {freeze_pops}
+          </Text>
+        ) : null}
+      </View>
+
       {special.length == 0 ? null : special == "none" ? null : (
         <Text style={styles.mainText}>
           <MaterialCommunityIcons
@@ -368,6 +382,11 @@ const styles = StyleSheet.create({
   limeText: {
     marginVertical: 2.5,
     color: colors.lime,
+    fontWeight: "500",
+  },
+  redText: {
+    marginVertical: 2.5,
+    color: colors.red,
     fontWeight: "500",
   },
   saltText: {

@@ -15,4 +15,5 @@ export default {
   orange: "#FFA500",
   lemon: "#F4D00C",
   salt: "#cdd7ce",
+  red: "#EE4B2B",
 };
