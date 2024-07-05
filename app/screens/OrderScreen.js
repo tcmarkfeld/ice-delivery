@@ -29,18 +29,18 @@ import {
   timeData,
 } from "../components/Constants";
 
-const nameRegExp = /^(?!.{126,})([\w+]{1,}\s+[\w+]{1,} ?)$/;
+// const nameRegExp = /^(?!.{126,})([\w+]{1,}\s+[\w+]{1,} ?)$/;
 
-const phoneRegExp = /^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4}$/im;
+// const phoneRegExp = /^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4}$/im;
 
 const validationSchema = Yup.object().shape({
   delivery_address: Yup.string().required().min(5).label("Delivery Address"),
   name: Yup.string()
-    .matches(nameRegExp, "Enter first and last name (3 character min. each)")
+    // .matches(nameRegExp, "Enter first and last name (3 character min. each)")
     .required()
     .label("Name"),
   phone_number: Yup.string()
-    .matches(phoneRegExp, "Phone number is not valid")
+    // .matches(phoneRegExp, "Phone number is not valid")
     .required()
     .label("Phone Number"),
   email: Yup.string().email().label("Email"),
@@ -173,7 +173,7 @@ function OrderScreen({ navigation, route }) {
   const confirmDelete = async () => {
     Alert.alert(
       "Confirm",
-      "Are you sure you would like to delete this reservation?", // <- this part is optional, you can pass an empty string
+      "Are you sure you would like to delete this reservation?",
       [
         {
           text: "Cancel",

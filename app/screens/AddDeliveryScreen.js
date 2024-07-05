@@ -28,14 +28,14 @@ import {
 } from "../components/Constants";
 
 // These are regex expressions for form validation
-const nameRegExp = /^(?!.{126,})([\w+]{1,}\s+[\w+]{1,} ?)$/;
+// const nameRegExp = /^(?!.{126,})([\w+]{1,}\s+[\w+]{1,} ?)$/;
 
 const phoneRegExp = /^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4}$/im;
 
 const validationSchema = Yup.object().shape({
   delivery_address: Yup.string().required().max(149).label("Delivery Address"),
   name: Yup.string()
-    .matches(nameRegExp, "Enter first and last name (3 character min. each)")
+    // .matches(nameRegExp, "Enter first and last name (3 character min. each)")
     .required()
     .max(75)
     .label("Name"),

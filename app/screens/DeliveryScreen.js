@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   View,
@@ -22,7 +22,6 @@ const wait = (timeout) => {
 
 function DeliveryScreen(props) {
   const [refreshing, setRefreshing] = useState(false);
-  const [hidden, setHidden] = useState(true);
 
   const getDeliveriesApi = useApi(deliveryApi.getTodayDeliveries);
   const deliveries = getDeliveriesApi.data;

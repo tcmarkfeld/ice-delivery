@@ -202,7 +202,6 @@ function AllDeliveriesScreen({ navigation }) {
 
   const weeks = weeklyDates.map((data, index) => (
     <View key={index}>
-      {/* <View style={{ height: 5 }}></View> */}
       <TouchableOpacity
         style={styles.filterDatesContainer}
         onPress={() => setDates(data.start, data.end)}

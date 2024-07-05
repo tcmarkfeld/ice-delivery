@@ -25,7 +25,7 @@ export default function App() {
           setUser(user);
         }
       } catch (e) {
-        console.warn(e);
+        alert(e);
       } finally {
         // Tell the application to render
         setAppIsReady(true);
